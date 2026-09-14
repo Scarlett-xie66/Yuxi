@@ -2,16 +2,14 @@
 title: "Yuxi Xie-webiste"
 ---
 
-::: columns
-:::{.column width="35%"}
-
-![](images/clipboard-2090318537.png)
+::::::: columns
+::: {.column width="25%"}
+![](images/profile.jpg)
 :::
 
-::: {.column style="color:black"}
-:::{.column width="65%}
-
-![](images/University of Pennsylvania.png)
+::::: {.column style="color:black;padding-left: 40px"}
+::: {.column width="65%"}
+![](images/University%20of%20Pennsylvania.png)
 :::
 
 # Yuxi Xie(Scarlett)
@@ -22,14 +20,14 @@ Welcome to my personal website.
 
 ### Quick Links
 
-<div>
-
+::: {style="display:flex"}
 <a href="https://github.com/Scarlett-xie66"><i class="bi bi-github fs-3"></i></a>
 
-<a href="https://linkedin.com/in/USERNAME"></a><i class="bi bi-linkedin fs-3"></i></a>
+<a href="https://linkedin.com/in/scarlett-xie-0b2983355"><i class="bi bi-linkedin fs-3"></i></a>
 
-<a href="resume.qmd"></a><i class="bi bi-file-earmark-person-fill fs-3"></i></a>
+<a href="resume.qmd"><i class="bi bi-file-earmark-person-fill fs-3"></i></a>
 
 <a href="mailto:yuxxie@sas.upenn.edu"><i class="bi bi-envelope-fill fs-3"></i></a>
-
-</div>
+:::
+:::::
+:::::::
