@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Yuxi Xie-webiste",
     "section": "",
-    "text": "Yuxi Xie(Scarlett)\nUniversity of Pennsylvaina\nWelcome to my personal website.\n\nQuick Links"
+    "text": "Yuxi(Scarlett) Xie\nUniversity of Pennsylvaina\nWelcome to my personal website. I am pursuing an M.S. in Applied Economics and Data Science, specializing in the finance track.\n\nQuick Links"
   },
   {
     "objectID": "about.html",
@@ -88,13 +88,48 @@
     "href": "blog/index.html",
     "title": "Blog",
     "section": "",
-    "text": "- data-science\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMy Second Blog Post\n\n\n\n\n\n\n\n\n\n\n\nJun 16, 2026\n\n\n\n\n\n\nNo matching items"
+    "text": "Eigenvalues and Eigenvectors: The Hidden Engines of Linear Dynamics\n\n\nWhy every economist should make friends with the eigendecomposition\n\n\n\n\n\n\n\n\nSep 13, 2026\n\n\nScarlett Xie\n\n\n\n\n\n\n\n\n\n\n\n\nMy Second Blog Post\n\n\n\n\n\n\n\n\n\n\n\nJun 16, 2026\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "blog/posts/post1/index.html",
     "href": "blog/posts/post1/index.html",
-    "title": "Yuxi Xie",
+    "title": "Eigenvalues and Eigenvectors: The Hidden Engines of Linear Dynamics",
     "section": "",
-    "text": "title: “My First Blog Post”\ndate: 2026-06-16\ncategories: - personal - data-science —\n\nThis is my first blog post. Example \\(\\LaTeX\\) equation: \\(\\frac{1}{2}\\sum_{i=1}^nx_i\\)"
+    "text": "Most relationships that economists put on a computer are, at their core, linear: regressions, vector autoregressions (VARs), Markov transition matrices, state-space models, and even the local approximations used to solve dynamic stochastic general equilibrium (DSGE) models. Every one of these tools repeatedly multiplies vectors by matrices.\nA natural question follows:\n\nWhen we multiply by the same matrix over and over, what happens in the long run — and why?\n\nThe complete answer is given by two objects that live inside the matrix itself: its eigenvalues and eigenvectors. This post explains what they are, how to compute them by hand and in R, and why they do so much of the heavy lifting in economics — from the long-run unemployment rate to whether an estimated macro model is even stable."
+  },
+  {
+    "objectID": "blog/posts/post1/index.html#finding-them-the-characteristic-equation",
+    "href": "blog/posts/post1/index.html#finding-them-the-characteristic-equation",
+    "title": "Eigenvalues and Eigenvectors: The Hidden Engines of Linear Dynamics",
+    "section": "2.1 Finding them: the characteristic equation",
+    "text": "2.1 Finding them: the characteristic equation\nMoving \\(\\lambda\\mathbf{v}\\) to the left and inserting the identity matrix \\(\\mathbf{I}\\) gives\n\\[\n(\\mathbf{A} - \\lambda\\mathbf{I})\\mathbf{v} = \\mathbf{0}.\n\\]\nA non-zero solution \\(\\mathbf{v}\\) exists exactly when the matrix \\((\\mathbf{A}-\\lambda\\mathbf{I})\\) is singular, i.e. its determinant is zero:\n\\[\n\\det(\\mathbf{A} - \\lambda\\mathbf{I}) = 0.\n\\]\nThis is the characteristic equation. It produces a polynomial in \\(\\lambda\\) whose \\(n\\) roots are the eigenvalues; substituting each root back into \\((\\mathbf{A}-\\lambda\\mathbf{I})\\mathbf{v} = \\mathbf{0}\\) gives the eigenvectors."
+  },
+  {
+    "objectID": "blog/posts/post1/index.html#a-worked-2-2-example",
+    "href": "blog/posts/post1/index.html#a-worked-2-2-example",
+    "title": "Eigenvalues and Eigenvectors: The Hidden Engines of Linear Dynamics",
+    "section": "2.2 A worked 2 × 2 example",
+    "text": "2.2 A worked 2 × 2 example\nTake the symmetric matrix\n\\[\n\\mathbf{A} = \\begin{pmatrix} 2 & 1 \\\\ 1 & 2 \\end{pmatrix}.\n\\]\nThe characteristic equation is\n\\[\n\\det\\begin{pmatrix} 2-\\lambda & 1 \\\\ 1 & 2-\\lambda \\end{pmatrix}\n= (2-\\lambda)^2 - 1\n= \\lambda^2 - 4\\lambda + 3\n= (\\lambda - 1)(\\lambda - 3) = 0,\n\\]\nso the eigenvalues are \\(\\lambda_1 = 3\\) and \\(\\lambda_2 = 1\\). The eigenvectors (defined only up to scale, so conventionally normalized to unit length) are\n\\[\n\\lambda_1 = 3: \\quad \\mathbf{v}_1 = \\frac{1}{\\sqrt 2}\\begin{pmatrix}1\\\\1\\end{pmatrix},\n\\qquad\n\\lambda_2 = 1: \\quad \\mathbf{v}_2 = \\frac{1}{\\sqrt 2}\\begin{pmatrix}1\\\\-1\\end{pmatrix}.\n\\]\nQuick check: along the \\(45^\\circ\\) direction, \\(\\mathbf{A}(1,1)' = (3,3)' = 3(1,1)'\\), so the matrix stretches that direction threefold; along \\((1,-1)'\\) it leaves the vector exactly unchanged."
+  },
+  {
+    "objectID": "blog/posts/post1/index.html#example",
+    "href": "blog/posts/post1/index.html#example",
+    "title": "Eigenvalues and Eigenvectors: The Hidden Engines of Linear Dynamics",
+    "section": "2.2 2 × 2 example",
+    "text": "2.2 2 × 2 example\nTake the symmetric matrix\n\\[\n\\mathbf{A} = \\begin{pmatrix} 2 & 1 \\\\ 1 & 2 \\end{pmatrix}.\n\\]\nThe characteristic equation is\n\\[\n\\det\\begin{pmatrix} 2-\\lambda & 1 \\\\ 1 & 2-\\lambda \\end{pmatrix}\n= (2-\\lambda)^2 - 1\n= \\lambda^2 - 4\\lambda + 3\n= (\\lambda - 1)(\\lambda - 3) = 0,\n\\]\nso the eigenvalues are \\(\\lambda_1 = 3\\) and \\(\\lambda_2 = 1\\). The eigenvectors (defined only up to scale, so conventionally normalized to unit length) are\n\\[\n\\lambda_1 = 3: \\quad \\mathbf{v}_1 = \\frac{1}{\\sqrt 2}\\begin{pmatrix}1\\\\1\\end{pmatrix},\n\\qquad\n\\lambda_2 = 1: \\quad \\mathbf{v}_2 = \\frac{1}{\\sqrt 2}\\begin{pmatrix}1\\\\-1\\end{pmatrix}.\n\\]\nQuick check: along the \\(45^\\circ\\) direction, \\(\\mathbf{A}(1,1)' = (3,3)' = 3(1,1)'\\), so the matrix stretches that direction threefold; along \\((1,-1)'\\) it leaves the vector exactly unchanged."
+  },
+  {
+    "objectID": "blog/posts/post1/index.html#the-characteristic-equation",
+    "href": "blog/posts/post1/index.html#the-characteristic-equation",
+    "title": "Eigenvalues and Eigenvectors: The Hidden Engines of Linear Dynamics",
+    "section": "2.1 The characteristic equation",
+    "text": "2.1 The characteristic equation\nMoving \\(\\lambda\\mathbf{v}\\) to the left and inserting the identity matrix \\(\\mathbf{I}\\) gives\n\\[\n(\\mathbf{A} - \\lambda\\mathbf{I})\\mathbf{v} = \\mathbf{0}.\n\\]\nA non-zero solution \\(\\mathbf{v}\\) exists exactly when the matrix \\((\\mathbf{A}-\\lambda\\mathbf{I})\\) is singular, i.e. its determinant is zero:\n\\[\n\\det(\\mathbf{A} - \\lambda\\mathbf{I}) = 0.\n\\]\nThis is the characteristic equation. It produces a polynomial in \\(\\lambda\\) whose \\(n\\) roots are the eigenvalues; substituting each root back into \\((\\mathbf{A}-\\lambda\\mathbf{I})\\mathbf{v} = \\mathbf{0}\\) gives the eigenvectors."
+  },
+  {
+    "objectID": "blog/posts/post1/index.html#a-2-2-example",
+    "href": "blog/posts/post1/index.html#a-2-2-example",
+    "title": "Eigenvalues and Eigenvectors: The Hidden Engines of Linear Dynamics",
+    "section": "2.2 A 2 × 2 example",
+    "text": "2.2 A 2 × 2 example\nTake the symmetric matrix\n\\[\n\\mathbf{A} = \\begin{pmatrix} 2 & 1 \\\\ 1 & 2 \\end{pmatrix}.\n\\]\nThe characteristic equation is\n\\[\n\\det\\begin{pmatrix} 2-\\lambda & 1 \\\\ 1 & 2-\\lambda \\end{pmatrix}\n= (2-\\lambda)^2 - 1\n= \\lambda^2 - 4\\lambda + 3\n= (\\lambda - 1)(\\lambda - 3) = 0,\n\\]\nso the eigenvalues are \\(\\lambda_1 = 3\\) and \\(\\lambda_2 = 1\\). The eigenvectors (defined only up to scale, so conventionally normalized to unit length) are\n\\[\n\\lambda_1 = 3: \\quad \\mathbf{v}_1 = \\frac{1}{\\sqrt 2}\\begin{pmatrix}1\\\\1\\end{pmatrix},\n\\qquad\n\\lambda_2 = 1: \\quad \\mathbf{v}_2 = \\frac{1}{\\sqrt 2}\\begin{pmatrix}1\\\\-1\\end{pmatrix}.\n\\]\nQuick check: along the \\(45^\\circ\\) direction, \\(\\mathbf{A}(1,1)' = (3,3)' = 3(1,1)'\\), so the matrix stretches that direction threefold; along \\((1,-1)'\\) it leaves the vector exactly unchanged."
   }
 ]

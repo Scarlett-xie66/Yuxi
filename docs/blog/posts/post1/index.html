@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Scarlett Xie">
+<meta name="dcterms.date" content="2026-09-13">
 
-<title>index – Yuxi Xie</title>
+<title>Eigenvalues and Eigenvectors: The Hidden Engines of Linear Dynamics – Yuxi Xie</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -100,7 +136,7 @@ window.Quarto = {
 <link rel="stylesheet" href="../../../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -144,21 +180,288 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#sec-question" id="toc-sec-question" class="nav-link active" data-scroll-target="#sec-question"><span class="header-section-number">1</span> Background</a></li>
+  <li><a href="#sec-definition" id="toc-sec-definition" class="nav-link" data-scroll-target="#sec-definition"><span class="header-section-number">2</span> What are eigenvalues and eigenvectors?</a>
+  <ul class="collapse">
+  <li><a href="#the-characteristic-equation" id="toc-the-characteristic-equation" class="nav-link" data-scroll-target="#the-characteristic-equation"><span class="header-section-number">2.1</span> The characteristic equation</a></li>
+  <li><a href="#a-2-2-example" id="toc-a-2-2-example" class="nav-link" data-scroll-target="#a-2-2-example"><span class="header-section-number">2.2</span> A 2 × 2 example</a></li>
+  </ul></li>
+  <li><a href="#sec-picture" id="toc-sec-picture" class="nav-link" data-scroll-target="#sec-picture"><span class="header-section-number">3</span> Graphical representation</a></li>
+  <li><a href="#sec-dynamics" id="toc-sec-dynamics" class="nav-link" data-scroll-target="#sec-dynamics"><span class="header-section-number">4</span> Why eigenvalues govern <em>dynamics</em></a></li>
+  <li><a href="#sec-markov" id="toc-sec-markov" class="nav-link" data-scroll-target="#sec-markov"><span class="header-section-number">5</span> Economic application 1: a labor-market Markov chain</a></li>
+  <li><a href="#sec-stability" id="toc-sec-stability" class="nav-link" data-scroll-target="#sec-stability"><span class="header-section-number">6</span> Economic application 2: stability of dynamic models</a></li>
+  <li><a href="#sec-other-uses" id="toc-sec-other-uses" class="nav-link" data-scroll-target="#sec-other-uses"><span class="header-section-number">7</span> More exploration</a></li>
+  <li><a href="#sec-r-summary" id="toc-sec-r-summary" class="nav-link" data-scroll-target="#sec-r-summary"><span class="header-section-number">8</span> Programming basis:R</a></li>
+  <li><a href="#sec-takeaways" id="toc-sec-takeaways" class="nav-link" data-scroll-target="#sec-takeaways"><span class="header-section-number">9</span> Takeaways</a></li>
+  <li><a href="#sec-reading" id="toc-sec-reading" class="nav-link" data-scroll-target="#sec-reading"><span class="header-section-number">10</span> Further reading</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Eigenvalues and Eigenvectors: The Hidden Engines of Linear Dynamics</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Why every economist should make friends with the eigendecomposition</p>
+</div>
 
 
 
-<hr>
-<p>title: “My First Blog Post”</p>
-<p>date: 2026-06-16</p>
-<p>categories: - personal - data-science —</p>
-<p><img src="figure1.png" class="img-fluid" width="500"></p>
-<p>This is my first blog post. Example <span class="math inline">\(\LaTeX\)</span> equation: <span class="math inline">\(\frac{1}{2}\sum_{i=1}^nx_i\)</span></p>
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Scarlett Xie </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 13, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
+
+
+<section id="sec-question" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Background</h1>
+<p>Most relationships that economists put on a computer are, at their core, <strong>linear</strong>: regressions, vector autoregressions (VARs), Markov transition matrices, state-space models, and even the local approximations used to solve dynamic stochastic general equilibrium (DSGE) models. Every one of these tools repeatedly multiplies vectors by matrices.</p>
+<p>A natural question follows:</p>
+<blockquote class="blockquote">
+<p><em>When we multiply by the same matrix over and over, what happens in the long run — and why?</em></p>
+</blockquote>
+<p>The complete answer is given by two objects that live inside the matrix itself: its <strong>eigenvalues</strong> and <strong>eigenvectors</strong>. This post explains what they are, how to compute them by hand and in R, and why they do so much of the heavy lifting in economics — from the long-run unemployment rate to whether an estimated macro model is even stable.</p>
+</section>
+<section id="sec-definition" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> What are eigenvalues and eigenvectors?</h1>
+<p>Multiplying a vector <span class="math inline">\(\mathbf{x}\)</span> by a matrix <span class="math inline">\(\mathbf{A}\)</span> generally does two things at once: <strong>rotates</strong> the vector and <strong>stretches</strong> it. An <strong>eigenvector</strong> is a special, non-zero direction that is <em>not</em> rotated at all — it is only stretched (or shrunk, or flipped). The amount of stretching along that direction is the corresponding <strong>eigenvalue</strong>.</p>
+<p>The defining equation is short:</p>
+<p><span class="math display">\[
+\mathbf{A}\mathbf{v} = \lambda \mathbf{v}, \qquad \mathbf{v} \neq \mathbf{0},
+\]</span></p>
+<p>where</p>
+<ul>
+<li><span class="math inline">\(\mathbf{A}\)</span> is an <span class="math inline">\(n \times n\)</span> square matrix,</li>
+<li><span class="math inline">\(\mathbf{v}\)</span> is an eigenvector of <span class="math inline">\(\mathbf{A}\)</span>,</li>
+<li><span class="math inline">\(\lambda\)</span> (lambda) is the associated eigenvalue, which may be positive, negative, zero, or even complex.</li>
+</ul>
+<p>In words: <em>along the direction</em> <span class="math inline">\(\mathbf{v}\)</span>, the action of the entire matrix reduces to multiplication by a single number <span class="math inline">\(\lambda\)</span>.</p>
+<section id="the-characteristic-equation" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="the-characteristic-equation"><span class="header-section-number">2.1</span> The characteristic equation</h2>
+<p>Moving <span class="math inline">\(\lambda\mathbf{v}\)</span> to the left and inserting the identity matrix <span class="math inline">\(\mathbf{I}\)</span> gives</p>
+<p><span class="math display">\[
+(\mathbf{A} - \lambda\mathbf{I})\mathbf{v} = \mathbf{0}.
+\]</span></p>
+<p>A non-zero solution <span class="math inline">\(\mathbf{v}\)</span> exists exactly when the matrix <span class="math inline">\((\mathbf{A}-\lambda\mathbf{I})\)</span> is singular, i.e.&nbsp;its determinant is zero:</p>
+<p><span class="math display">\[
+\det(\mathbf{A} - \lambda\mathbf{I}) = 0.
+\]</span></p>
+<p>This is the <strong>characteristic equation</strong>. It produces a polynomial in <span class="math inline">\(\lambda\)</span> whose <span class="math inline">\(n\)</span> roots are the eigenvalues; substituting each root back into <span class="math inline">\((\mathbf{A}-\lambda\mathbf{I})\mathbf{v} = \mathbf{0}\)</span> gives the eigenvectors.</p>
+</section>
+<section id="a-2-2-example" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="a-2-2-example"><span class="header-section-number">2.2</span> A 2 × 2 example</h2>
+<p>Take the symmetric matrix</p>
+<p><span class="math display">\[
+\mathbf{A} = \begin{pmatrix} 2 &amp; 1 \\ 1 &amp; 2 \end{pmatrix}.
+\]</span></p>
+<p>The characteristic equation is</p>
+<p><span class="math display">\[
+\det\begin{pmatrix} 2-\lambda &amp; 1 \\ 1 &amp; 2-\lambda \end{pmatrix}
+= (2-\lambda)^2 - 1
+= \lambda^2 - 4\lambda + 3
+= (\lambda - 1)(\lambda - 3) = 0,
+\]</span></p>
+<p>so the eigenvalues are <span class="math inline">\(\lambda_1 = 3\)</span> and <span class="math inline">\(\lambda_2 = 1\)</span>. The eigenvectors (defined only up to scale, so conventionally normalized to unit length) are</p>
+<p><span class="math display">\[
+\lambda_1 = 3: \quad \mathbf{v}_1 = \frac{1}{\sqrt 2}\begin{pmatrix}1\\1\end{pmatrix},
+\qquad
+\lambda_2 = 1: \quad \mathbf{v}_2 = \frac{1}{\sqrt 2}\begin{pmatrix}1\\-1\end{pmatrix}.
+\]</span></p>
+<p>Quick check: along the <span class="math inline">\(45^\circ\)</span> direction, <span class="math inline">\(\mathbf{A}(1,1)' = (3,3)' = 3(1,1)'\)</span>, so the matrix stretches that direction threefold; along <span class="math inline">\((1,-1)'\)</span> it leaves the vector exactly unchanged.</p>
+</section>
+</section>
+<section id="sec-picture" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Graphical representation</h1>
+<p>The definition becomes much easier to <em>see</em>. The code below draws the unit circle, applies <span class="math inline">\(\mathbf{A}\)</span> to every point on it (the circle becomes an ellipse), and overlays the two eigenvectors. Every point on the circle is both rotated and stretched <strong>except</strong> points on the eigenvector directions, which stay on their own lines.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-geometric" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-geometric-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/fig-geometric-1.png" class="img-fluid figure-img" width="1050">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-geometric-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: The unit circle and its image under A. Most directions are rotated and stretched, but the eigenvector directions (red, green) are only stretched, by factors of 3 and 1.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The ellipse’s principal axes line up exactly with <span class="math inline">\(\mathbf{v}_1\)</span> and <span class="math inline">\(\mathbf{v}_2\)</span>, and its semi-axis lengths are <span class="math inline">\(3\)</span> and <span class="math inline">\(1\)</span> — precisely the eigenvalues. An eigen-decomposition is, geometrically, a description of the shape the matrix draws.</p>
+</section>
+<section id="sec-dynamics" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Why eigenvalues govern <em>dynamics</em></h1>
+<p>The really important payoff is not one multiplication but <strong>repeated</strong> multiplication. Consider the linear dynamical system</p>
+<p><span class="math display">\[
+\mathbf{x}_{t+1} = \mathbf{A}\mathbf{x}_t
+\quad\Longrightarrow\quad
+\mathbf{x}_t = \mathbf{A}^t \mathbf{x}_0.
+\]</span></p>
+<p>Computing <span class="math inline">\(\mathbf{A}^t\)</span> directly is painful. Instead, collect the eigenvectors as columns of <span class="math inline">\(\mathbf{P}\)</span> and the eigenvalues in a diagonal matrix <span class="math inline">\(\mathbf{D}\)</span>:</p>
+<p><span class="math display">\[
+\mathbf{A} = \mathbf{P}\mathbf{D}\mathbf{P}^{-1},
+\qquad
+\mathbf{D} = \begin{pmatrix}\lambda_1 &amp; 0\\0 &amp; \lambda_2\end{pmatrix}.
+\]</span></p>
+<p>This is the <strong>diagonalization</strong>. Powers now simplify dramatically, because all the cross-terms in <span class="math inline">\(\mathbf{P}^{-1}\mathbf{P}\)</span> cancel:</p>
+<p><span class="math display">\[
+\mathbf{A}^t = \mathbf{P}\mathbf{D}^t\mathbf{P}^{-1},
+\qquad
+\mathbf{D}^t = \begin{pmatrix}\lambda_1^t &amp; 0\\0 &amp; \lambda_2^t\end{pmatrix}.
+\]</span></p>
+<p>Expanding the initial condition in the eigenvector basis, <span class="math inline">\(\mathbf{P}^{-1}\mathbf{x}_0 = \mathbf{c}\)</span>, gives</p>
+<p><span class="math display">\[
+\mathbf{x}_t = \mathbf{P}\mathbf{D}^t\mathbf{c}
+= \sum_{i=1}^{n} c_i \lambda_i^t \mathbf{v}_i.
+\]</span></p>
+<p>This single formula explains the long run:</p>
+<ul>
+<li>any component with <span class="math inline">\(|\lambda_i| &lt; 1\)</span> <strong>decays geometrically</strong> toward zero;</li>
+<li>a component with <span class="math inline">\(|\lambda_i| &gt; 1\)</span> <strong>explodes</strong>;</li>
+<li>a component with <span class="math inline">\(\lambda_i = 1\)</span> <strong>persists forever</strong> (a steady state, or — when unwanted — a unit root);</li>
+<li>a negative or complex <span class="math inline">\(\lambda_i\)</span> produces oscillations (complex pairs rotate with period set by their angle).</li>
+</ul>
+<p>The eigenvalues are therefore not an abstract exam question. They <em>are</em> the dynamics.</p>
+</section>
+<section id="sec-markov" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Economic application 1: a labor-market Markov chain</h1>
+<p>Suppose each month workers move between employment (<span class="math inline">\(E\)</span>) and unemployment (<span class="math inline">\(U\)</span>) according to the transition matrix</p>
+<p><span class="math display">\[
+\mathbf{P} = \begin{pmatrix} 0.90 &amp; 0.10 \\ 0.25 &amp; 0.75 \end{pmatrix},
+\]</span></p>
+<p>where rows are <em>today’s</em> state and columns are <em>next month’s</em> state: an employed worker stays employed with probability <span class="math inline">\(0.90\)</span>, and an unemployed worker finds a job with probability <span class="math inline">\(0.25\)</span>.</p>
+<p>If <span class="math inline">\(\boldsymbol{\pi}_t\)</span> is the row vector of population shares, then</p>
+<p><span class="math display">\[
+\boldsymbol{\pi}_{t+1} = \boldsymbol{\pi}_t \mathbf{P}.
+\]</span></p>
+<p>The <strong>stationary distribution</strong> <span class="math inline">\(\boldsymbol{\pi}\)</span> satisfies <span class="math inline">\(\boldsymbol{\pi} = \boldsymbol{\pi}\mathbf{P}\)</span> with entries summing to one. Transposing, <span class="math inline">\(\mathbf{P}'\boldsymbol{\pi}' = 1\cdot\boldsymbol{\pi}'\)</span>: the stationary distribution is exactly the <strong>left eigenvector of</strong> <span class="math inline">\(\mathbf{P}\)</span> associated with eigenvalue 1, normalized to sum to one. This is why every stationary Markov chain has an eigenvalue of one.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>           Employed Unemployed
+Employed       0.90       0.10
+Unemployed     0.25       0.75</code></pre>
+</div>
+</div>
+<p>Solving on paper first: stationarity requires <span class="math inline">\(0.10\,\pi_E = 0.25\,\pi_U\)</span>, so <span class="math inline">\(\pi_E = 2.5\,\pi_U\)</span>, and <span class="math inline">\(\pi_E + \pi_U = 1\)</span> gives</p>
+<p><span class="math display">\[
+\pi_E = \frac{5}{7} \approx 0.714, \qquad \pi_U = \frac{2}{7} \approx 0.286.
+\]</span></p>
+<p>Now let R do the same job through the eigen decomposition (left eigenvectors of <span class="math inline">\(\mathbf{P}\)</span> are ordinary eigenvectors of <span class="math inline">\(\mathbf{P}'\)</span>):</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.00 0.65</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7143 0.2857</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Employed Unemployed
+[1,]   0.7143     0.2857</code></pre>
+</div>
+</div>
+<p>The second eigenvalue, <span class="math inline">\(\lambda_2 = 0.65\)</span>, governs how fast a workforce <em>off</em> its stationary composition converges back to it: the gap shrinks like <span class="math inline">\(0.65^t\)</span> — roughly a <span class="math inline">\(35\%\)</span> reduction per month. We can see this by iterating the chain from several very different starting distributions.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-convergence" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-convergence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/fig-convergence-1.png" class="img-fluid figure-img" width="1050">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-convergence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Convergence to the stationary distribution from three different initial states. Solid lines = employed share; dotted lines = unemployed share. All paths approach 5/7 and 2/7, the eigenvector for lambda = 1.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The economic reading is substantive: regardless of whether everyone starts with a job or <span class="math inline">\(80\%\)</span> start unemployed, the <em>same</em> long-run unemployment rate, about <span class="math inline">\(28.6\%\)</span>, emerges. Initial conditions are forgotten because the non-unit eigenvalue lies strictly inside the unit circle. This “forgetfulness” property — called <strong>ergodicity</strong> — is what licenses treating a single economy’s long-run averages as population-level statements, and it is diagnosed entirely from eigenvalues.</p>
+</section>
+<section id="sec-stability" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Economic application 2: stability of dynamic models</h1>
+<p>The same mathematics answers a question every macro forecaster has to ask after estimating a VAR: <em>is the estimated system stable?</em></p>
+<p>For a vector autoregression written in companion form, <span class="math inline">\(\mathbf{z}_{t+1} = \mathbf{C}\mathbf{z}_t\)</span>, a one-time shock dies out if and only if</p>
+<p><span class="math display">\[
+|\lambda_i(\mathbf{C})| &lt; 1 \quad \text{for every } i,
+\]</span></p>
+<p>i.e.&nbsp;every eigenvalue of the companion matrix lies <strong>inside the unit circle</strong> in the complex plane. An eigenvalue outside the circle means a small perturbation grows without bound; an eigenvalue on the circle means a unit root and permanent effects. (In a continuous-time system <span class="math inline">\(\dot{\mathbf{x}} = \mathbf{A}\mathbf{x}\)</span>, the equivalent condition is <span class="math inline">\(\operatorname{Re}(\lambda_i) &lt; 0\)</span>.)</p>
+<p>The code below plots the spectrum of the labor-market transition matrix against the unit circle — the exact graphical stability check reported in software such as EViews or <code>vars::stability</code>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-unit-circle" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-unit-circle-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="figures/fig-unit-circle-1.png" class="img-fluid figure-img" width="1050">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-unit-circle-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Eigenvalues of the transition matrix in the complex plane. The eigenvalue lambda = 1 anchors the stationary distribution; lambda = 0.65 sits inside the unit circle, so all deviations from stationarity decay. A stable VAR requires every eigenvalue of its companion matrix to lie strictly inside this circle.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Here <span class="math inline">\(\lambda = 1\)</span> sits <em>on</em> the circle — exactly as it must, since the level of employment persists — while deviations from that level, governed by <span class="math inline">\(0.65\)</span>, decay. In a VAR, by contrast, a unit eigenvalue signals a non-stationary process that must be differenced or cointegrated before standard inference is valid.</p>
+</section>
+<section id="sec-other-uses" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> More exploration</h1>
+<p>The eigen decomposition recurs throughout empirical and theoretical work:</p>
+<ul>
+<li><strong>Principal components analysis (PCA).</strong> PCs are the eigenvectors of the covariance (or correlation) matrix, ordered by eigenvalue; the eigenvalue is the variance captured by that component. Macro “factors” extracted from hundreds of time series, and the widely used FRED-MD data set, are built this way.</li>
+<li><strong>PageRank and network centrality.</strong> Google’s original PageRank is the stationary distribution — again the eigenvector for eigenvalue one — of a Markov chain over web pages. The same construction measures input-output influence and systemic risk in financial networks.</li>
+<li><strong>Local dynamics of nonlinear models.</strong> Linearizing a DSGE model around its steady state produces a matrix whose eigenvalues determine saddle-path stability: some eigenvalues must be explosive (forward-looking “jump” variables) and others stable for a unique equilibrium to exist.</li>
+<li><strong>Quadratic forms and GLS.</strong> Weighted distance, efficient GMM, and the geometry of multivariate regression all simplify by rotating data onto eigenvector axes.</li>
+</ul>
+</section>
+<section id="sec-r-summary" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Programming basis:R</h1>
+<p>Everything above used only base R’s <code>eigen()</code>, which returns a list with <code>$values</code> and a <code>$vectors</code> matrix whose <em>columns</em> are the eigenvectors:</p>
+<p>Two practical notes. First, eigenvectors are only identified up to sign and scale — <code>eigen()</code> may return <span class="math inline">\(-\mathbf{v}\)</span> where a textbook prints <span class="math inline">\(\mathbf{v}\)</span>; the span is identical. Second, real matrices can have complex conjugate eigenvalue pairs (when <span class="math inline">\(\mathbf{A}\)</span> is not symmetric), and <code>eigen()</code> will store them as complex numbers automatically; plot <span class="math inline">\(\operatorname{Re}(\lambda)\)</span> against <span class="math inline">\(\operatorname{Im}(\lambda)\)</span> exactly as in <a href="#fig-unit-circle" class="quarto-xref">Figure&nbsp;3</a>.</p>
+</section>
+<section id="sec-takeaways" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Takeaways</h1>
+<ol type="1">
+<li><strong>Eigenvectors are the directions a matrix leaves unrotated; eigenvalues are the stretch factors along them</strong>, <span class="math inline">\(\mathbf{A}\mathbf{v} = \lambda\mathbf{v}\)</span>.</li>
+<li><strong>Diagonalization turns repeated multiplication into scalar powers</strong>: <span class="math inline">\(\mathbf{A}^t\mathbf{x}_0 = \sum_i c_i\lambda_i^t\mathbf{v}_i\)</span>, so eigenvalues completely determine long-run behavior — decay, persistence, explosion, or oscillation.</li>
+<li><strong>Economics runs on this machinery</strong>: a stationary Markov distribution is the eigenvector for <span class="math inline">\(\lambda = 1\)</span>; its other eigenvalues set convergence speed; and VAR/DSGE stability is a unit-circle (or half-plane) test on eigenvalues.</li>
+<li><strong>In practice one call to <code>eigen()</code> does it</strong> — the conceptual work is knowing <em>which</em> eigenvalue answers the question and <em>how to read it</em>.</li>
+</ol>
+<p>Whenever a model can be written as repeated multiplication by a matrix, the question “what happens in the long run?” always has the same address: its eigenvalues.</p>
+</section>
+<section id="sec-reading" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Further reading</h1>
+<ul>
+<li>Strang, G. <em>Introduction to Linear Algebra</em> (chapters on eigenvalues and Markov matrices).</li>
+<li>Simon, C. P., &amp; Blume, L. <em>Mathematics for Economists</em> (eigenvalues, stability, and phase diagrams).</li>
+<li>Hamilton, J. D. <em>Time Series Analysis</em> (VAR companion-form stability and unit roots).</li>
+</ul>
+
+
+<!-- -->
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -250,6 +553,57 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       container: window.document.getElementById('quarto-embedded-source-code-modal')
     });
     clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
@@ -580,7 +934,407 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb5" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Eigenvalues and Eigenvectors: The Hidden Engines of Linear Dynamics"</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Why every economist should make friends with the eigendecomposition"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Scarlett Xie"</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "Sep 13,2026"</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 3</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">    number-sections: true</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">    theme: cosmo</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: false</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">    code-link: true</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">  fig-width: 7</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">  fig-height: 5</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">  fig-dpi: 150</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Install ggplot2 only if it is not already available -------------------------</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"ggplot2"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">"ggplot2"</span>, <span class="at">repos =</span> <span class="st">"https://cloud.r-project.org"</span>)</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Global plotting style and output location ------------------------------------</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>(<span class="at">base_size =</span> <span class="dv">12</span>))</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">fig.path =</span> <span class="st">"figures/"</span>, <span class="at">echo =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">20260913</span>)</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="fu"># Background {#sec-question}</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>Most relationships that economists put on a computer are, at their core, **linear**: regressions, vector autoregressions (VARs), Markov transition matrices, state-space models, and even the local approximations used to solve dynamic stochastic general equilibrium (DSGE) models. Every one of these tools repeatedly multiplies vectors by matrices.</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>A natural question follows:</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; *When we multiply by the same matrix over and over, what happens in the long run — and why?*</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>The complete answer is given by two objects that live inside the matrix itself: its **eigenvalues** and **eigenvectors**. This post explains what they are, how to compute them by hand and in R, and why they do so much of the heavy lifting in economics — from the long-run unemployment rate to whether an estimated macro model is even stable.</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="fu"># What are eigenvalues and eigenvectors? {#sec-definition}</span></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>Multiplying a vector $\mathbf{x}$ by a matrix $\mathbf{A}$ generally does two things at once: **rotates** the vector and **stretches** it. An **eigenvector** is a special, non-zero direction that is *not* rotated at all — it is only stretched (or shrunk, or flipped). The amount of stretching along that direction is the corresponding **eigenvalue**.</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>The defining equation is short:</span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>\mathbf{A}\mathbf{v} = \lambda \mathbf{v}, \qquad \mathbf{v} \neq \mathbf{0},</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>where</span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$\mathbf{A}$ is an $n \times n$ square matrix,</span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$\mathbf{v}$ is an eigenvector of $\mathbf{A}$,</span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>$\lambda$ (lambda) is the associated eigenvalue, which may be positive, negative, zero, or even complex.</span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>In words: *along the direction* $\mathbf{v}$, the action of the entire matrix reduces to multiplication by a single number $\lambda$.</span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a><span class="fu">## The characteristic equation</span></span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>Moving $\lambda\mathbf{v}$ to the left and inserting the identity matrix $\mathbf{I}$ gives</span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>(\mathbf{A} - \lambda\mathbf{I})\mathbf{v} = \mathbf{0}.</span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a>A non-zero solution $\mathbf{v}$ exists exactly when the matrix $(\mathbf{A}-\lambda\mathbf{I})$ is singular, i.e. its determinant is zero:</span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>\det(\mathbf{A} - \lambda\mathbf{I}) = 0.</span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>This is the **characteristic equation**. It produces a polynomial in $\lambda$ whose $n$ roots are the eigenvalues; substituting each root back into $(\mathbf{A}-\lambda\mathbf{I})\mathbf{v} = \mathbf{0}$ gives the eigenvectors.</span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a><span class="fu">## A 2 × 2 example</span></span>
+<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a>Take the symmetric matrix</span>
+<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>\mathbf{A} = \begin{pmatrix} 2 &amp; 1 <span class="sc">\\</span> 1 &amp; 2 \end{pmatrix}.</span>
+<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a>The characteristic equation is</span>
+<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a>\det\begin{pmatrix} 2-\lambda &amp; 1 <span class="sc">\\</span> 1 &amp; 2-\lambda \end{pmatrix}</span>
+<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a>= (2-\lambda)^2 - 1</span>
+<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a>= \lambda^2 - 4\lambda + 3</span>
+<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a>= (\lambda - 1)(\lambda - 3) = 0,</span>
+<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-102"><a href="#cb5-102" aria-hidden="true" tabindex="-1"></a>so the eigenvalues are $\lambda_1 = 3$ and $\lambda_2 = 1$. The eigenvectors (defined only up to scale, so conventionally normalized to unit length) are</span>
+<span id="cb5-103"><a href="#cb5-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-104"><a href="#cb5-104" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-105"><a href="#cb5-105" aria-hidden="true" tabindex="-1"></a>\lambda_1 = 3: \quad \mathbf{v}_1 = \frac{1}{\sqrt 2}\begin{pmatrix}1<span class="sc">\\</span>1\end{pmatrix},</span>
+<span id="cb5-106"><a href="#cb5-106" aria-hidden="true" tabindex="-1"></a>\qquad</span>
+<span id="cb5-107"><a href="#cb5-107" aria-hidden="true" tabindex="-1"></a>\lambda_2 = 1: \quad \mathbf{v}_2 = \frac{1}{\sqrt 2}\begin{pmatrix}1<span class="sc">\\</span>-1\end{pmatrix}.</span>
+<span id="cb5-108"><a href="#cb5-108" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-109"><a href="#cb5-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-110"><a href="#cb5-110" aria-hidden="true" tabindex="-1"></a>Quick check: along the $45^\circ$ direction, $\mathbf{A}(1,1)' = (3,3)' = 3(1,1)'$, so the matrix stretches that direction threefold; along $(1,-1)'$ it leaves the vector exactly unchanged.</span>
+<span id="cb5-111"><a href="#cb5-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-112"><a href="#cb5-112" aria-hidden="true" tabindex="-1"></a><span class="fu"># Graphical representation {#sec-picture}</span></span>
+<span id="cb5-113"><a href="#cb5-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-114"><a href="#cb5-114" aria-hidden="true" tabindex="-1"></a>The definition becomes much easier to *see*. The code below draws the unit circle, applies $\mathbf{A}$ to every point on it (the circle becomes an ellipse), and overlays the two eigenvectors. Every point on the circle is both rotated and stretched **except** points on the eigenvector directions, which stay on their own lines.</span>
+<span id="cb5-115"><a href="#cb5-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-118"><a href="#cb5-118" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb5-119"><a href="#cb5-119" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-geometric</span></span>
+<span id="cb5-120"><a href="#cb5-120" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "The unit circle and its image under A.  Most directions are rotated and stretched, but the eigenvector directions (red, green) are only stretched, by factors of 3 and 1."</span></span>
+<span id="cb5-121"><a href="#cb5-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-122"><a href="#cb5-122" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-123"><a href="#cb5-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-124"><a href="#cb5-124" aria-hidden="true" tabindex="-1"></a><span class="co"># Points on the unit circle, and their image under A ---------------------------</span></span>
+<span id="cb5-125"><a href="#cb5-125" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">2</span> <span class="sc">*</span> pi, <span class="at">length.out =</span> <span class="dv">400</span>)</span>
+<span id="cb5-126"><a href="#cb5-126" aria-hidden="true" tabindex="-1"></a>unit_circle <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="fu">cos</span>(theta), <span class="fu">sin</span>(theta))</span>
+<span id="cb5-127"><a href="#cb5-127" aria-hidden="true" tabindex="-1"></a>image <span class="ot">&lt;-</span> A <span class="sc">%*%</span> unit_circle</span>
+<span id="cb5-128"><a href="#cb5-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-129"><a href="#cb5-129" aria-hidden="true" tabindex="-1"></a>shapes <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb5-130"><a href="#cb5-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">x =</span> unit_circle[<span class="dv">1</span>, ], <span class="at">y =</span> unit_circle[<span class="dv">2</span>, ],</span>
+<span id="cb5-131"><a href="#cb5-131" aria-hidden="true" tabindex="-1"></a>             <span class="at">set =</span> <span class="st">"Unit circle"</span>),</span>
+<span id="cb5-132"><a href="#cb5-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">x =</span> image[<span class="dv">1</span>, ], <span class="at">y =</span> image[<span class="dv">2</span>, ],</span>
+<span id="cb5-133"><a href="#cb5-133" aria-hidden="true" tabindex="-1"></a>             <span class="at">set =</span> <span class="st">"Image under A (ellipse)"</span>)</span>
+<span id="cb5-134"><a href="#cb5-134" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-135"><a href="#cb5-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-136"><a href="#cb5-136" aria-hidden="true" tabindex="-1"></a><span class="co"># Eigenvectors as unit vectors; Av = lambda v ---------------------------------</span></span>
+<span id="cb5-137"><a href="#cb5-137" aria-hidden="true" tabindex="-1"></a>v_lambda3 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">2</span>)   <span class="co"># stretched to length 3</span></span>
+<span id="cb5-138"><a href="#cb5-138" aria-hidden="true" tabindex="-1"></a>v_lambda1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">2</span>)  <span class="co"># unchanged (Av = v), so only one arrow shown</span></span>
+<span id="cb5-139"><a href="#cb5-139" aria-hidden="true" tabindex="-1"></a>Av3 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(A <span class="sc">%*%</span> v_lambda3)  <span class="co"># A%*%v is 2x1; extract both coordinates</span></span>
+<span id="cb5-140"><a href="#cb5-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-141"><a href="#cb5-141" aria-hidden="true" tabindex="-1"></a>segments <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-142"><a href="#cb5-142" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="dv">0</span>,</span>
+<span id="cb5-143"><a href="#cb5-143" aria-hidden="true" tabindex="-1"></a>  <span class="at">xend =</span> <span class="fu">c</span>(v_lambda3[<span class="dv">1</span>], Av3[<span class="dv">1</span>], v_lambda1[<span class="dv">1</span>]),</span>
+<span id="cb5-144"><a href="#cb5-144" aria-hidden="true" tabindex="-1"></a>  <span class="at">yend =</span> <span class="fu">c</span>(v_lambda3[<span class="dv">2</span>], Av3[<span class="dv">2</span>], v_lambda1[<span class="dv">2</span>]),</span>
+<span id="cb5-145"><a href="#cb5-145" aria-hidden="true" tabindex="-1"></a>  <span class="at">direction =</span> <span class="fu">c</span>(<span class="st">"v,  lambda = 3"</span>, <span class="st">"Av = 3v,  lambda = 3"</span>,</span>
+<span id="cb5-146"><a href="#cb5-146" aria-hidden="true" tabindex="-1"></a>                <span class="st">"v = Av,  lambda = 1"</span>)</span>
+<span id="cb5-147"><a href="#cb5-147" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-148"><a href="#cb5-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-149"><a href="#cb5-149" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(shapes, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">colour =</span> set)) <span class="sc">+</span></span>
+<span id="cb5-150"><a href="#cb5-150" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="at">linewidth =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb5-151"><a href="#cb5-151" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(</span>
+<span id="cb5-152"><a href="#cb5-152" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> segments,</span>
+<span id="cb5-153"><a href="#cb5-153" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">xend =</span> xend, <span class="at">yend =</span> yend, <span class="at">colour =</span> direction),</span>
+<span id="cb5-154"><a href="#cb5-154" aria-hidden="true" tabindex="-1"></a>    <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> grid<span class="sc">::</span><span class="fu">unit</span>(<span class="fl">0.14</span>, <span class="st">"inches"</span>)),</span>
+<span id="cb5-155"><a href="#cb5-155" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.9</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span></span>
+<span id="cb5-156"><a href="#cb5-156" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-157"><a href="#cb5-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb5-158"><a href="#cb5-158" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb5-159"><a href="#cb5-159" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>() <span class="sc">+</span></span>
+<span id="cb5-160"><a href="#cb5-160" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">3.4</span>, <span class="fl">3.4</span>)) <span class="sc">+</span></span>
+<span id="cb5-161"><a href="#cb5-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">3.4</span>, <span class="fl">3.4</span>)) <span class="sc">+</span></span>
+<span id="cb5-162"><a href="#cb5-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(</span>
+<span id="cb5-163"><a href="#cb5-163" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="cn">NULL</span>,</span>
+<span id="cb5-164"><a href="#cb5-164" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"grey60"</span>, <span class="st">"#08519c"</span>, <span class="st">"#de2d26"</span>, <span class="st">"#a50f15"</span>, <span class="st">"#31a354"</span>)</span>
+<span id="cb5-165"><a href="#cb5-165" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-166"><a href="#cb5-166" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(x[<span class="dv">1</span>]), <span class="at">y =</span> <span class="fu">expression</span>(x[<span class="dv">2</span>]),</span>
+<span id="cb5-167"><a href="#cb5-167" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Eigenvectors are the directions that do not rotate"</span>,</span>
+<span id="cb5-168"><a href="#cb5-168" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Unit circle (grey) mapped to an ellipse (blue) by A"</span>)</span>
+<span id="cb5-169"><a href="#cb5-169" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-170"><a href="#cb5-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-171"><a href="#cb5-171" aria-hidden="true" tabindex="-1"></a>The ellipse's principal axes line up exactly with $\mathbf{v}_1$ and $\mathbf{v}_2$, and its semi-axis lengths are $3$ and $1$ — precisely the eigenvalues. An eigen-decomposition is, geometrically, a description of the shape the matrix draws.</span>
+<span id="cb5-172"><a href="#cb5-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-173"><a href="#cb5-173" aria-hidden="true" tabindex="-1"></a><span class="fu"># Why eigenvalues govern *dynamics* {#sec-dynamics}</span></span>
+<span id="cb5-174"><a href="#cb5-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-175"><a href="#cb5-175" aria-hidden="true" tabindex="-1"></a>The really important payoff is not one multiplication but **repeated** multiplication. Consider the linear dynamical system</span>
+<span id="cb5-176"><a href="#cb5-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-177"><a href="#cb5-177" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-178"><a href="#cb5-178" aria-hidden="true" tabindex="-1"></a>\mathbf{x}_{t+1} = \mathbf{A}\mathbf{x}_t</span>
+<span id="cb5-179"><a href="#cb5-179" aria-hidden="true" tabindex="-1"></a>\quad\Longrightarrow\quad</span>
+<span id="cb5-180"><a href="#cb5-180" aria-hidden="true" tabindex="-1"></a>\mathbf{x}_t = \mathbf{A}^t \mathbf{x}_0.</span>
+<span id="cb5-181"><a href="#cb5-181" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-182"><a href="#cb5-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-183"><a href="#cb5-183" aria-hidden="true" tabindex="-1"></a>Computing $\mathbf{A}^t$ directly is painful. Instead, collect the eigenvectors as columns of $\mathbf{P}$ and the eigenvalues in a diagonal matrix $\mathbf{D}$:</span>
+<span id="cb5-184"><a href="#cb5-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-185"><a href="#cb5-185" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-186"><a href="#cb5-186" aria-hidden="true" tabindex="-1"></a>\mathbf{A} = \mathbf{P}\mathbf{D}\mathbf{P}^{-1},</span>
+<span id="cb5-187"><a href="#cb5-187" aria-hidden="true" tabindex="-1"></a>\qquad</span>
+<span id="cb5-188"><a href="#cb5-188" aria-hidden="true" tabindex="-1"></a>\mathbf{D} = \begin{pmatrix}\lambda_1 &amp; 0<span class="sc">\\</span>0 &amp; \lambda_2\end{pmatrix}.</span>
+<span id="cb5-189"><a href="#cb5-189" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-190"><a href="#cb5-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-191"><a href="#cb5-191" aria-hidden="true" tabindex="-1"></a>This is the **diagonalization**. Powers now simplify dramatically, because all the cross-terms in $\mathbf{P}^{-1}\mathbf{P}$ cancel:</span>
+<span id="cb5-192"><a href="#cb5-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-193"><a href="#cb5-193" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-194"><a href="#cb5-194" aria-hidden="true" tabindex="-1"></a>\mathbf{A}^t = \mathbf{P}\mathbf{D}^t\mathbf{P}^{-1},</span>
+<span id="cb5-195"><a href="#cb5-195" aria-hidden="true" tabindex="-1"></a>\qquad</span>
+<span id="cb5-196"><a href="#cb5-196" aria-hidden="true" tabindex="-1"></a>\mathbf{D}^t = \begin{pmatrix}\lambda_1^t &amp; 0<span class="sc">\\</span>0 &amp; \lambda_2^t\end{pmatrix}.</span>
+<span id="cb5-197"><a href="#cb5-197" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-198"><a href="#cb5-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-199"><a href="#cb5-199" aria-hidden="true" tabindex="-1"></a>Expanding the initial condition in the eigenvector basis, $\mathbf{P}^{-1}\mathbf{x}_0 = \mathbf{c}$, gives</span>
+<span id="cb5-200"><a href="#cb5-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-201"><a href="#cb5-201" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-202"><a href="#cb5-202" aria-hidden="true" tabindex="-1"></a>\mathbf{x}_t = \mathbf{P}\mathbf{D}^t\mathbf{c}</span>
+<span id="cb5-203"><a href="#cb5-203" aria-hidden="true" tabindex="-1"></a>= \sum_{i=1}^{n} c_i \lambda_i^t \mathbf{v}_i.</span>
+<span id="cb5-204"><a href="#cb5-204" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-205"><a href="#cb5-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-206"><a href="#cb5-206" aria-hidden="true" tabindex="-1"></a>This single formula explains the long run:</span>
+<span id="cb5-207"><a href="#cb5-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-208"><a href="#cb5-208" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>any component with $|\lambda_i| &lt; 1$ **decays geometrically** toward zero;</span>
+<span id="cb5-209"><a href="#cb5-209" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>a component with $|\lambda_i| &gt; 1$ **explodes**;</span>
+<span id="cb5-210"><a href="#cb5-210" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>a component with $\lambda_i = 1$ **persists forever** (a steady state, or — when unwanted — a unit root);</span>
+<span id="cb5-211"><a href="#cb5-211" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>a negative or complex $\lambda_i$ produces oscillations (complex pairs rotate with period set by their angle).</span>
+<span id="cb5-212"><a href="#cb5-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-213"><a href="#cb5-213" aria-hidden="true" tabindex="-1"></a>The eigenvalues are therefore not an abstract exam question. They *are* the dynamics.</span>
+<span id="cb5-214"><a href="#cb5-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-215"><a href="#cb5-215" aria-hidden="true" tabindex="-1"></a><span class="fu"># Economic application 1: a labor-market Markov chain {#sec-markov}</span></span>
+<span id="cb5-216"><a href="#cb5-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-217"><a href="#cb5-217" aria-hidden="true" tabindex="-1"></a>Suppose each month workers move between employment ($E$) and unemployment ($U$) according to the transition matrix</span>
+<span id="cb5-218"><a href="#cb5-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-219"><a href="#cb5-219" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-220"><a href="#cb5-220" aria-hidden="true" tabindex="-1"></a>\mathbf{P} = \begin{pmatrix} 0.90 &amp; 0.10 <span class="sc">\\</span> 0.25 &amp; 0.75 \end{pmatrix},</span>
+<span id="cb5-221"><a href="#cb5-221" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-222"><a href="#cb5-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-223"><a href="#cb5-223" aria-hidden="true" tabindex="-1"></a>where rows are *today's* state and columns are *next month's* state: an employed worker stays employed with probability $0.90$, and an unemployed worker finds a job with probability $0.25$.</span>
+<span id="cb5-224"><a href="#cb5-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-225"><a href="#cb5-225" aria-hidden="true" tabindex="-1"></a>If $\boldsymbol{\pi}_t$ is the row vector of population shares, then</span>
+<span id="cb5-226"><a href="#cb5-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-227"><a href="#cb5-227" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-228"><a href="#cb5-228" aria-hidden="true" tabindex="-1"></a>\boldsymbol{\pi}_{t+1} = \boldsymbol{\pi}_t \mathbf{P}.</span>
+<span id="cb5-229"><a href="#cb5-229" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-230"><a href="#cb5-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-231"><a href="#cb5-231" aria-hidden="true" tabindex="-1"></a>The **stationary distribution** $\boldsymbol{\pi}$ satisfies $\boldsymbol{\pi} = \boldsymbol{\pi}\mathbf{P}$ with entries summing to one. Transposing, $\mathbf{P}'\boldsymbol{\pi}' = 1\cdot\boldsymbol{\pi}'$: the stationary distribution is exactly the **left eigenvector of** $\mathbf{P}$ associated with eigenvalue 1, normalized to sum to one. This is why every stationary Markov chain has an eigenvalue of one.</span>
+<span id="cb5-232"><a href="#cb5-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-235"><a href="#cb5-235" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb5-236"><a href="#cb5-236" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: markov-setup</span></span>
+<span id="cb5-237"><a href="#cb5-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-238"><a href="#cb5-238" aria-hidden="true" tabindex="-1"></a>P <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fl">0.90</span>, <span class="fl">0.10</span>,</span>
+<span id="cb5-239"><a href="#cb5-239" aria-hidden="true" tabindex="-1"></a>              <span class="fl">0.25</span>, <span class="fl">0.75</span>),</span>
+<span id="cb5-240"><a href="#cb5-240" aria-hidden="true" tabindex="-1"></a>            <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-241"><a href="#cb5-241" aria-hidden="true" tabindex="-1"></a>            <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">"Employed"</span>, <span class="st">"Unemployed"</span>),</span>
+<span id="cb5-242"><a href="#cb5-242" aria-hidden="true" tabindex="-1"></a>                            <span class="fu">c</span>(<span class="st">"Employed"</span>, <span class="st">"Unemployed"</span>)))</span>
+<span id="cb5-243"><a href="#cb5-243" aria-hidden="true" tabindex="-1"></a>P</span>
+<span id="cb5-244"><a href="#cb5-244" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-245"><a href="#cb5-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-246"><a href="#cb5-246" aria-hidden="true" tabindex="-1"></a>Solving on paper first: stationarity requires $0.10\,\pi_E = 0.25\,\pi_U$, so $\pi_E = 2.5\,\pi_U$, and $\pi_E + \pi_U = 1$ gives</span>
+<span id="cb5-247"><a href="#cb5-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-248"><a href="#cb5-248" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-249"><a href="#cb5-249" aria-hidden="true" tabindex="-1"></a>\pi_E = \frac{5}{7} \approx 0.714, \qquad \pi_U = \frac{2}{7} \approx 0.286.</span>
+<span id="cb5-250"><a href="#cb5-250" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-251"><a href="#cb5-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-252"><a href="#cb5-252" aria-hidden="true" tabindex="-1"></a>Now let R do the same job through the eigen decomposition (left eigenvectors of $\mathbf{P}$ are ordinary eigenvectors of $\mathbf{P}'$):</span>
+<span id="cb5-253"><a href="#cb5-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-256"><a href="#cb5-256" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb5-257"><a href="#cb5-257" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: markov-eigen</span></span>
+<span id="cb5-258"><a href="#cb5-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-259"><a href="#cb5-259" aria-hidden="true" tabindex="-1"></a>eig_P <span class="ot">&lt;-</span> <span class="fu">eigen</span>(<span class="fu">t</span>(P))</span>
+<span id="cb5-260"><a href="#cb5-260" aria-hidden="true" tabindex="-1"></a>eig_P<span class="sc">$</span>values</span>
+<span id="cb5-261"><a href="#cb5-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-262"><a href="#cb5-262" aria-hidden="true" tabindex="-1"></a><span class="co"># Eigenvector paired with eigenvalue 1, renormalized to sum to one ------------</span></span>
+<span id="cb5-263"><a href="#cb5-263" aria-hidden="true" tabindex="-1"></a>stationary <span class="ot">&lt;-</span> eig_P<span class="sc">$</span>vectors[, <span class="dv">1</span>] <span class="sc">/</span> <span class="fu">sum</span>(eig_P<span class="sc">$</span>vectors[, <span class="dv">1</span>])</span>
+<span id="cb5-264"><a href="#cb5-264" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(stationary, <span class="dv">4</span>)</span>
+<span id="cb5-265"><a href="#cb5-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-266"><a href="#cb5-266" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify it really is stationary ----------------------------------------------</span></span>
+<span id="cb5-267"><a href="#cb5-267" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(stationary <span class="sc">%*%</span> P, <span class="dv">4</span>)</span>
+<span id="cb5-268"><a href="#cb5-268" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-269"><a href="#cb5-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-270"><a href="#cb5-270" aria-hidden="true" tabindex="-1"></a>The second eigenvalue, $\lambda_2 = 0.65$, governs how fast a workforce *off* its stationary composition converges back to it: the gap shrinks like $0.65^t$ — roughly a $35\%$ reduction per month. We can see this by iterating the chain from several very different starting distributions.</span>
+<span id="cb5-271"><a href="#cb5-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-274"><a href="#cb5-274" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb5-275"><a href="#cb5-275" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-convergence</span></span>
+<span id="cb5-276"><a href="#cb5-276" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Convergence to the stationary distribution from three different initial states. Solid lines = employed share; dotted lines = unemployed share. All paths approach 5/7 and 2/7, the eigenvector for lambda = 1."</span></span>
+<span id="cb5-277"><a href="#cb5-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-278"><a href="#cb5-278" aria-hidden="true" tabindex="-1"></a>horizon <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb5-279"><a href="#cb5-279" aria-hidden="true" tabindex="-1"></a>initial_states <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb5-280"><a href="#cb5-280" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>),       <span class="co"># everyone starts employed</span></span>
+<span id="cb5-281"><a href="#cb5-281" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fl">0.2</span>, <span class="fl">0.8</span>),   <span class="co"># deep recession: 80% unemployed</span></span>
+<span id="cb5-282"><a href="#cb5-282" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)        <span class="co"># everyone starts unemployed</span></span>
+<span id="cb5-283"><a href="#cb5-283" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-284"><a href="#cb5-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-285"><a href="#cb5-285" aria-hidden="true" tabindex="-1"></a>paths <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">seq_along</span>(initial_states), <span class="cf">function</span>(i) {</span>
+<span id="cb5-286"><a href="#cb5-286" aria-hidden="true" tabindex="-1"></a>  dist <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA_real_</span>, <span class="at">nrow =</span> horizon <span class="sc">+</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb5-287"><a href="#cb5-287" aria-hidden="true" tabindex="-1"></a>  dist[<span class="dv">1</span>, ] <span class="ot">&lt;-</span> initial_states[[i]]</span>
+<span id="cb5-288"><a href="#cb5-288" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (t <span class="cf">in</span> <span class="fu">seq_len</span>(horizon)) {</span>
+<span id="cb5-289"><a href="#cb5-289" aria-hidden="true" tabindex="-1"></a>    dist[t <span class="sc">+</span> <span class="dv">1</span>, ] <span class="ot">&lt;-</span> dist[t, ] <span class="sc">%*%</span> P</span>
+<span id="cb5-290"><a href="#cb5-290" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-291"><a href="#cb5-291" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb5-292"><a href="#cb5-292" aria-hidden="true" tabindex="-1"></a>    <span class="at">t =</span> <span class="dv">0</span><span class="sc">:</span>horizon,</span>
+<span id="cb5-293"><a href="#cb5-293" aria-hidden="true" tabindex="-1"></a>    <span class="at">employed =</span> dist[, <span class="dv">1</span>],</span>
+<span id="cb5-294"><a href="#cb5-294" aria-hidden="true" tabindex="-1"></a>    <span class="at">unemployed =</span> dist[, <span class="dv">2</span>],</span>
+<span id="cb5-295"><a href="#cb5-295" aria-hidden="true" tabindex="-1"></a>    <span class="at">start =</span> <span class="fu">paste0</span>(<span class="st">"Initial employed share = "</span>, initial_states[[i]][<span class="dv">1</span>])</span>
+<span id="cb5-296"><a href="#cb5-296" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-297"><a href="#cb5-297" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb5-298"><a href="#cb5-298" aria-hidden="true" tabindex="-1"></a>convergence <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, paths)</span>
+<span id="cb5-299"><a href="#cb5-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-300"><a href="#cb5-300" aria-hidden="true" tabindex="-1"></a>pi_E <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">/</span> <span class="dv">7</span></span>
+<span id="cb5-301"><a href="#cb5-301" aria-hidden="true" tabindex="-1"></a>pi_U <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">/</span> <span class="dv">7</span></span>
+<span id="cb5-302"><a href="#cb5-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-303"><a href="#cb5-303" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(convergence, <span class="fu">aes</span>(<span class="at">x =</span> t)) <span class="sc">+</span></span>
+<span id="cb5-304"><a href="#cb5-304" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fu">c</span>(pi_E, pi_U), <span class="at">linetype =</span> <span class="st">"dashed"</span>,</span>
+<span id="cb5-305"><a href="#cb5-305" aria-hidden="true" tabindex="-1"></a>             <span class="at">colour =</span> <span class="st">"grey50"</span>) <span class="sc">+</span></span>
+<span id="cb5-306"><a href="#cb5-306" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> employed, <span class="at">colour =</span> start), <span class="at">linewidth =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb5-307"><a href="#cb5-307" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> unemployed, <span class="at">colour =</span> start), <span class="at">linewidth =</span> <span class="fl">0.9</span>,</span>
+<span id="cb5-308"><a href="#cb5-308" aria-hidden="true" tabindex="-1"></a>            <span class="at">linetype =</span> <span class="st">"dotted"</span>) <span class="sc">+</span></span>
+<span id="cb5-309"><a href="#cb5-309" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> horizon, <span class="at">y =</span> pi_E, <span class="at">label =</span> <span class="st">" stationary E: 71.4%"</span>,</span>
+<span id="cb5-310"><a href="#cb5-310" aria-hidden="true" tabindex="-1"></a>           <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.6</span>, <span class="at">size =</span> <span class="fl">3.4</span>, <span class="at">colour =</span> <span class="st">"grey30"</span>) <span class="sc">+</span></span>
+<span id="cb5-311"><a href="#cb5-311" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> horizon, <span class="at">y =</span> pi_U, <span class="at">label =</span> <span class="st">" stationary U: 28.6%"</span>,</span>
+<span id="cb5-312"><a href="#cb5-312" aria-hidden="true" tabindex="-1"></a>           <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">vjust =</span> <span class="fl">1.6</span>, <span class="at">size =</span> <span class="fl">3.4</span>, <span class="at">colour =</span> <span class="st">"grey30"</span>) <span class="sc">+</span></span>
+<span id="cb5-313"><a href="#cb5-313" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, horizon, <span class="dv">5</span>)) <span class="sc">+</span></span>
+<span id="cb5-314"><a href="#cb5-314" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>()) <span class="sc">+</span></span>
+<span id="cb5-315"><a href="#cb5-315" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>) <span class="sc">+</span></span>
+<span id="cb5-316"><a href="#cb5-316" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Months elapsed"</span>, <span class="at">y =</span> <span class="st">"Share of the labor force"</span>,</span>
+<span id="cb5-317"><a href="#cb5-317" aria-hidden="true" tabindex="-1"></a>       <span class="at">colour =</span> <span class="cn">NULL</span>,</span>
+<span id="cb5-318"><a href="#cb5-318" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Where does the labor market settle?"</span>,</span>
+<span id="cb5-319"><a href="#cb5-319" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Ergodicity: the long run forgets where it started"</span>) <span class="sc">+</span></span>
+<span id="cb5-320"><a href="#cb5-320" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb5-321"><a href="#cb5-321" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-322"><a href="#cb5-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-323"><a href="#cb5-323" aria-hidden="true" tabindex="-1"></a>The economic reading is substantive: regardless of whether everyone starts with a job or $80\%$ start unemployed, the *same* long-run unemployment rate, about $28.6\%$, emerges. Initial conditions are forgotten because the non-unit eigenvalue lies strictly inside the unit circle. This "forgetfulness" property — called **ergodicity** — is what licenses treating a single economy's long-run averages as population-level statements, and it is diagnosed entirely from eigenvalues.</span>
+<span id="cb5-324"><a href="#cb5-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-325"><a href="#cb5-325" aria-hidden="true" tabindex="-1"></a><span class="fu"># Economic application 2: stability of dynamic models {#sec-stability}</span></span>
+<span id="cb5-326"><a href="#cb5-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-327"><a href="#cb5-327" aria-hidden="true" tabindex="-1"></a>The same mathematics answers a question every macro forecaster has to ask after estimating a VAR: *is the estimated system stable?*</span>
+<span id="cb5-328"><a href="#cb5-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-329"><a href="#cb5-329" aria-hidden="true" tabindex="-1"></a>For a vector autoregression written in companion form, $\mathbf{z}_{t+1} = \mathbf{C}\mathbf{z}_t$, a one-time shock dies out if and only if</span>
+<span id="cb5-330"><a href="#cb5-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-331"><a href="#cb5-331" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-332"><a href="#cb5-332" aria-hidden="true" tabindex="-1"></a>|\lambda_i(\mathbf{C})| &lt; 1 \quad \text{for every } i,</span>
+<span id="cb5-333"><a href="#cb5-333" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb5-334"><a href="#cb5-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-335"><a href="#cb5-335" aria-hidden="true" tabindex="-1"></a>i.e. every eigenvalue of the companion matrix lies **inside the unit circle** in the complex plane. An eigenvalue outside the circle means a small perturbation grows without bound; an eigenvalue on the circle means a unit root and permanent effects. (In a continuous-time system $\dot{\mathbf{x}} = \mathbf{A}\mathbf{x}$, the equivalent condition is $\operatorname{Re}(\lambda_i) &lt; 0$.)</span>
+<span id="cb5-336"><a href="#cb5-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-337"><a href="#cb5-337" aria-hidden="true" tabindex="-1"></a>The code below plots the spectrum of the labor-market transition matrix against the unit circle — the exact graphical stability check reported in software such as EViews or <span class="in">`vars::stability`</span>.</span>
+<span id="cb5-338"><a href="#cb5-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-341"><a href="#cb5-341" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb5-342"><a href="#cb5-342" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-unit-circle</span></span>
+<span id="cb5-343"><a href="#cb5-343" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Eigenvalues of the transition matrix in the complex plane. The eigenvalue lambda = 1 anchors the stationary distribution; lambda = 0.65 sits inside the unit circle, so all deviations from stationarity decay. A stable VAR requires every eigenvalue of its companion matrix to lie strictly inside this circle."</span></span>
+<span id="cb5-344"><a href="#cb5-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-345"><a href="#cb5-345" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">2</span> <span class="sc">*</span> pi, <span class="at">length.out =</span> <span class="dv">400</span>)</span>
+<span id="cb5-346"><a href="#cb5-346" aria-hidden="true" tabindex="-1"></a>circle <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">cos</span>(theta), <span class="at">y =</span> <span class="fu">sin</span>(theta))</span>
+<span id="cb5-347"><a href="#cb5-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-348"><a href="#cb5-348" aria-hidden="true" tabindex="-1"></a>spectrum <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-349"><a href="#cb5-349" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">Re</span>(eig_P<span class="sc">$</span>values),</span>
+<span id="cb5-350"><a href="#cb5-350" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">Im</span>(eig_P<span class="sc">$</span>values)</span>
+<span id="cb5-351"><a href="#cb5-351" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-352"><a href="#cb5-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-353"><a href="#cb5-353" aria-hidden="true" tabindex="-1"></a><span class="co"># 标签位置：lambda = 1 放上方，lambda = 0.65 放下方，避免重叠</span></span>
+<span id="cb5-354"><a href="#cb5-354" aria-hidden="true" tabindex="-1"></a>label_pos <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-355"><a href="#cb5-355" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> <span class="fu">c</span>(<span class="fl">1.00</span>, <span class="fl">0.65</span>),</span>
+<span id="cb5-356"><a href="#cb5-356" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">c</span>(<span class="fl">0.20</span>, <span class="sc">-</span><span class="fl">0.22</span>),</span>
+<span id="cb5-357"><a href="#cb5-357" aria-hidden="true" tabindex="-1"></a>  <span class="at">label =</span> <span class="fu">c</span>(<span class="st">"lambda == 1"</span>, <span class="st">"lambda == 0.65"</span>)</span>
+<span id="cb5-358"><a href="#cb5-358" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-359"><a href="#cb5-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-360"><a href="#cb5-360" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb5-361"><a href="#cb5-361" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="at">data =</span> circle, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y),</span>
+<span id="cb5-362"><a href="#cb5-362" aria-hidden="true" tabindex="-1"></a>               <span class="at">fill =</span> <span class="st">"#6baed6"</span>, <span class="at">alpha =</span> <span class="fl">0.18</span>) <span class="sc">+</span></span>
+<span id="cb5-363"><a href="#cb5-363" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_path</span>(<span class="at">data =</span> circle, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb5-364"><a href="#cb5-364" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb5-365"><a href="#cb5-365" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb5-366"><a href="#cb5-366" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> spectrum, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y),</span>
+<span id="cb5-367"><a href="#cb5-367" aria-hidden="true" tabindex="-1"></a>             <span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">colour =</span> <span class="st">"#cb181d"</span>) <span class="sc">+</span></span>
+<span id="cb5-368"><a href="#cb5-368" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> label_pos,</span>
+<span id="cb5-369"><a href="#cb5-369" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">label =</span> label),</span>
+<span id="cb5-370"><a href="#cb5-370" aria-hidden="true" tabindex="-1"></a>            <span class="at">parse =</span> <span class="cn">TRUE</span>, <span class="at">size =</span> <span class="fl">3.8</span>, <span class="at">colour =</span> <span class="st">"#cb181d"</span>) <span class="sc">+</span></span>
+<span id="cb5-371"><a href="#cb5-371" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="sc">-</span><span class="fl">0.25</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">label =</span> <span class="st">"|lambda| &lt; 1:</span><span class="sc">\n</span><span class="st">shocks decay"</span>,</span>
+<span id="cb5-372"><a href="#cb5-372" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> <span class="fl">3.6</span>, <span class="at">colour =</span> <span class="st">"#08519c"</span>) <span class="sc">+</span></span>
+<span id="cb5-373"><a href="#cb5-373" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_fixed</span>() <span class="sc">+</span></span>
+<span id="cb5-374"><a href="#cb5-374" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.35</span>, <span class="fl">1.35</span>)) <span class="sc">+</span></span>
+<span id="cb5-375"><a href="#cb5-375" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.35</span>, <span class="fl">1.35</span>)) <span class="sc">+</span></span>
+<span id="cb5-376"><a href="#cb5-376" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Re(lambda)"</span>, <span class="at">y =</span> <span class="st">"Im(lambda)"</span>,</span>
+<span id="cb5-377"><a href="#cb5-377" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"The unit-circle stability test"</span>)</span>
+<span id="cb5-378"><a href="#cb5-378" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-379"><a href="#cb5-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-380"><a href="#cb5-380" aria-hidden="true" tabindex="-1"></a>Here $\lambda = 1$ sits *on* the circle — exactly as it must, since the level of employment persists — while deviations from that level, governed by $0.65$, decay. In a VAR, by contrast, a unit eigenvalue signals a non-stationary process that must be differenced or cointegrated before standard inference is valid.</span>
+<span id="cb5-381"><a href="#cb5-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-382"><a href="#cb5-382" aria-hidden="true" tabindex="-1"></a><span class="fu"># More exploration {#sec-other-uses}</span></span>
+<span id="cb5-383"><a href="#cb5-383" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-384"><a href="#cb5-384" aria-hidden="true" tabindex="-1"></a>The eigen decomposition recurs throughout empirical and theoretical work:</span>
+<span id="cb5-385"><a href="#cb5-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-386"><a href="#cb5-386" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Principal components analysis (PCA).** PCs are the eigenvectors of the covariance (or correlation) matrix, ordered by eigenvalue; the eigenvalue is the variance captured by that component. Macro "factors" extracted from hundreds of time series, and the widely used FRED-MD data set, are built this way.</span>
+<span id="cb5-387"><a href="#cb5-387" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**PageRank and network centrality.** Google's original PageRank is the stationary distribution — again the eigenvector for eigenvalue one — of a Markov chain over web pages. The same construction measures input-output influence and systemic risk in financial networks.</span>
+<span id="cb5-388"><a href="#cb5-388" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Local dynamics of nonlinear models.** Linearizing a DSGE model around its steady state produces a matrix whose eigenvalues determine saddle-path stability: some eigenvalues must be explosive (forward-looking "jump" variables) and others stable for a unique equilibrium to exist.</span>
+<span id="cb5-389"><a href="#cb5-389" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Quadratic forms and GLS.** Weighted distance, efficient GMM, and the geometry of multivariate regression all simplify by rotating data onto eigenvector axes.</span>
+<span id="cb5-390"><a href="#cb5-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-391"><a href="#cb5-391" aria-hidden="true" tabindex="-1"></a><span class="fu"># Programming basis:R {#sec-r-summary}</span></span>
+<span id="cb5-392"><a href="#cb5-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-393"><a href="#cb5-393" aria-hidden="true" tabindex="-1"></a>Everything above used only base R's <span class="in">`eigen()`</span>, which returns a list with <span class="in">`$values`</span> and a <span class="in">`$vectors`</span> matrix whose *columns* are the eigenvectors:</span>
+<span id="cb5-394"><a href="#cb5-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-395"><a href="#cb5-395" aria-hidden="true" tabindex="-1"></a>Two practical notes. First, eigenvectors are only identified up to sign and scale — <span class="in">`eigen()`</span> may return $-\mathbf{v}$ where a textbook prints $\mathbf{v}$; the span is identical. Second, real matrices can have complex conjugate eigenvalue pairs (when $\mathbf{A}$ is not symmetric), and <span class="in">`eigen()`</span> will store them as complex numbers automatically; plot $\operatorname{Re}(\lambda)$ against $\operatorname{Im}(\lambda)$ exactly as in @fig-unit-circle.</span>
+<span id="cb5-396"><a href="#cb5-396" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-397"><a href="#cb5-397" aria-hidden="true" tabindex="-1"></a><span class="fu"># Takeaways {#sec-takeaways}</span></span>
+<span id="cb5-398"><a href="#cb5-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-399"><a href="#cb5-399" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Eigenvectors are the directions a matrix leaves unrotated; eigenvalues are the stretch factors along them**, $\mathbf{A}\mathbf{v} = \lambda\mathbf{v}$.</span>
+<span id="cb5-400"><a href="#cb5-400" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Diagonalization turns repeated multiplication into scalar powers**: $\mathbf{A}^t\mathbf{x}_0 = \sum_i c_i\lambda_i^t\mathbf{v}_i$, so eigenvalues completely determine long-run behavior — decay, persistence, explosion, or oscillation.</span>
+<span id="cb5-401"><a href="#cb5-401" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Economics runs on this machinery**: a stationary Markov distribution is the eigenvector for $\lambda = 1$; its other eigenvalues set convergence speed; and VAR/DSGE stability is a unit-circle (or half-plane) test on eigenvalues.</span>
+<span id="cb5-402"><a href="#cb5-402" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**In practice one call to `eigen()` does it** — the conceptual work is knowing *which* eigenvalue answers the question and *how to read it*.</span>
+<span id="cb5-403"><a href="#cb5-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-404"><a href="#cb5-404" aria-hidden="true" tabindex="-1"></a>Whenever a model can be written as repeated multiplication by a matrix, the question "what happens in the long run?" always has the same address: its eigenvalues.</span>
+<span id="cb5-405"><a href="#cb5-405" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-406"><a href="#cb5-406" aria-hidden="true" tabindex="-1"></a><span class="fu"># Further reading {#sec-reading}</span></span>
+<span id="cb5-407"><a href="#cb5-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-408"><a href="#cb5-408" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Strang, G. *Introduction to Linear Algebra* (chapters on eigenvalues and Markov matrices).</span>
+<span id="cb5-409"><a href="#cb5-409" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Simon, C. P., &amp; Blume, L. *Mathematics for Economists* (eigenvalues, stability, and phase diagrams).</span>
+<span id="cb5-410"><a href="#cb5-410" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Hamilton, J. D. *Time Series Analysis* (VAR companion-form stability and unit roots).</span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">

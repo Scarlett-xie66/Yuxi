@@ -1,13 +1,398 @@
 ---
-
-title: "My First Blog Post"
-
-date: 2026-06-16
-
-categories: 
-- personal 
-- data-science
+title: "Eigenvalues and Eigenvectors: The Hidden Engines of Linear Dynamics"
+subtitle: "Why every economist should make friends with the eigendecomposition"
+author: "Scarlett Xie"
+date: "Sep 13,2026"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    theme: cosmo
+    code-fold: false
+    code-tools: true
+    code-link: true
+execute:
+  warning: false
+  message: false
+  fig-width: 7
+  fig-height: 5
+  fig-dpi: 150
 ---
-![](figure1.png){width="500px"}
 
-This is my first blog post. Example $\LaTeX$ equation: $\frac{1}{2}\sum_{i=1}^nx_i$
+```{r}
+#| label: setup
+#| include: false
+
+# Install ggplot2 only if it is not already available -------------------------
+if (!requireNamespace("ggplot2", quietly = TRUE)) {
+  install.packages("ggplot2", repos = "https://cloud.r-project.org")
+}
+library(ggplot2)
+
+# Global plotting style and output location ------------------------------------
+theme_set(theme_bw(base_size = 12))
+knitr::opts_chunk$set(fig.path = "figures/", echo = FALSE)
+set.seed(20260913)
+```
+
+# Background {#sec-question}
+
+Most relationships that economists put on a computer are, at their core, **linear**: regressions, vector autoregressions (VARs), Markov transition matrices, state-space models, and even the local approximations used to solve dynamic stochastic general equilibrium (DSGE) models. Every one of these tools repeatedly multiplies vectors by matrices.
+
+A natural question follows:
+
+> *When we multiply by the same matrix over and over, what happens in the long run — and why?*
+
+The complete answer is given by two objects that live inside the matrix itself: its **eigenvalues** and **eigenvectors**. This post explains what they are, how to compute them by hand and in R, and why they do so much of the heavy lifting in economics — from the long-run unemployment rate to whether an estimated macro model is even stable.
+
+# What are eigenvalues and eigenvectors? {#sec-definition}
+
+Multiplying a vector $\mathbf{x}$ by a matrix $\mathbf{A}$ generally does two things at once: **rotates** the vector and **stretches** it. An **eigenvector** is a special, non-zero direction that is *not* rotated at all — it is only stretched (or shrunk, or flipped). The amount of stretching along that direction is the corresponding **eigenvalue**.
+
+The defining equation is short:
+
+$$
+\mathbf{A}\mathbf{v} = \lambda \mathbf{v}, \qquad \mathbf{v} \neq \mathbf{0},
+$$
+
+where
+
+-   $\mathbf{A}$ is an $n \times n$ square matrix,
+-   $\mathbf{v}$ is an eigenvector of $\mathbf{A}$,
+-   $\lambda$ (lambda) is the associated eigenvalue, which may be positive, negative, zero, or even complex.
+
+In words: *along the direction* $\mathbf{v}$, the action of the entire matrix reduces to multiplication by a single number $\lambda$.
+
+## The characteristic equation
+
+Moving $\lambda\mathbf{v}$ to the left and inserting the identity matrix $\mathbf{I}$ gives
+
+$$
+(\mathbf{A} - \lambda\mathbf{I})\mathbf{v} = \mathbf{0}.
+$$
+
+A non-zero solution $\mathbf{v}$ exists exactly when the matrix $(\mathbf{A}-\lambda\mathbf{I})$ is singular, i.e. its determinant is zero:
+
+$$
+\det(\mathbf{A} - \lambda\mathbf{I}) = 0.
+$$
+
+This is the **characteristic equation**. It produces a polynomial in $\lambda$ whose $n$ roots are the eigenvalues; substituting each root back into $(\mathbf{A}-\lambda\mathbf{I})\mathbf{v} = \mathbf{0}$ gives the eigenvectors.
+
+## A 2 × 2 example
+
+Take the symmetric matrix
+
+$$
+\mathbf{A} = \begin{pmatrix} 2 & 1 \\ 1 & 2 \end{pmatrix}.
+$$
+
+The characteristic equation is
+
+$$
+\det\begin{pmatrix} 2-\lambda & 1 \\ 1 & 2-\lambda \end{pmatrix}
+= (2-\lambda)^2 - 1
+= \lambda^2 - 4\lambda + 3
+= (\lambda - 1)(\lambda - 3) = 0,
+$$
+
+so the eigenvalues are $\lambda_1 = 3$ and $\lambda_2 = 1$. The eigenvectors (defined only up to scale, so conventionally normalized to unit length) are
+
+$$
+\lambda_1 = 3: \quad \mathbf{v}_1 = \frac{1}{\sqrt 2}\begin{pmatrix}1\\1\end{pmatrix},
+\qquad
+\lambda_2 = 1: \quad \mathbf{v}_2 = \frac{1}{\sqrt 2}\begin{pmatrix}1\\-1\end{pmatrix}.
+$$
+
+Quick check: along the $45^\circ$ direction, $\mathbf{A}(1,1)' = (3,3)' = 3(1,1)'$, so the matrix stretches that direction threefold; along $(1,-1)'$ it leaves the vector exactly unchanged.
+
+# Graphical representation {#sec-picture}
+
+The definition becomes much easier to *see*. The code below draws the unit circle, applies $\mathbf{A}$ to every point on it (the circle becomes an ellipse), and overlays the two eigenvectors. Every point on the circle is both rotated and stretched **except** points on the eigenvector directions, which stay on their own lines.
+
+```{r}
+#| label: fig-geometric
+#| fig-cap: "The unit circle and its image under A.  Most directions are rotated and stretched, but the eigenvector directions (red, green) are only stretched, by factors of 3 and 1."
+
+A <- matrix(c(2, 1, 1, 2), nrow = 2, byrow = TRUE)
+
+# Points on the unit circle, and their image under A ---------------------------
+theta <- seq(0, 2 * pi, length.out = 400)
+unit_circle <- rbind(cos(theta), sin(theta))
+image <- A %*% unit_circle
+
+shapes <- rbind(
+  data.frame(x = unit_circle[1, ], y = unit_circle[2, ],
+             set = "Unit circle"),
+  data.frame(x = image[1, ], y = image[2, ],
+             set = "Image under A (ellipse)")
+)
+
+# Eigenvectors as unit vectors; Av = lambda v ---------------------------------
+v_lambda3 <- c(1, 1) / sqrt(2)   # stretched to length 3
+v_lambda1 <- c(1, -1) / sqrt(2)  # unchanged (Av = v), so only one arrow shown
+Av3 <- as.numeric(A %*% v_lambda3)  # A%*%v is 2x1; extract both coordinates
+
+segments <- data.frame(
+  x = 0, y = 0,
+  xend = c(v_lambda3[1], Av3[1], v_lambda1[1]),
+  yend = c(v_lambda3[2], Av3[2], v_lambda1[2]),
+  direction = c("v,  lambda = 3", "Av = 3v,  lambda = 3",
+                "v = Av,  lambda = 1")
+)
+
+ggplot(shapes, aes(x = x, y = y, colour = set)) +
+  geom_path(linewidth = 0.9) +
+  geom_segment(
+    data = segments,
+    aes(x = x, y = y, xend = xend, yend = yend, colour = direction),
+    arrow = arrow(length = grid::unit(0.14, "inches")),
+    linewidth = 0.9, inherit.aes = FALSE
+  ) +
+  geom_hline(yintercept = 0, linewidth = 0.2) +
+  geom_vline(xintercept = 0, linewidth = 0.2) +
+  coord_fixed() +
+  scale_x_continuous(limits = c(-3.4, 3.4)) +
+  scale_y_continuous(limits = c(-3.4, 3.4)) +
+  scale_colour_manual(
+    name = NULL,
+    values = c("grey60", "#08519c", "#de2d26", "#a50f15", "#31a354")
+  ) +
+  labs(x = expression(x[1]), y = expression(x[2]),
+       title = "Eigenvectors are the directions that do not rotate",
+       subtitle = "Unit circle (grey) mapped to an ellipse (blue) by A")
+```
+
+The ellipse's principal axes line up exactly with $\mathbf{v}_1$ and $\mathbf{v}_2$, and its semi-axis lengths are $3$ and $1$ — precisely the eigenvalues. An eigen-decomposition is, geometrically, a description of the shape the matrix draws.
+
+# Why eigenvalues govern *dynamics* {#sec-dynamics}
+
+The really important payoff is not one multiplication but **repeated** multiplication. Consider the linear dynamical system
+
+$$
+\mathbf{x}_{t+1} = \mathbf{A}\mathbf{x}_t
+\quad\Longrightarrow\quad
+\mathbf{x}_t = \mathbf{A}^t \mathbf{x}_0.
+$$
+
+Computing $\mathbf{A}^t$ directly is painful. Instead, collect the eigenvectors as columns of $\mathbf{P}$ and the eigenvalues in a diagonal matrix $\mathbf{D}$:
+
+$$
+\mathbf{A} = \mathbf{P}\mathbf{D}\mathbf{P}^{-1},
+\qquad
+\mathbf{D} = \begin{pmatrix}\lambda_1 & 0\\0 & \lambda_2\end{pmatrix}.
+$$
+
+This is the **diagonalization**. Powers now simplify dramatically, because all the cross-terms in $\mathbf{P}^{-1}\mathbf{P}$ cancel:
+
+$$
+\mathbf{A}^t = \mathbf{P}\mathbf{D}^t\mathbf{P}^{-1},
+\qquad
+\mathbf{D}^t = \begin{pmatrix}\lambda_1^t & 0\\0 & \lambda_2^t\end{pmatrix}.
+$$
+
+Expanding the initial condition in the eigenvector basis, $\mathbf{P}^{-1}\mathbf{x}_0 = \mathbf{c}$, gives
+
+$$
+\mathbf{x}_t = \mathbf{P}\mathbf{D}^t\mathbf{c}
+= \sum_{i=1}^{n} c_i \lambda_i^t \mathbf{v}_i.
+$$
+
+This single formula explains the long run:
+
+-   any component with $|\lambda_i| < 1$ **decays geometrically** toward zero;
+-   a component with $|\lambda_i| > 1$ **explodes**;
+-   a component with $\lambda_i = 1$ **persists forever** (a steady state, or — when unwanted — a unit root);
+-   a negative or complex $\lambda_i$ produces oscillations (complex pairs rotate with period set by their angle).
+
+The eigenvalues are therefore not an abstract exam question. They *are* the dynamics.
+
+# Economic application 1: a labor-market Markov chain {#sec-markov}
+
+Suppose each month workers move between employment ($E$) and unemployment ($U$) according to the transition matrix
+
+$$
+\mathbf{P} = \begin{pmatrix} 0.90 & 0.10 \\ 0.25 & 0.75 \end{pmatrix},
+$$
+
+where rows are *today's* state and columns are *next month's* state: an employed worker stays employed with probability $0.90$, and an unemployed worker finds a job with probability $0.25$.
+
+If $\boldsymbol{\pi}_t$ is the row vector of population shares, then
+
+$$
+\boldsymbol{\pi}_{t+1} = \boldsymbol{\pi}_t \mathbf{P}.
+$$
+
+The **stationary distribution** $\boldsymbol{\pi}$ satisfies $\boldsymbol{\pi} = \boldsymbol{\pi}\mathbf{P}$ with entries summing to one. Transposing, $\mathbf{P}'\boldsymbol{\pi}' = 1\cdot\boldsymbol{\pi}'$: the stationary distribution is exactly the **left eigenvector of** $\mathbf{P}$ associated with eigenvalue 1, normalized to sum to one. This is why every stationary Markov chain has an eigenvalue of one.
+
+```{r}
+#| label: markov-setup
+
+P <- matrix(c(0.90, 0.10,
+              0.25, 0.75),
+            nrow = 2, byrow = TRUE,
+            dimnames = list(c("Employed", "Unemployed"),
+                            c("Employed", "Unemployed")))
+P
+```
+
+Solving on paper first: stationarity requires $0.10\,\pi_E = 0.25\,\pi_U$, so $\pi_E = 2.5\,\pi_U$, and $\pi_E + \pi_U = 1$ gives
+
+$$
+\pi_E = \frac{5}{7} \approx 0.714, \qquad \pi_U = \frac{2}{7} \approx 0.286.
+$$
+
+Now let R do the same job through the eigen decomposition (left eigenvectors of $\mathbf{P}$ are ordinary eigenvectors of $\mathbf{P}'$):
+
+```{r}
+#| label: markov-eigen
+
+eig_P <- eigen(t(P))
+eig_P$values
+
+# Eigenvector paired with eigenvalue 1, renormalized to sum to one ------------
+stationary <- eig_P$vectors[, 1] / sum(eig_P$vectors[, 1])
+round(stationary, 4)
+
+# Verify it really is stationary ----------------------------------------------
+round(stationary %*% P, 4)
+```
+
+The second eigenvalue, $\lambda_2 = 0.65$, governs how fast a workforce *off* its stationary composition converges back to it: the gap shrinks like $0.65^t$ — roughly a $35\%$ reduction per month. We can see this by iterating the chain from several very different starting distributions.
+
+```{r}
+#| label: fig-convergence
+#| fig-cap: "Convergence to the stationary distribution from three different initial states. Solid lines = employed share; dotted lines = unemployed share. All paths approach 5/7 and 2/7, the eigenvector for lambda = 1."
+
+horizon <- 20
+initial_states <- list(
+  c(1, 0),       # everyone starts employed
+  c(0.2, 0.8),   # deep recession: 80% unemployed
+  c(0, 1)        # everyone starts unemployed
+)
+
+paths <- lapply(seq_along(initial_states), function(i) {
+  dist <- matrix(NA_real_, nrow = horizon + 1, ncol = 2)
+  dist[1, ] <- initial_states[[i]]
+  for (t in seq_len(horizon)) {
+    dist[t + 1, ] <- dist[t, ] %*% P
+  }
+  data.frame(
+    t = 0:horizon,
+    employed = dist[, 1],
+    unemployed = dist[, 2],
+    start = paste0("Initial employed share = ", initial_states[[i]][1])
+  )
+})
+convergence <- do.call(rbind, paths)
+
+pi_E <- 5 / 7
+pi_U <- 2 / 7
+
+ggplot(convergence, aes(x = t)) +
+  geom_hline(yintercept = c(pi_E, pi_U), linetype = "dashed",
+             colour = "grey50") +
+  geom_line(aes(y = employed, colour = start), linewidth = 0.9) +
+  geom_line(aes(y = unemployed, colour = start), linewidth = 0.9,
+            linetype = "dotted") +
+  annotate("text", x = horizon, y = pi_E, label = " stationary E: 71.4%",
+           hjust = 1, vjust = -0.6, size = 3.4, colour = "grey30") +
+  annotate("text", x = horizon, y = pi_U, label = " stationary U: 28.6%",
+           hjust = 1, vjust = 1.6, size = 3.4, colour = "grey30") +
+  scale_x_continuous(breaks = seq(0, horizon, 5)) +
+  scale_y_continuous(limits = c(0, 1), labels = scales::percent_format()) +
+  scale_colour_brewer(palette = "Set1") +
+  labs(x = "Months elapsed", y = "Share of the labor force",
+       colour = NULL,
+       title = "Where does the labor market settle?",
+       subtitle = "Ergodicity: the long run forgets where it started") +
+  theme(legend.position = "bottom")
+```
+
+The economic reading is substantive: regardless of whether everyone starts with a job or $80\%$ start unemployed, the *same* long-run unemployment rate, about $28.6\%$, emerges. Initial conditions are forgotten because the non-unit eigenvalue lies strictly inside the unit circle. This "forgetfulness" property — called **ergodicity** — is what licenses treating a single economy's long-run averages as population-level statements, and it is diagnosed entirely from eigenvalues.
+
+# Economic application 2: stability of dynamic models {#sec-stability}
+
+The same mathematics answers a question every macro forecaster has to ask after estimating a VAR: *is the estimated system stable?*
+
+For a vector autoregression written in companion form, $\mathbf{z}_{t+1} = \mathbf{C}\mathbf{z}_t$, a one-time shock dies out if and only if
+
+$$
+|\lambda_i(\mathbf{C})| < 1 \quad \text{for every } i,
+$$
+
+i.e. every eigenvalue of the companion matrix lies **inside the unit circle** in the complex plane. An eigenvalue outside the circle means a small perturbation grows without bound; an eigenvalue on the circle means a unit root and permanent effects. (In a continuous-time system $\dot{\mathbf{x}} = \mathbf{A}\mathbf{x}$, the equivalent condition is $\operatorname{Re}(\lambda_i) < 0$.)
+
+The code below plots the spectrum of the labor-market transition matrix against the unit circle — the exact graphical stability check reported in software such as EViews or `vars::stability`.
+
+```{r}
+#| label: fig-unit-circle
+#| fig-cap: "Eigenvalues of the transition matrix in the complex plane. The eigenvalue lambda = 1 anchors the stationary distribution; lambda = 0.65 sits inside the unit circle, so all deviations from stationarity decay. A stable VAR requires every eigenvalue of its companion matrix to lie strictly inside this circle."
+
+theta <- seq(0, 2 * pi, length.out = 400)
+circle <- data.frame(x = cos(theta), y = sin(theta))
+
+spectrum <- data.frame(
+  x = Re(eig_P$values),
+  y = Im(eig_P$values)
+)
+
+# 标签位置：lambda = 1 放上方，lambda = 0.65 放下方，避免重叠
+label_pos <- data.frame(
+  x = c(1.00, 0.65),
+  y = c(0.20, -0.22),
+  label = c("lambda == 1", "lambda == 0.65")
+)
+
+ggplot() +
+  geom_polygon(data = circle, aes(x = x, y = y),
+               fill = "#6baed6", alpha = 0.18) +
+  geom_path(data = circle, aes(x = x, y = y), linetype = "dashed") +
+  geom_hline(yintercept = 0, linewidth = 0.2) +
+  geom_vline(xintercept = 0, linewidth = 0.2) +
+  geom_point(data = spectrum, aes(x = x, y = y),
+             size = 3.5, colour = "#cb181d") +
+  geom_text(data = label_pos,
+            aes(x = x, y = y, label = label),
+            parse = TRUE, size = 3.8, colour = "#cb181d") +
+  annotate("text", x = -0.25, y = 0, label = "|lambda| < 1:\nshocks decay",
+           size = 3.6, colour = "#08519c") +
+  coord_fixed() +
+  scale_x_continuous(limits = c(-1.35, 1.35)) +
+  scale_y_continuous(limits = c(-1.35, 1.35)) +
+  labs(x = "Re(lambda)", y = "Im(lambda)",
+       title = "The unit-circle stability test")
+```
+
+Here $\lambda = 1$ sits *on* the circle — exactly as it must, since the level of employment persists — while deviations from that level, governed by $0.65$, decay. In a VAR, by contrast, a unit eigenvalue signals a non-stationary process that must be differenced or cointegrated before standard inference is valid.
+
+# More exploration {#sec-other-uses}
+
+The eigen decomposition recurs throughout empirical and theoretical work:
+
+-   **Principal components analysis (PCA).** PCs are the eigenvectors of the covariance (or correlation) matrix, ordered by eigenvalue; the eigenvalue is the variance captured by that component. Macro "factors" extracted from hundreds of time series, and the widely used FRED-MD data set, are built this way.
+-   **PageRank and network centrality.** Google's original PageRank is the stationary distribution — again the eigenvector for eigenvalue one — of a Markov chain over web pages. The same construction measures input-output influence and systemic risk in financial networks.
+-   **Local dynamics of nonlinear models.** Linearizing a DSGE model around its steady state produces a matrix whose eigenvalues determine saddle-path stability: some eigenvalues must be explosive (forward-looking "jump" variables) and others stable for a unique equilibrium to exist.
+-   **Quadratic forms and GLS.** Weighted distance, efficient GMM, and the geometry of multivariate regression all simplify by rotating data onto eigenvector axes.
+
+# Programming basis:R {#sec-r-summary}
+
+Everything above used only base R's `eigen()`, which returns a list with `$values` and a `$vectors` matrix whose *columns* are the eigenvectors:
+
+Two practical notes. First, eigenvectors are only identified up to sign and scale — `eigen()` may return $-\mathbf{v}$ where a textbook prints $\mathbf{v}$; the span is identical. Second, real matrices can have complex conjugate eigenvalue pairs (when $\mathbf{A}$ is not symmetric), and `eigen()` will store them as complex numbers automatically; plot $\operatorname{Re}(\lambda)$ against $\operatorname{Im}(\lambda)$ exactly as in @fig-unit-circle.
+
+# Takeaways {#sec-takeaways}
+
+1.  **Eigenvectors are the directions a matrix leaves unrotated; eigenvalues are the stretch factors along them**, $\mathbf{A}\mathbf{v} = \lambda\mathbf{v}$.
+2.  **Diagonalization turns repeated multiplication into scalar powers**: $\mathbf{A}^t\mathbf{x}_0 = \sum_i c_i\lambda_i^t\mathbf{v}_i$, so eigenvalues completely determine long-run behavior — decay, persistence, explosion, or oscillation.
+3.  **Economics runs on this machinery**: a stationary Markov distribution is the eigenvector for $\lambda = 1$; its other eigenvalues set convergence speed; and VAR/DSGE stability is a unit-circle (or half-plane) test on eigenvalues.
+4.  **In practice one call to `eigen()` does it** — the conceptual work is knowing *which* eigenvalue answers the question and *how to read it*.
+
+Whenever a model can be written as repeated multiplication by a matrix, the question "what happens in the long run?" always has the same address: its eigenvalues.
+
+# Further reading {#sec-reading}
+
+-   Strang, G. *Introduction to Linear Algebra* (chapters on eigenvalues and Markov matrices).
+-   Simon, C. P., & Blume, L. *Mathematics for Economists* (eigenvalues, stability, and phase diagrams).
+-   Hamilton, J. D. *Time Series Analysis* (VAR companion-form stability and unit roots).
