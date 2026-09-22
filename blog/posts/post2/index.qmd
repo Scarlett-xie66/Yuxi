@@ -1,7 +1,7 @@
 ---
 title: "The Hidden Cost of Higher Mortgage Rates"
 subtitle: "Homebuying Power Around the September FOMC Meeting"
-author: "Scarlett Xie"
+author: "Scarlett"
 date: "2026-09-21"
 description: "A reproducible web-scraping analysis of mortgage rates and household buying power around the September 2026 FOMC meeting."
 categories: [web scraping, monetary policy, housing, mortgage rates, R]
@@ -20,6 +20,9 @@ execute:
   message: false
   echo: true
   freeze: auto
+knitr:
+  opts_chunk:
+    fig.path: "files/"
 editor: source
 ---
 
@@ -30,14 +33,14 @@ editor: source
 # Install these packages once in the RStudio Console if needed:
 # install.packages(
 #   c("rvest", "xml2", "tidyverse", "lubridate", "janitor",
-#     "scales", "here", "httr2", "knitr"),
+#     "scales", "httr2", "knitr"),
 #   repos = "https://cloud.r-project.org",
 #   type = "binary"
 # )
 
 required <- c(
   "rvest", "xml2", "tidyverse", "lubridate", "janitor",
-  "scales", "here", "httr2", "knitr"
+  "scales", "httr2", "knitr"
 )
 
 missing <- required[
@@ -60,7 +63,6 @@ library(tidyverse)
 library(lubridate)
 library(janitor)
 library(scales)
-library(here)
 
 options(scipen = 999, dplyr.summarise.inform = FALSE)
 
@@ -73,12 +75,22 @@ theme_set(
     )
 )
 
-raw_dir <- here::here("data", "raw")
-processed_dir <- here::here("data", "processed")
-figure_dir <- here::here("figures")
+# Build every output path relative to this QMD file. This keeps the article
+# portable as a standalone GitHub repository with index.qmd at its root.
+qmd_input <- knitr::current_input(dir = TRUE)
+qmd_dir <- if (nzchar(qmd_input)) {
+  dirname(normalizePath(qmd_input, winslash = "/", mustWork = FALSE))
+} else {
+  getwd()
+}
+
+files_dir <- file.path(qmd_dir, "files")
+raw_dir <- file.path(files_dir, "raw")
+processed_dir <- file.path(files_dir, "processed")
+figure_dir <- files_dir
 
 purrr::walk(
-  c(raw_dir, processed_dir, figure_dir),
+  c(files_dir, raw_dir, processed_dir),
   dir.create,
   recursive = TRUE,
   showWarnings = FALSE
@@ -147,20 +159,20 @@ On September 16, 2026, the Federal Open Market Committee (FOMC) raised its feder
 
 The answer matters because buyers often shop by listing price when the binding constraint is actually monthly cash flow. I combine scraped policy, mortgage, and housing-market information with standard mortgage mathematics to translate an observed weekly rate difference into household-level dollar amounts.
 
-## Research design: from websites to a decision
+## Research Design
 
 The analysis follows a transparent pipeline:
 
-1. **Collect:** scrape four public webpages with `rvest` and cache one dated HTML copy of each page.
-2. **Clean:** convert table headings into dates, percentage strings into decimals, and price text into a numeric dollar value.
-3. **Validate:** require the policy and mortgage observations used in the comparison to be present and nonmissing.
-4. **Calculate:** apply the fixed-rate mortgage annuity formula under explicit assumptions.
-5. **Decide:** convert the estimates into budget and stress-testing recommendations for prospective buyers.
+1.  **Collect:** scrape four public webpages with `rvest` and cache one dated HTML copy of each page.
+2.  **Clean:** convert table headings into dates, percentage strings into decimals, and price text into a numeric dollar value.
+3.  **Validate:** require the policy and mortgage observations used in the comparison to be present and nonmissing.
+4.  **Calculate:** apply the fixed-rate mortgage annuity formula under explicit assumptions.
+5.  **Decide:** convert the estimates into budget and stress-testing recommendations for prospective buyers.
 
 ### Sources and ethical access
 
 | Source | Scraped information | Role in the analysis |
-|---|---|---|
+|------------------------|------------------------|------------------------|
 | Federal Reserve FOMC statement | Announced target range | Confirms the policy event |
 | Federal Reserve H.15 table | Effective federal-funds and bank prime rates | Documents daily short-rate adjustment |
 | Freddie Mac PMMS archive | Weekly 30- and 15-year mortgage rates | Measures household financing conditions |
@@ -427,7 +439,9 @@ result_summary |>
   knitr::kable(align = c("l", "r", "r", "r", "l"))
 ```
 
-## Finding 1: short-term benchmarks adjusted mechanically; mortgage rates followed a different clock
+## Finding 1
+
+> **Short-term benchmarks adjusted mechanically;** **Mortgage rates followed a different clock;**
 
 The effective federal-funds rate moved from `r percent(effr_before, accuracy = 0.01)` to `r percent(effr_after, accuracy = 0.01)`, while the bank prime rate moved from `r percent(prime_before, accuracy = 0.01)` to `r percent(prime_after, accuracy = 0.01)`. These are daily short-term benchmarks whose 25-basis-point adjustment is closely tied to the new policy range.
 
@@ -509,7 +523,9 @@ ggsave(
 
 The figure documents market conditions around the meeting, not a before-and-after policy experiment. The `r round(rate_change_bp)`-basis-point difference cannot be attributed to the announcement: the September 17 PMMS window largely predates it, markets anticipated the meeting, and other rate components moved simultaneously. A causal design would require a narrow high-frequency event window and market instruments observed around the exact announcement time.
 
-## Finding 2: long maturities make payments sensitive to small rate differences
+## Finding 2
+
+> **Long maturities make payments sensitive to small rate differences;**
 
 For loan principal $L$, monthly rate $r$, and $N=360$ payments, monthly principal and interest equal
 
@@ -612,7 +628,9 @@ Using the July 2026 national median sales price of newly built single-family hom
 
 Figure 2 reveals balance-size exposure: the same rate difference adds more dollars to the payment on a larger loan because the rate applies to a larger principal. It does not, by itself, identify leverage because the figure does not compare loan-to-value ratios. Buyers with high loan-to-value ratios may face additional exposure through mortgage pricing and mortgage-insurance costs, but those channels are not modeled here.
 
-## Finding 3: a fixed P&I budget supports a lower purchase price at a higher rate
+## Finding 3
+
+> **A fixed P&I budget supports a lower purchase price at a higher rate;**
 
 The more decision-relevant calculation holds the monthly budget fixed and solves the annuity formula for the maximum loan:
 
@@ -729,7 +747,7 @@ budget_summary |>
   knitr::kable(align = c("r", "r", "r", "r", "r"))
 ```
 
-At a $2,000 monthly principal-and-interest budget, the FOMC-week rate scenario supports approximately `r dollar(loss_budget_2000, accuracy = 1)` less in purchase price than the previous-week scenario. At a $3,000 budget, the difference grows to approximately `r dollar(loss_budget_3000, accuracy = 1)`. The percentage difference is `r percent(supported_price_change_pct, accuracy = 0.01)` at every budget because the maximum-loan formula is linear in the monthly budget when the rate and maturity are fixed.
+At a \$2,000 monthly principal-and-interest budget, the FOMC-week rate scenario supports approximately `r dollar(loss_budget_2000, accuracy = 1)` less in purchase price than the previous-week scenario. At a \$3,000 budget, the difference grows to approximately `r dollar(loss_budget_3000, accuracy = 1)`. The percentage difference is `r percent(supported_price_change_pct, accuracy = 0.01)` at every budget because the maximum-loan formula is linear in the monthly budget when the rate and maturity are fixed.
 
 ## Decision rule and stress test
 
@@ -771,10 +789,10 @@ stress_test |>
 
 A prospective buyer should therefore:
 
-1. set a sustainable **all-in** monthly housing limit before searching by price;
-2. reserve part of that limit for property tax, insurance, HOA fees, and maintenance, because the figures above include only principal and interest;
-3. stress-test affordability at least 50--100 basis points above the current quote; and
-4. treat future refinancing as an option, not as a condition required to make today's purchase affordable.
+1.  set a sustainable **all-in** monthly housing limit before searching by price;
+2.  reserve part of that limit for property tax, insurance, HOA fees, and maintenance, because the figures above include only principal and interest;
+3.  stress-test affordability at least 50--100 basis points above the current quote; and
+4.  treat future refinancing as an option, not as a condition required to make today's purchase affordable.
 
 ## What this analysis can and cannot establish
 
@@ -788,22 +806,25 @@ The September episode contains two related but empirically distinct developments
 
 ## Reproducibility
 
-The repository should retain the following structure:
+The standalone repository uses the following structure:
 
-```text
-blog/posts/post2/index.qmd
-data/raw/                         # dated HTML snapshots
-data/processed/                   # cleaned CSV files created by this post
-figures/                          # 300-dpi figures created by this post
-README.md                         # packages and replication steps
+``` text
+index.qmd
+README.md
+files/
+├── mortgage-rate-trend.png       # 300-dpi Figure 1
+├── payment-curves.png            # 300-dpi Figure 2
+├── buying-power.png              # 300-dpi Figure 3
+├── raw/                          # dated HTML snapshots
+└── processed/                    # cleaned CSV files
 ```
 
-To reproduce the post, install the listed packages once, open the Quarto project, keep `refresh_data <- FALSE`, and render the website. The post programmatically creates the cleaned CSV files and figures; no reported result is manually copied into the prose.
+To reproduce the post, install the listed packages once, open the repository as a project, and render `index.qmd`. On the first run, the script creates `files/`, downloads missing public webpages, saves dated HTML under `files/raw/`, writes analysis-ready CSV files under `files/processed/`, and stores all generated figures in `files/`. After the dated snapshots exist, keep `refresh_data <- FALSE` so future renders reproduce the same source vintage. No reported result is manually copied into the prose.
 
 ## Sources
 
-- Board of Governors of the Federal Reserve System. “Federal Reserve Issues FOMC Statement,” September 16, 2026. <https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm>
-- Board of Governors of the Federal Reserve System. *H.15 Selected Interest Rates*. <https://www.federalreserve.gov/releases/h15/>
-- Freddie Mac. *Primary Mortgage Market Survey Archive*. <https://www.freddiemac.com/pmms/archive>
-- Freddie Mac. *Mortgage Rates and PMMS Methodology*. <https://www.freddiemac.com/pmms>
-- U.S. Census Bureau and U.S. Department of Housing and Urban Development. *New Residential Sales*. <https://www.census.gov/construction/nrs/current/index.html>
+-   Board of Governors of the Federal Reserve System. “Federal Reserve Issues FOMC Statement,” September 16, 2026. <https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm>
+-   Board of Governors of the Federal Reserve System. *H.15 Selected Interest Rates*. <https://www.federalreserve.gov/releases/h15/>
+-   Freddie Mac. *Primary Mortgage Market Survey Archive*. <https://www.freddiemac.com/pmms/archive>
+-   Freddie Mac. *Mortgage Rates and PMMS Methodology*. <https://www.freddiemac.com/pmms>
+-   U.S. Census Bureau and U.S. Department of Housing and Urban Development. *New Residential Sales*. <https://www.census.gov/construction/nrs/current/index.html>
