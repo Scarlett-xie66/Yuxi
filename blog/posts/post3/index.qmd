@@ -1,0 +1,479 @@
+---
+title: "When Young Children Are at Home, Who Is at Work?"
+subtitle: "The employment divide between women and men in the 2025 CPS"
+author: "Scarlett Xie"
+date: 2026-09-28
+categories: [Labor economics, IPUMS CPS, Data visualization]
+format:
+  html:
+    toc: true
+    code-fold: true
+    code-summary: "Show R code"
+    fig-dpi: 180
+execute:
+  warning: false
+  message: false
+  echo: true
+---
+
+<style>
+body {font-family: Georgia, "Times New Roman", serif; color:#24343b}
+h1,h2,h3,.quarto-title-block {font-family: Arial, Helvetica, sans-serif}
+.quarto-title-block .title {color:#152d3e; max-width:850px}
+#quarto-content {max-width:1100px; margin:auto}
+main.content {max-width:780px; line-height:1.62; font-size:1.03rem}
+figcaption {font: .87rem Arial, Helvetica, sans-serif; color:#52616b}
+</style>
+
+```{r}
+#| label: setup-and-download
+#| results: hide
+# Run this document in RStudio/Quarto. An IPUMS CPS account and API key are
+# needed on the first render. Cached data can be used without the key later.
+# Step 1: check R packages. The actual API key lives in your private R session.
+required <- c("ipumsr", "dplyr", "srvyr", "survey", "ggplot2", "readr", "knitr")
+missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]
+if (length(missing)) {
+  message("Installing missing R packages: ", paste(missing, collapse = ", "))
+  tryCatch(
+    utils::install.packages(missing, repos = "https://cloud.r-project.org",
+                            type = if (.Platform$OS.type == "windows") "binary" else "source"),
+    error = function(e) message("Automatic package installation failed: ", conditionMessage(e))
+  )
+  missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]
+  if (length(missing)) {
+    stop("These packages are still missing: ", paste(missing, collapse = ", "),
+         ". In the RStudio Console, run install.packages(c(",
+         paste(sprintf('"%s"', missing), collapse = ", "),
+         "), repos = 'https://cloud.r-project.org'), then render again.", call. = FALSE)
+  }
+}
+# Quarto evaluates code in the document directory by default. In some knitr
+# versions current_input() names an intermediate file rather than this QMD.
+blog_dir <- normalizePath(getwd(), winslash = "/")
+# Step 2: create paths. Keep licensed microdata outside the website/repository.
+raw_dir <- file.path(path.expand("~"), ".ipums-cps-blog3-cache")
+derived_dir <- file.path(blog_dir, "data", "derived")
+figure_dir <- file.path(blog_dir, "files")
+for (d in c(raw_dir, derived_dir, figure_dir))
+  dir.create(d, recursive = TRUE, showWarnings = FALSE)
+
+# Step 3: use a complete local extract when available, otherwise request it.
+ddi_files <- list.files(raw_dir, pattern = "^cps_[0-9]+[.]xml$", full.names = TRUE)
+complete_ddi <- ddi_files[
+  file.exists(sub("[.]xml$", ".csv.gz", ddi_files)) |
+    file.exists(sub("[.]xml$", ".dat.gz", ddi_files))
+]
+if (length(complete_ddi) > 1L)
+  stop("More than one complete CPS extract is in the private cache; keep only the 2025 ASEC extract.")
+if (length(complete_ddi) == 1L) {
+  ddi_path <- complete_ddi[[1]]
+} else {
+  if (!nzchar(Sys.getenv("IPUMS_API_KEY"))) {
+    stop("Set IPUMS_API_KEY in your own RStudio session and register for IPUMS CPS. ",
+         "See the replication section.", call. = FALSE)
+  }
+  request_path <- file.path(raw_dir, "extract_request.rds")
+  ddi_path <- tryCatch({
+    if (file.exists(request_path)) {
+      submitted <- ipumsr::get_extract_info(readRDS(request_path))
+    } else {
+      extract <- ipumsr::define_extract_micro(
+        collection = "cps",
+        description = "Blog 3: young children and employment, 2025 ASEC",
+        samples = "cps2025_03s",
+        variables = c("YEAR", "AGE", "SEX", "YNGCH", "EMPSTAT", "EDUC",
+                      "ASECWT", "REPWTP"),
+        data_format = "csv", data_structure = "rectangular"
+      )
+      submitted <- ipumsr::submit_extract(extract)
+      saveRDS(submitted, request_path)
+    }
+    ready <- ipumsr::wait_for_extract(submitted)
+    ipumsr::download_extract(ready, download_dir = raw_dir, overwrite = TRUE)
+  }, error = function(e) {
+    if (grepl("Invalid IPUMS registration|not registered to IPUMS cps",
+              conditionMessage(e), ignore.case = TRUE)) {
+      stop("IPUMS API says the account associated with this R session's API key ",
+           "does not have an active CPS registration. Check that the email in the ",
+           "API error matches the email of your CPS website login and the account ",
+           "where you copied the key: https://account.ipums.org/api_keys . ",
+           "If they match and CPS says you are already registered, contact ",
+           "IPUMS User Support at ipums@umn.edu with the 401 error (never send the key). ",
+           "Original API message: ", conditionMessage(e), call. = FALSE)
+    }
+    stop(e)
+  })
+}
+# Step 4: read the DDI and its accompanying compressed CSV into R.
+cps_raw <- ipumsr::read_ipums_micro(ddi_path)
+rep_names <- grep("^REPWTP[0-9]+$", names(cps_raw), value = TRUE)
+stopifnot(all(c("YEAR", "AGE", "SEX", "YNGCH", "EMPSTAT", "EDUC", "ASECWT") %in%
+              names(cps_raw)), length(rep_names) == 160L,
+          all(as.numeric(cps_raw$YEAR) == 2025L))
+```
+
+When a young child needs care, someone has to provide it or pay for it. That
+constraint matters for household budgets, employers and the design of child
+care policy. Yet a simple claim about "parents' employment" can hide two
+quite different patterns. This post asks: **how does employment differ between
+adults with a young child at home and adults without a minor child at home,
+and is the comparison the same for women and men?**
+
+The 2025 US Current Population Survey offers a useful snapshot. It cannot
+follow the same parents before and after a birth, but it can show where the
+labor market differences lie. I start with employment, then separate labor
+force participation from unemployment, and finally check whether broad age
+and education differences account for the contrast.
+
+## The employment split
+
+```{r}
+#| label: clean-and-survey-design
+#| results: hide
+# Step 5: recode child age, employment and controls; retain eligible adults.
+# EMPSTAT general code 1 = employed; 2 = unemployed; 3 = not in labor force.
+# YNGCH 99 = no identified own child living in the household.
+# EDUC 999 = missing or unknown. EDUC 000 may also mean no schooling, so retain it.
+cps <- cps_raw |>
+  dplyr::mutate(
+    sex = factor(as.numeric(SEX), levels = c(1, 2), labels = c("Men", "Women")),
+    child_group = dplyr::case_when(
+      YNGCH == 99 | YNGCH >= 18 ~ "no_minor",
+      YNGCH >= 0 & YNGCH <= 5 ~ "age0_5",
+      YNGCH >= 6 & YNGCH <= 12 ~ "age6_12",
+      YNGCH >= 13 & YNGCH <= 17 ~ "age13_17",
+      TRUE ~ NA_character_
+    ),
+    child_group = factor(child_group,
+                         levels = c("no_minor", "age0_5", "age6_12", "age13_17")),
+    status = floor(as.numeric(EMPSTAT) / 10),
+    employed = as.numeric(status == 1),
+    labor_force = as.numeric(status %in% c(1, 2)),
+    unemployed = as.numeric(status == 2),
+    age_band = factor(dplyr::case_when(
+      AGE <= 34 ~ "25-34", AGE <= 44 ~ "35-44", TRUE ~ "45-54"
+    ), levels = c("25-34", "35-44", "45-54")),
+    college = factor(ifelse(EDUC >= 111, "BA or higher", "Below BA"),
+                     levels = c("Below BA", "BA or higher"))
+  ) |>
+  dplyr::filter(AGE >= 25, AGE <= 54, !is.na(sex), !is.na(child_group),
+                status %in% c(1, 2, 3), !is.na(EDUC), EDUC != 999,
+                !is.na(ASECWT), ASECWT > 0)
+if (!nrow(cps)) stop("No eligible records: inspect IPUMS variable codes.")
+# Audit the sample restriction. These are unweighted person records.
+n_downloaded <- nrow(cps_raw)
+n_prime_age <- sum(!is.na(cps_raw$AGE) & cps_raw$AGE >= 25 & cps_raw$AGE <= 54)
+n_analytic <- nrow(cps)
+stopifnot(n_analytic <= n_prime_age, n_prime_age <= n_downloaded)
+# Step 6: make the ASEC person-weighted survey design with all 160 replicates.
+design <- srvyr::as_survey_rep(
+  cps, weight = ASECWT, repweights = dplyr::matches("^REPWTP[0-9]+$"),
+  type = "successive-difference", mse = TRUE
+)
+# Step 7: estimate eight group rates and their design-based confidence intervals.
+rates <- design |>
+  dplyr::group_by(sex, child_group) |>
+  dplyr::summarise(
+    employment = srvyr::survey_mean(employed, vartype = "ci", na.rm = TRUE),
+    participation = srvyr::survey_mean(labor_force, vartype = "ci", na.rm = TRUE),
+    unemployment = srvyr::survey_ratio(unemployed, labor_force,
+                                        vartype = "ci", na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  as.data.frame()
+readr::write_csv(rates, file.path(derived_dir, "weighted_rates.csv"))
+pick_rate <- function(s, g, col = "employment") {
+  row <- rates[rates$sex == s & rates$child_group == g, , drop = FALSE]
+  if (nrow(row) != 1L) stop("An expected group is missing: ", s, ", ", g)
+  as.numeric(row[[col]])
+}
+e_w_young <- pick_rate("Women", "age0_5")
+e_m_young <- pick_rate("Men", "age0_5")
+e_w_none <- pick_rate("Women", "no_minor")
+e_m_none <- pick_rate("Men", "no_minor")
+women_gap <- 100 * (e_w_young - e_w_none)
+men_gap <- 100 * (e_m_young - e_m_none)
+fmt_pct <- function(x) sprintf("%.1f%%", 100 * x)
+fmt_pp <- function(x) sprintf("%+.1f percentage points", x)
+# Consistency check: employment = participation * (1 - unemployment).
+stopifnot(max(abs(rates$employment - rates$participation *
+                    (1 - rates$unemployment))) < 1e-8)
+```
+
+Among adults aged 25 to 54, the employment rate for women whose youngest own
+child at home is aged 0 to 5 is **`r fmt_pct(e_w_young)`**. For women with no
+own minor child at home, it is `r fmt_pct(e_w_none)`. Among men, the
+corresponding rates are **`r fmt_pct(e_m_young)`** and `r fmt_pct(e_m_none)`.
+The comparison runs in opposite directions: `r fmt_pp(women_gap)` for women
+and `r fmt_pp(men_gap)` for men. Each bar is a CPS person-weighted population
+estimate, rather than a count of surveyed people.
+
+
+```{r}
+#| label: fig-employment
+#| fig-cap: "Figure 1. Employment rate among adults aged 25-54 by recorded sex and age of youngest own child at home. 2025 IPUMS CPS ASEC; person-weighted with ASECWT. Confidence intervals are in the reproducible rates file."
+#| fig-width: 8.5
+#| fig-height: 5.6
+#| out-width: "100%"
+chart_colors <- c(Men = "#315d72", Women = "#ad583f")
+child_labels <- c(no_minor = "No minor child at home", age0_5 = "Youngest: 0-5",
+                  age6_12 = "Youngest: 6-12", age13_17 = "Youngest: 13-17")
+chart_theme <- function() {
+  ggplot2::theme_minimal(base_size = 11, base_family = "sans") +
+    ggplot2::theme(panel.grid.major.y = ggplot2::element_blank(),
+      panel.grid.minor = ggplot2::element_blank(),
+      panel.grid.major.x = ggplot2::element_line(color = "#e5e9eb", linewidth = .3),
+      strip.text = ggplot2::element_text(face = "bold", size = 11),
+      axis.text = ggplot2::element_text(color = "#334650"),
+      plot.margin = ggplot2::margin(10, 14, 8, 8))
+}
+fig1_data <- dplyr::mutate(rates,
+  family = factor(child_labels[as.character(child_group)],
+                  levels = rev(unname(child_labels))),
+  value = 100 * employment, label = sprintf("%.1f%%", value))
+p1 <- ggplot2::ggplot(fig1_data,
+  ggplot2::aes(x = family, y = value, fill = sex)) +
+  ggplot2::geom_col(width = .66, show.legend = FALSE) +
+  ggplot2::geom_text(ggplot2::aes(y = value - 1.7, label = label),
+                     hjust = 1, color = "white", fontface = "bold", size = 3.3) +
+  ggplot2::facet_wrap(~ sex, ncol = 2) +
+  ggplot2::coord_flip() +
+  ggplot2::scale_fill_manual(values = chart_colors) +
+  ggplot2::scale_y_continuous(limits = c(0, 100), breaks = c(0, 25, 50, 75, 100),
+                              labels = function(x) paste0(x, "%"), expand = c(0, 0)) +
+  ggplot2::labs(y = "Employed, share of all adults", x = NULL) + chart_theme()
+ggplot2::ggsave(file.path(figure_dir, "figure1_employment.png"), p1,
+                width = 8.5, height = 5.6, dpi = 220, bg = "white")
+p1
+```
+
+These bars compare different households in one survey year. They do not trace
+any family's employment as a child gets older. Nor does the reference group
+mean "never had children": it includes people whose children are grown or
+live elsewhere.
+
+## The difference shows up in labor force participation
+
+```{r}
+#| label: labor-force-comparisons
+#| results: hide
+lf_w_young <- pick_rate("Women", "age0_5", "participation")
+lf_w_none <- pick_rate("Women", "no_minor", "participation")
+u_w_young <- pick_rate("Women", "age0_5", "unemployment")
+u_w_none <- pick_rate("Women", "no_minor", "unemployment")
+```
+
+The employment rate can fall because fewer adults look for paid work, because
+more job seekers cannot find work, or both. Figure 2 places everyone in one of
+three mutually exclusive states. Among women with a child aged 0 to 5 at home,
+`r fmt_pct(lf_w_young)` are in the labor force, versus
+`r fmt_pct(lf_w_none)` in the reference group. Their unemployment rates,
+measured **among labor force participants**, are `r fmt_pct(u_w_young)` and
+`r fmt_pct(u_w_none)`. The conspicuous employment difference therefore sits
+mainly alongside a participation difference, not a higher unemployment rate.
+
+```{r}
+#| label: fig-labor-force
+#| fig-cap: "Figure 2. Employment, unemployment and nonparticipation as shares of all adults in each group. The unemployed segment is a share of all adults, not the unemployment rate (whose denominator is the labor force). 2025 IPUMS CPS ASEC, person-weighted."
+#| fig-width: 8.5
+#| fig-height: 5.7
+#| out-width: "100%"
+states <- dplyr::bind_rows(
+  dplyr::transmute(rates, sex, child_group, state = "Employed", share = employment),
+  dplyr::transmute(rates, sex, child_group, state = "Unemployed", share = participation - employment),
+  dplyr::transmute(rates, sex, child_group, state = "Outside labor force", share = 1 - participation)
+) |>
+  dplyr::mutate(state = factor(state, levels = c("Employed", "Unemployed", "Outside labor force")),
+    family = factor(child_labels[as.character(child_group)], levels = rev(unname(child_labels))))
+stopifnot(all(states$share >= -1e-8))
+p2 <- ggplot2::ggplot(states, ggplot2::aes(x = family, y = 100 * share, fill = state)) +
+  ggplot2::geom_col(width = .66) +
+  ggplot2::facet_wrap(~ sex, ncol = 2) +
+  ggplot2::coord_flip() +
+  ggplot2::scale_fill_manual(values = c(Employed = "#315d72", Unemployed = "#d4a25f",
+                                        `Outside labor force` = "#d8dee1"), name = NULL) +
+  ggplot2::scale_y_continuous(limits = c(0, 100), breaks = c(0, 25, 50, 75, 100),
+                              labels = function(x) paste0(x, "%"), expand = c(0, 0)) +
+  ggplot2::labs(y = "Share of all adults", x = NULL) + chart_theme() +
+  ggplot2::theme(legend.position = "bottom", legend.text = ggplot2::element_text(size = 9))
+ggplot2::ggsave(file.path(figure_dir, "figure2_labor_force.png"), p2,
+                width = 8.5, height = 5.7, dpi = 220, bg = "white")
+p2
+```
+
+## Does the divide remain after adjustment?
+
+The groups differ in more than family circumstances. For a descriptive check,
+I estimate a survey-weighted linear probability model. The outcome is one if a
+person is employed and zero otherwise. Let $F_i$ indicate a woman, $C_{ig}$
+indicate the youngest-child group $g$ (relative to no minor child at home),
+$A_i$ denote age-band indicators and $B_i$ indicate a bachelor's degree or
+higher. The estimated equation is
+
+$$
+\Pr(E_i=1 \mid F_i,C_i,A_i,B_i)
+= \alpha + \beta F_i + \sum_g \gamma_g C_{ig}
++ \sum_g \delta_g(F_i C_{ig}) + \boldsymbol{\theta}' A_i + \lambda B_i.
+$$
+
+For the 0-to-5 group, $\gamma_{0-5}$ is the adjusted difference for men;
+$\gamma_{0-5}+\delta_{0-5}$ is the difference for women; and
+$\delta_{0-5}$ is the difference between those two differences. The reference
+person is a man aged 25 to 34, without a bachelor's degree and without an
+own minor child at home. Model coefficients are **percentage-point** changes
+when multiplied by 100, not percentage changes.
+
+```{r}
+#| label: model-and-contrasts
+#| results: hide
+model <- survey::svyglm(
+  employed ~ sex * child_group + age_band + college,
+  design = design, family = stats::gaussian()
+)
+b <- stats::coef(model)
+V <- stats::vcov(model)
+ci_critical <- stats::qt(.975, df = 159) # 160 person replicates, 159 design df.
+men_term <- "child_groupage0_5"
+interaction_term <- "sexWomen:child_groupage0_5"
+stopifnot(all(c(men_term, interaction_term) %in% names(b)))
+contrast <- function(label, terms) {
+  cvec <- stats::setNames(rep(0, length(b)), names(b))
+  cvec[terms] <- 1
+  estimate <- sum(cvec * b)
+  se <- sqrt(as.numeric(t(cvec) %*% V %*% cvec))
+  data.frame(group = label, estimate_pp = 100 * estimate,
+             lower_pp = 100 * (estimate - ci_critical * se),
+             upper_pp = 100 * (estimate + ci_critical * se), se_pp = 100 * se)
+}
+adjusted <- dplyr::bind_rows(
+  contrast("Men", men_term),
+  contrast("Women", c(men_term, interaction_term)),
+  contrast("Women minus men", interaction_term)
+)
+readr::write_csv(adjusted, file.path(derived_dir, "adjusted_gaps.csv"))
+capture.output(summary(model), file = file.path(derived_dir, "model_summary.txt"))
+capture.output(sessionInfo(), file = file.path(derived_dir, "session_info.txt"))
+adj_w <- adjusted$estimate_pp[adjusted$group == "Women"]
+adj_m <- adjusted$estimate_pp[adjusted$group == "Men"]
+interaction <- adjusted[adjusted$group == "Women minus men", ]
+```
+
+```{r}
+#| label: model-table
+#| echo: true
+# The same model contrasts drive the table, Figure 3 and the prose below.
+model_table <- dplyr::mutate(adjusted,
+  Comparison = c("Men: 0-5 vs no minor", "Women: 0-5 vs no minor",
+                 "Women minus men: difference in differences"),
+  `Estimate (pp)` = sprintf("%+.1f", estimate_pp),
+  `95% CI (pp)` = sprintf("[%+.1f, %+.1f]", lower_pp, upper_pp))
+knitr::kable(model_table[, c("Comparison", "Estimate (pp)", "95% CI (pp)")],
+             caption = "Selected contrasts from the weighted linear probability model")
+```
+
+### The adjusted employment divide
+
+Figure 3 plots the first two rows of the table. Each dot is an estimated
+difference from adults of the same recorded sex with no minor child at home;
+the horizontal line is its 95% confidence interval. Zero means no adjusted
+difference. The third table row compares the two dots statistically and is
+the young-child interaction coefficient. Showing it in the table avoids
+mistaking that interaction for a third employment rate.
+
+```{r}
+#| label: fig-adjusted
+#| fig-cap: "Figure 3. Model-based differences in employment relative to adults of the same recorded sex with no own minor child at home. Age-band and education adjusted; points and 95% replicate-weight intervals match the first two table rows. Units are percentage points."
+#| fig-width: 8.5
+#| fig-height: 3.6
+#| out-width: "100%"
+fig3_data <- dplyr::filter(adjusted, group %in% c("Women", "Men")) |>
+  dplyr::mutate(group = factor(group, levels = c("Men", "Women")))
+axis_max <- ceiling(max(abs(c(fig3_data$lower_pp, fig3_data$upper_pp))) / 5) * 5 + 2
+p3 <- ggplot2::ggplot(fig3_data, ggplot2::aes(x = estimate_pp, y = group, color = group)) +
+  ggplot2::geom_vline(xintercept = 0, color = "#788991", linewidth = .6) +
+  ggplot2::geom_errorbar(ggplot2::aes(xmin = lower_pp, xmax = upper_pp),
+                         orientation = "y", width = .13, linewidth = .85) +
+  ggplot2::geom_point(size = 3) +
+  ggplot2::scale_color_manual(values = chart_colors, guide = "none") +
+  ggplot2::scale_x_continuous(limits = c(-axis_max, axis_max),
+                              labels = function(x) sprintf("%+g", x)) +
+  ggplot2::labs(x = "Adjusted difference (percentage points)", y = NULL) + chart_theme()
+ggplot2::ggsave(file.path(figure_dir, "figure3_adjusted_gaps.png"), p3,
+                width = 8.5, height = 3.6, dpi = 220, bg = "white")
+p3
+```
+
+The adjusted difference is `r fmt_pp(adj_w)` for women and
+`r fmt_pp(adj_m)` for men. The difference between them is
+`r fmt_pp(interaction$estimate_pp)` (95% interval:
+`r sprintf("%+.1f", interaction$lower_pp)` to
+`r sprintf("%+.1f", interaction$upper_pp)` percentage points). The opposite
+signs persist after these controls. That is a sharper description of the
+employment divide, not an estimate of what a birth would do to a particular
+person's job prospects.
+
+## Takeaway
+> **A divide the data can reveal, but not explain**
+
+The survey reveals two distinct labor market patterns around young children:
+women in the 0-to-5 household group are less likely to be employed than women
+without a minor child at home, while men in the corresponding group are more
+likely to be employed. For women, participation rather than unemployment is
+the more informative margin. The difference survives broad age and education
+adjustment. It points to an important question for child care and work policy:
+what combination of care costs, household specialization, earnings and
+selection into parenthood lies behind it? This cross-sectional comparison
+cannot distinguish those mechanisms or support a causal claim.
+
+## Behind the numbers: Data and replication
+
+> **Data note.** The API downloads the full 2025 CPS Annual Social and Economic
+> Supplement person extract, including children and older adults. It contains
+> `r format(n_downloaded, big.mark = ",")` **unweighted person records**. After
+> restricting to ages 25-54, `r format(n_prime_age, big.mark = ",")` remain;
+> after removing invalid or missing analysis fields and nonpositive person
+> weights, `r format(n_analytic, big.mark = ",")` remain. The latter is a
+> subset of the former, not a count of the US population. Population rates
+> use the ASEC person weight.
+
+The youngest-child measure identifies a person's youngest *own* child at home,
+including biological, step and adopted children as defined by IPUMS. "No minor
+child at home" may include people with adult children or children living
+elsewhere; it is not synonymous with never having children. The CPS sex field
+records male or female; it does not measure gender identity. These details
+matter when interpreting the comparison.
+
+| Source field | Purpose |
+|---|---|
+| AGE, SEX, YNGCH | Age restriction, recorded sex and youngest own child at home |
+| EMPSTAT, EDUC | Employment status and education control |
+| ASECWT | ASEC person weight for population rates and the regression |
+| REPWTP1 through REPWTP160 | Person replicate weights for survey uncertainty |
+
+The QMD requests sample `cps2025_03s` using the IPUMS API, caches the licensed
+person data privately outside the website, recodes the variables, computes
+weighted rates, fits the interaction model and saves the following outputs.
+The source is [IPUMS CPS](https://cps.ipums.org/cps/), based on the Census
+Bureau and Bureau of Labor Statistics survey; see the
+[youngest-child definition](https://cps.ipums.org/cps-action/variables/YNGCH),
+[person weights](https://cps.ipums.org/cps/sample_weights.shtml) and
+[replicate-weight guidance](https://cps.ipums.org/cps/repwt.shtml).
+
+| Output | Contents |
+|---|---|
+| Private home-directory cache | XML dictionary, extract request and person records; never publish |
+| `data/derived/weighted_rates.csv` | Eight weighted group rates and intervals |
+| `data/derived/adjusted_gaps.csv` | Three regression contrasts and intervals |
+| `data/derived/model_summary.txt`, `session_info.txt` | Full regression output and R environment |
+| `files/figure1_employment.png` | Employment rates |
+| `files/figure2_labor_force.png` | Labor market composition |
+| `files/figure3_adjusted_gaps.png` | Adjusted model contrasts |
+
+To replicate, register for IPUMS CPS, set your private API key in the
+IPUMS_API_KEY environment variable, restart RStudio and render this QMD.
+The first run requests an extract; later runs use the cached copy. The
+[README](README.md) gives the folder structure and commands. The full R code
+is in the folded code blocks above. Never publish the key or raw person
+records. All displayed figures, table entries and numerical statements are
+computed from the current extract during render.

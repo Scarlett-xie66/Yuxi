@@ -1,0 +1,28 @@
+
+Call:
+survey::svyglm(formula = employed ~ sex * child_group + age_band + 
+    college, design = design, family = stats::gaussian())
+
+Survey design:
+Called via srvyr
+
+Coefficients:
+                              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                   0.770709   0.005165 149.227  < 2e-16 ***
+sexWomen                     -0.047250   0.005457  -8.659 7.22e-15 ***
+child_groupage0_5             0.112328   0.005823  19.290  < 2e-16 ***
+child_groupage6_12            0.105255   0.007048  14.934  < 2e-16 ***
+child_groupage13_17           0.106965   0.008273  12.930  < 2e-16 ***
+age_band35-44                -0.004466   0.005199  -0.859    0.392    
+age_band45-54                -0.025899   0.005606  -4.619 8.26e-06 ***
+collegeBA or higher           0.130933   0.004071  32.164  < 2e-16 ***
+sexWomen:child_groupage0_5   -0.219280   0.009892 -22.168  < 2e-16 ***
+sexWomen:child_groupage6_12  -0.124452   0.010201 -12.200  < 2e-16 ***
+sexWomen:child_groupage13_17 -0.092680   0.011376  -8.147 1.39e-13 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for gaussian family taken to be 0.1491142)
+
+Number of Fisher Scoring iterations: 2
+
