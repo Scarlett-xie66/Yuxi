@@ -478,15 +478,41 @@ if(requireNamespace("zip",quietly=TRUE)) {
 } else message("Send the result/review_for_codex folder; zip it in Windows Explorer if needed.")
 ```
 
-::: {.newspaper-report}
-
+::::::::: newspaper-report
 <figure class="report-figure" aria-labelledby="figure-1-title">
-<figcaption id="figure-1-title"><span class="figure-number">Figure 1.</span> Young children, different employment patterns</figcaption>
-<p class="figure-deck">Employed adults per 100 adults, by recorded sex and youngest own child at home; ages 25–54, 2025.</p>
-<img class="report-chart" src="result/figures/figure1_employment.png" alt="Young children, different employment patterns" style="display:block;width:100%;max-width:100%;height:auto;">
-<div class="figure-legend"><span class="legend-blue">Men</span><span class="legend-orange">Women</span></div>
-<p class="figure-source">Source: <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a>; author’s weighted estimates. <a href="#note-1">Population and coverage notes</a>.</p>
-<details><summary>Chart notes</summary><p>Labels show weighted employment rates. The denominator is all adults in each group. “No minor child” includes adults whose own children are absent or aged 18 or older; it does not mean never a parent. Older-child groups are different households, not the young-child group followed over time.</p></details>
+
+<figcaption id="figure-1-title">
+
+[Figure 1.]{.figure-number} Young children, different employment patterns
+
+</figcaption>
+
+<p class="figure-deck">
+
+Employed adults per 100 adults, by recorded sex and youngest own child at home; ages 25–54, 2025.
+
+</p>
+
+<img src="result/figures/figure1_employment.png" alt="Young children, different employment patterns" class="report-chart" style="display:block;width:100%;max-width:100%;height:auto;"/>
+
+::: figure-legend
+[Men]{.legend-blue}[Women]{.legend-orange}
+:::
+
+<p class="figure-source">
+
+Source: <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a>; author’s weighted estimates. <a href="#note-1">Population and coverage notes</a>.
+
+</p>
+
+<details>
+
+<summary>Chart notes</summary>
+
+<p>Labels show weighted employment rates. The denominator is all adults in each group. “No minor child” includes adults whose own children are absent or aged 18 or older; it does not mean never a parent. Older-child groups are different households, not the young-child group followed over time.</p>
+
+</details>
+
 </figure>
 
 A workday does not always end when a child needs collecting. Someone has to leave, arrange help or pay for care that covers the gap. For a family with a young child, fitting those hours together can matter as much as finding a vacancy.
@@ -510,12 +536,39 @@ Having no job is not always counted as unemployment. The labor force includes ad
 Women living with a young child have a participation rate of **`r fmt_pct(lf_w_young)`**, compared with **`r fmt_pct(lf_w_none)`** in the reference group. Among participants, unemployment is **`r fmt_pct(u_w_young)`** and **`r fmt_pct(u_w_none)`**, respectively.
 
 <figure class="report-figure" aria-labelledby="figure-2-title">
-<figcaption id="figure-2-title"><span class="figure-number">Figure 2.</span> Having no job is not always unemployment</figcaption>
-<p class="figure-deck">Each bar divides all adults in its group between work, job search and nonparticipation.</p>
-<img class="report-chart" src="result/figures/figure2_labor_force.png" alt="Having no job is not always unemployment" style="display:block;width:100%;max-width:100%;height:auto;">
-<div class="figure-legend"><span class="legend-blue">Employed</span><span class="legend-gold">Unemployed</span><span class="legend-gray">Outside the labor force</span></div>
-<p class="figure-source">Source: <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a>; author’s weighted estimates. <a href="#note-1">Population and coverage notes</a>.</p>
-<details><summary>Chart notes</summary><p>The segments sum to 100% of all adults. The unemployed segment is not the unemployment rate, whose denominator is labor-force participants. Outside the labor force does not identify childcare as the reason for nonparticipation. Men and women use the same scale.</p></details>
+
+<figcaption id="figure-2-title">
+
+[Figure 2.]{.figure-number} Having no job is not always unemployment
+
+</figcaption>
+
+<p class="figure-deck">
+
+Each bar divides all adults in its group between work, job search and nonparticipation.
+
+</p>
+
+<img src="result/figures/figure2_labor_force.png" alt="Having no job is not always unemployment" class="report-chart" style="display:block;width:100%;max-width:100%;height:auto;"/>
+
+::: figure-legend
+[Employed]{.legend-blue}[Unemployed]{.legend-gold}[Outside the labor force]{.legend-gray}
+:::
+
+<p class="figure-source">
+
+Source: <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a>; author’s weighted estimates. <a href="#note-1">Population and coverage notes</a>.
+
+</p>
+
+<details>
+
+<summary>Chart notes</summary>
+
+<p>The segments sum to 100% of all adults. The unemployed segment is not the unemployment rate, whose denominator is labor-force participants. Outside the labor force does not identify childcare as the reason for nonparticipation. Men and women use the same scale.</p>
+
+</details>
+
 </figure>
 
 An accounting breakdown assigns **`r fmt_pp(lf_component)`** of the women's employment gap to participation differences and **`r fmt_pp(u_component)`** to unemployment differences. `r participation_note` The two components add to the observed employment gap; they do not identify what caused it.<sup><a href="#note-5">5</a></sup>
@@ -529,17 +582,44 @@ Adults living with young children may differ in age and qualifications from the 
 For women, adjustment changes the gap from **`r fmt_pp(women_gap)`** to **`r fmt_pp(adj_w)`**. For men, it changes from **`r fmt_pp(men_gap)`** to **`r fmt_pp(adj_m)`**. `r if (women_gap*adj_w>0 && men_gap*adj_m>0) "Both associations retain their direction: broad age and education differences do not explain away the pattern." else "At least one association changes direction or reaches zero, making age and education important to interpreting the observed pattern."`
 
 <figure class="report-figure" aria-labelledby="figure-3-title">
-<figcaption id="figure-3-title"><span class="figure-number">Figure 3.</span> Does adjustment change the employment divide?</figcaption>
-<p class="figure-deck">Young-child employment minus employment with no minor child, in percentage points.</p>
-<img class="report-chart" src="result/figures/figure3_adjusted_gaps.png" alt="Does adjustment change the employment divide?" style="display:block;width:100%;max-width:100%;height:auto;">
-<div class="figure-legend"><span class="legend-lightblue">Observed weighted gap</span><span class="legend-blue">Adjusted for age and degree status</span></div>
-<p class="figure-source">Source: Author’s weighted linear probability model; <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a>.</p>
-<details><summary>Chart notes</summary><p>Positive bars indicate higher employment in the young-child group, negative bars lower employment. Both panels use the same signed scale and zero line. Adjusted 95% confidence intervals appear in the table below. Adjustment is a conditional association, not the effect of having a child.</p></details>
+
+<figcaption id="figure-3-title">
+
+[Figure 3.]{.figure-number} Does adjustment change the employment divide?
+
+</figcaption>
+
+<p class="figure-deck">
+
+Young-child employment minus employment with no minor child, in percentage points.
+
+</p>
+
+<img src="result/figures/figure3_adjusted_gaps.png" alt="Does adjustment change the employment divide?" class="report-chart" style="display:block;width:100%;max-width:100%;height:auto;"/>
+
+::: figure-legend
+[Observed weighted gap]{.legend-lightblue}[Adjusted for age and degree status]{.legend-blue}
+:::
+
+<p class="figure-source">
+
+Source: Author’s weighted linear probability model; <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a>.
+
+</p>
+
+<details>
+
+<summary>Chart notes</summary>
+
+<p>Positive bars indicate higher employment in the young-child group, negative bars lower employment. Both panels use the same signed scale and zero line. Adjusted 95% confidence intervals appear in the table below. Adjustment is a conditional association, not the effect of having a child.</p>
+
+</details>
+
 </figure>
 
 The model's outcome is one when an adult is employed and zero otherwise. Its coefficients therefore describe differences in the probability of employment; multiplying a contrast by 100 expresses it in percentage points. The specification is:
 
-::: {.model-spec}
+::: model-spec
 $$
 E_i=\alpha+\beta F_i+\sum_g\gamma_g C_{ig}
 +\sum_g\delta_g(F_i C_{ig})+\boldsymbol{\theta}'A_i+\lambda B_i+u_i.
@@ -548,7 +628,7 @@ $$
 
 Here $F_i$ identifies women, $C_{ig}$ child-age groups, $A_i$ age bands and $B_i$ degree status. The no-minor-child group is the reference. The young-child contrast is $\gamma_{\text{young}}$ for men and $\gamma_{\text{young}}+\delta_{\text{young}}$ for women. The table reports those contrasts and the difference between them.<sup><a href="#note-6">6</a>, <a href="#note-7">7</a></sup>
 
-::: {.model-table}
+::: model-table
 ```{r}
 #| label: display-model-table
 #| include: true
@@ -576,32 +656,29 @@ The practical implication is to examine access to paid work as well as job findi
 
 ## Footnotes
 
-::: {.source-notes}
+::: source-notes
+1.   **Population, sources and coverage.** Author’s analysis of the 2025 <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a>, sample cps2025_03s, ages 25–54 with valid analysis variables and positive ASECWT. This is a single cross-section, not a truncated 2024–2026 series. Downloaded person records include ages and cases outside the analytic sample; sample_audit.csv documents selection. CPS is a household survey; ASEC is its annual social and economic supplement.
 
-1. <span id="note-1"></span> **Population, sources and coverage.** Author’s analysis of the 2025 <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a>, sample cps2025_03s, ages 25–54 with valid analysis variables and positive ASECWT. This is a single cross-section, not a truncated 2024–2026 series. Downloaded person records include ages and cases outside the analytic sample; sample_audit.csv documents selection. CPS is a household survey; ASEC is its annual social and economic supplement.
+2.   **Children and recorded sex.** <a href="https://cps.ipums.org/cps-action/variables/YNGCH">YNGCH</a> describes the youngest own biological, adopted or stepchild at home. “No minor child” includes no own child present or a youngest own child aged 18 or older. It does not identify adults who have never been parents. Recorded sex is not a measure of gender identity.
 
-2. <span id="note-2"></span> **Children and recorded sex.** <a href="https://cps.ipums.org/cps-action/variables/YNGCH">YNGCH</a> describes the youngest own biological, adopted or stepchild at home. “No minor child” includes no own child present or a youngest own child aged 18 or older. It does not identify adults who have never been parents. Recorded sex is not a measure of gender identity.
+3.   **Employment, participation and unemployment.** Employment divides employed adults by all adults in the group. Participation divides employed plus unemployed adults by all adults. Unemployment divides unemployed adults by labor-force participants; the classification includes people on temporary layoff under the applicable definition. Figure 2 instead divides every status by all adults.
 
-3. <span id="note-3"></span> **Employment, participation and unemployment.** Employment divides employed adults by all adults in the group. Participation divides employed plus unemployed adults by all adults. Unemployment divides unemployed adults by labor-force participants; the classification includes people on temporary layoff under the applicable definition. Figure 2 instead divides every status by all adults.
+4.   **Percentage points and household implications.** 80% minus 70% is ten percentage points, not a ten per cent relative increase. A group employment-rate difference is not a count of individuals who left work after childbirth. Household-income, hours and care mechanisms discussed in the article are interpretations to investigate, not additional estimates from these figures.
 
-4. <span id="note-4"></span> **Percentage points and household implications.** 80% minus 70% is ten percentage points, not a ten per cent relative increase. A group employment-rate difference is not a count of individuals who left work after childbirth. Household-income, hours and care mechanisms discussed in the article are interpretations to investigate, not additional estimates from these figures.
+5.   **Participation breakdown.** Employment equals participation multiplied by one minus unemployment. With $L$ for participation, $U$ for unemployment, $y$ for young-child households and $n$ for the reference, the employment gap is $100(L_y-L_n)(1-U_n)-100L_y(U_y-U_n)$. The two components use the reference unemployment rate and the young-child participation rate. This accounting identity is not a causal decomposition.
 
-5. <span id="note-5"></span> **Participation breakdown.** Employment equals participation multiplied by one minus unemployment. With $L$ for participation, $U$ for unemployment, $y$ for young-child households and $n$ for the reference, the employment gap is $100(L_y-L_n)(1-U_n)-100L_y(U_y-U_n)$. The two components use the reference unemployment rate and the young-child participation rate. This accounting identity is not a causal decomposition.
+6.   **Model and comparisons.** The specification is employed \~ sex \* child_group + age_band + college. References are men, no minor child, ages 25–34 and below bachelor’s degree. Age bands are 25–34, 35–44 and 45–54. The linear model can produce fitted probabilities outside zero and one; model diagnostics record that limitation. Adjusted bars are coefficient contrasts at common controls, not observed employment rates.
 
-6. <span id="note-6"></span> **Model and comparisons.** The specification is employed ~ sex * child_group + age_band + college. References are men, no minor child, ages 25–34 and below bachelor’s degree. Age bands are 25–34, 35–44 and 45–54. The linear model can produce fitted probabilities outside zero and one; model diagnostics record that limitation. Adjusted bars are coefficient contrasts at common controls, not observed employment rates.
+7.   **Weights and uncertainty.** ASECWT supplies person weights. Uncertainty uses all 160 REPWTP person replicate weights, successive-difference replication and mse=TRUE. Contrasts use t(159) intervals and account for covariance between main and interaction terms. See <a href="https://cps.ipums.org/cps/repwt.shtml">IPUMS replicate-weight guidance</a>. Observed gaps have no intervals in this table; the displayed intervals refer to adjusted contrasts. Full parameters and diagnostics are exported on a microdata run.
 
-7. <span id="note-7"></span> **Weights and uncertainty.** ASECWT supplies person weights. Uncertainty uses all 160 REPWTP person replicate weights, successive-difference replication and mse=TRUE. Contrasts use t(159) intervals and account for covariance between main and interaction terms. See <a href="https://cps.ipums.org/cps/repwt.shtml">IPUMS replicate-weight guidance</a>. Observed gaps have no intervals in this table; the displayed intervals refer to adjusted contrasts. Full parameters and diagnostics are exported on a microdata run.
-
-8. <span id="note-8"></span> **Execution and publication status.** Execution mode: **`r if(analysis_mode=="microdata") "original microdata re-estimated in this run" else "REFERENCE PREVIEW: earlier aggregates; model not re-estimated"`**. A reference preview permits inspection of the draft. A new raw-data run and editorial review are required before final publication.
-
+8.   **Execution and publication status.** Execution mode: **`r if(analysis_mode=="microdata") "original microdata re-estimated in this run" else "REFERENCE PREVIEW: earlier aggregates; model not re-estimated"`**. A reference preview permits inspection of the draft. A new raw-data run and editorial review are required before final publication.
 :::
 
 ## Reproducibility
 
-`r if (exists("params") && nzchar(params[["repository-url"]])) paste0("The analysis code is available in the [GitHub repository](",params[["repository-url"]],").") else "The analysis code is included in the accompanying project."`
-The standalone repository uses the following structure. Generated data and result files appear after a successful run:
+`r if (exists("params") && nzchar(params[["repository-url"]])) paste0("The analysis code is available in the [GitHub repository](",params[["repository-url"]],").") else "The analysis code is included in the accompanying project."` The standalone repository uses the following structure. Generated data and result files appear after a successful run:
 
-```text
+``` text
 index.qmd
 README.md
 Blog3.Rproj
@@ -638,5 +715,4 @@ Run `blog/posts/post3/code/01_clean_analyze.R`, followed by `blog/posts/post3/co
 Alternatively, open the standalone `Blog3.Rproj`, run the same scripts from `code/`, and render `index.qmd`. The complete extracted script, `code/blog3_analysis.R`, is an alternative to those two steps.
 
 The scripts generate processed estimates, model tables and figures using project-relative output paths. The default input mode re-estimates the model from the 2025 ASEC extract using person and replicate weights. Licensed person records and API credentials remain outside the published project. Earlier aggregate files in `data/reference_only/` are used only when reference mode is explicitly selected; they cannot reproduce a fresh model fit.
-
-:::
+:::::::::
