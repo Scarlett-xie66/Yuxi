@@ -25,5 +25,14 @@
   },
   "blog/posts/post3/index.qmd": {
     "index.html": "a5611d37"
+  },
+  "blog/posts/post4/index.qmd": {
+    "index.html": "9dde9fb1"
+  },
+  "blog/posts/post5/index.qmd": {
+    "index.html": "9e121fed"
+  },
+  "blog/posts/post6/index.qmd": {
+    "index.html": "dbdc54a7"
   }
 }
