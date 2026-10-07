@@ -4,6 +4,10 @@ subtitle: "Employment looks different for women and men living with young childr
 author: "Scarlett Xie"
 date: 2026-09-28
 date-modified: 2026-10-06
+image: "result/figures/figure1_employment.png"
+description: "How employment differs for women and men living with young children, and what participation, age and education reveal about the gap."
+resources:
+  - "result/figures/*.png"
 params:
   repository-url: ""
 categories: [Labor economics, Childcare, Employment]
