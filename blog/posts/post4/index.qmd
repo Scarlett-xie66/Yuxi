@@ -4,6 +4,12 @@ subtitle: "A sharp fall in inflation came with only a modest rise in unemploymen
 author: "Scarlett Xie"
 date: 2026-10-06
 categories: [Inflation, Unemployment, US economy, Data analysis]
+image: result/figures/figure1_inflation_and_jobs.png
+description: "US inflation fell sharply after its 2022 peak while unemployment rose only modestly through 2024. Monthly data show how the relationship changed."
+resources:
+  - result/figures/figure1_inflation_and_jobs.png
+  - result/figures/figure2_changing_relationship.png
+  - result/figures/figure3_change_by_stage.png
 format:
   html:
     toc: false

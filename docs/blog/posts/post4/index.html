@@ -8,6 +8,7 @@
 
 <meta name="author" content="Scarlett Xie">
 <meta name="dcterms.date" content="2026-10-06">
+<meta name="description" content="US inflation fell sharply after its 2022 peak while unemployment rose only modestly through 2024. Monthly data show how the relationship changed.">
 
 <title>Inflation and Jobs: A Trade-off That Kept Changing – Yuxi Xie</title>
 <style>
@@ -4771,6 +4772,11 @@ vertical-align: -.125em;
   </div>
   </div>
 
+<div>
+  <div class="description">
+    US inflation fell sharply after its 2022 peak while unemployment rose only modestly through 2024. Monthly data show how the relationship changed.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -4819,6 +4825,8 @@ vertical-align: -.125em;
 .blog4-report .source-notes li {margin-bottom:.8rem;scroll-margin-top:5rem;}
 .blog4-report a {overflow-wrap:anywhere;}
 .blog4-report sup {font-size:.7em;}
+.blog4-report .research-question {background:#fff0b3;color:inherit;padding:.08em .12em;box-decoration-break:clone;-webkit-box-decoration-break:clone;}
+.blog4-report pre {box-sizing:border-box;max-width:100%;overflow-x:auto;font-size:.76rem;line-height:1.5;}
 @media(max-width:600px){.blog4-report{font-size:1rem;}.blog4-report h2{font-size:1.3rem;}.blog4-report .report-figure{margin:1.3rem 0 1.6rem;}.blog4-report .report-figure figcaption{font-size:.95rem;}.blog4-report .figure-legend{font-size:.73rem;}}
 </style>
 <div class="blog4-report">
@@ -4847,7 +4855,7 @@ The panels share a calendar and a 0-16% scale. Inflation is a price-index change
 </figure>
 <p>The steep fall in US inflation after its 2022 peak came with a surprisingly small rise in unemployment. Through December 2024, annual price growth slowed by 6.2 percentage points, while the unemployment rate increased by just 0.5 points.</p>
 <p>That outcome challenges the idea that bringing inflation down must require a severe jobs downturn. But the latest readings complicate the picture: by August 2026, inflation was higher than at the end of 2024, while unemployment was unchanged between those endpoints.</p>
-<p>For households, the question is whether relief at the checkout can coexist with dependable work. Since 2019, the relationship between inflation and unemployment has shifted repeatedly, first during the pandemic shock and then as the economy recovered.</p>
+<p>For households, relief at the checkout matters alongside dependable work. <mark class="research-question"><strong>How have inflation and unemployment evolved together, and did falling inflation come with a sharp rise in unemployment?</strong></mark> Since 2019, their relationship has shifted repeatedly, first during the pandemic shock and then as the economy recovered.</p>
 <section id="from-lost-jobs-to-rising-bills" class="level2">
 <h2 class="anchored" data-anchor-id="from-lost-jobs-to-rising-bills">From lost jobs to rising bills</h2>
 <p>In February 2020, unemployment stood at 3.5%. Two months later, it had reached 14.8%, while annual inflation fell to 0.3%. The immediate strain on household budgets came from lost earnings, even as price increases slowed.</p>
@@ -4955,8 +4963,40 @@ Each bar subtracts the starting rate from the ending rate. The intervals differ 
 </section>
 <section id="reproducibility" class="level2">
 <h2 class="anchored" data-anchor-id="reproducibility">Reproducibility</h2>
-<p>The analysis code and frozen data snapshot are included in the accompanying project. To reproduce the figures, open the website’s RStudio project and place this post’s files under <code>blog/posts/post4/</code>, retaining the folder structure. Run <code>blog/posts/post4/code/01_clean_analyze.R</code>, followed by <code>blog/posts/post4/code/02_make_figures.R</code>. Alternatively, open the supplied <code>Blog4.Rproj</code> and run the same scripts from <code>code/</code>.</p>
-<p>The scripts use project-relative paths and generate the processed monthly data, checkpoint tables and three figures in <code>data/processed/</code> and <code>result/</code>. They use the saved CSV snapshot by default; reproducible FRED download URLs are documented in the project. Render <code>index.qmd</code> to rebuild this article. No API key or IPUMS extract is required.</p>
+<p>The analysis code and frozen data snapshot are included in the accompanying project. The standalone repository uses the following structure:</p>
+<pre class="text"><code>index.qmd
+README.md
+Blog4.Rproj
+code/
+├── 00_config.R                      # project paths and analysis settings
+├── 01_clean_analyze.R               # clean data and calculate estimates
+├── 02_make_figures.R                # generate the three figures
+├── blog4_analysis.R                 # run the analysis workflow
+└── render_html.R                    # optional HTML rendering fallback
+data/
+├── raw/
+│   ├── CPIAUCNS.csv                 # saved consumer-price index series
+│   ├── UNRATE.csv                   # saved unemployment-rate series
+│   └── source_manifest.csv          # download URLs and snapshot metadata
+└── processed/
+    └── analysis_monthly.csv         # calendar-aligned monthly analysis
+result/
+├── figures/
+│   ├── figure1_inflation_and_jobs.png
+│   ├── figure2_changing_relationship.png
+│   └── figure3_change_by_stage.png
+└── tables/
+    ├── checkpoints.csv              # rates at selected dates
+    ├── stage_changes.csv            # changes in percentage points
+    ├── series_availability.csv      # coverage of each series
+    ├── calendar_audit.csv           # calendar and lag checks
+    ├── missing_observations.csv     # unavailable observations
+    ├── analysis_objects.rds         # saved analysis objects
+    └── session_info.txt             # R and package versions</code></pre>
+<p>To reproduce the figures, open the website’s RStudio project and place the post under <code>blog/posts/post4/</code>, retaining the folder structure. Keep the saved series at <code>blog/posts/post4/data/raw/CPIAUCNS.csv</code> and <code>blog/posts/post4/data/raw/UNRATE.csv</code>.</p>
+<p>Run <code>blog/posts/post4/code/01_clean_analyze.R</code>, followed by <code>blog/posts/post4/code/02_make_figures.R</code>. Render <code>blog/posts/post4/index.qmd</code> to rebuild the article and apply its figure styling.</p>
+<p>Alternatively, open the standalone <code>Blog4.Rproj</code>, run the same scripts from <code>code/</code>, and render <code>index.qmd</code>.</p>
+<p>The scripts generate the processed monthly data, checkpoint tables and figures using project-relative paths. They use the saved CSV snapshot by default. The underlying series are <a href="https://fred.stlouisfed.org/series/CPIAUCNS">consumer prices (CPIAUCNS)</a> and <a href="https://fred.stlouisfed.org/series/UNRATE">unemployment (UNRATE)</a>; reproducible download URLs are documented in <code>README.md</code> and <code>data/raw/source_manifest.csv</code>. No API key or IPUMS extract is required.</p>
 </section>
 </div>
 

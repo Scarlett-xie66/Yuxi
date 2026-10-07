@@ -1,0 +1,3 @@
+Editorial status: USER RUN COMPLETED; prose still requires result review.
+Send this folder (or its zip) for final analysis, interpretation and recommendations.
+Do not add raw CPS records, API keys or .Renviron.
