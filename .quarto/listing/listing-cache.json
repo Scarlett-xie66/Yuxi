@@ -1,8 +1,5 @@
 {
   "listingMap": {
-    "blog.qmd": [
-      "posts"
-    ],
     "blog\\index.qmd": [
       "posts"
     ]
