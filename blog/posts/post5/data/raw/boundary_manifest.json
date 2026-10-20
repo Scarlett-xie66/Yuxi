@@ -1,0 +1,10 @@
+{
+  "url": "https://tigerweb.geo.census.gov/arcgis/rest/services/Generalized_ACS2024/Tracts_Blocks/MapServer/4/query?where=STATE%3D%2742%27%20AND%20COUNTY%3D%27101%27&outFields=GEOID,NAME,CENTLAT,CENTLON&outSR=26918&returnGeometry=true&f=json",
+  "sha256": "190305ec33ce54d52e5bd61e4e2c8294ed793017c27bf5c8420c99fcd55e2cee",
+  "retrieved_utc": "2026-10-07T02:09:12.899770+00:00",
+  "feature_count": 408,
+  "spatial_reference": {
+    "wkid": 26918,
+    "latestWkid": 26918
+  }
+}

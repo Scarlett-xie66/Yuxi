@@ -1,0 +1,22 @@
+[
+  {
+    "table": "B19013",
+    "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2024/table-based-SF/data/5YRData/acsdt5y2024-b19013.dat",
+    "source_bytes": 17917916,
+    "source_sha256": "b25a176b0e6c339b6f3a2a0d3d8446bf06f5f080b4395993ec9a8313efb1c229",
+    "saved_file": "b19013_philadelphia.dat",
+    "subset_sha256": "a885a6f36c78868f373094537288ec411c24f4efbdb62a6310b5b4d4deb79cb0",
+    "retrieved_utc": "2026-10-07T02:08:44.105978+00:00",
+    "selection": "Header plus county 0500000US42101 and tract 1400000US42101* rows"
+  },
+  {
+    "table": "B17001",
+    "url": "https://www2.census.gov/programs-surveys/acs/summary_file/2024/table-based-SF/data/5YRData/acsdt5y2024-b17001.dat",
+    "source_bytes": 118607125,
+    "source_sha256": "707adda8aaff136382f4fe0858617d09062da48b1a3d2ab2e9a1047def09b531",
+    "saved_file": "b17001_philadelphia.dat",
+    "subset_sha256": "9dc4adccc2aed4833f54784db2c2958772089e8fe4e79c5ee55398fc6fa14457",
+    "retrieved_utc": "2026-10-07T02:08:45.411663+00:00",
+    "selection": "Header plus county 0500000US42101 and tract 1400000US42101* rows"
+  }
+]
