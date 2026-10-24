@@ -1,0 +1,108 @@
+{
+  "birthyear_vars": [
+    "ER30575",
+    "ER30611",
+    "ER30647",
+    "ER30694",
+    "ER30811",
+    "ER33106",
+    "ER33206",
+    "ER33306",
+    "ER33406",
+    "ER33506",
+    "ER33606",
+    "ER33706",
+    "ER33806",
+    "ER33906",
+    "ER34006",
+    "ER34106",
+    "ER34206",
+    "ER34307",
+    "ER34506",
+    "ER34706",
+    "ER34906",
+    "ER35106"
+  ],
+  "individual": [
+    {
+      "survey_year": 1999,
+      "family_id_var": "ER33501",
+      "sequence_var": "ER33502",
+      "relationship_var": "ER33503",
+      "age_var": "ER33504"
+    },
+    {
+      "survey_year": 2001,
+      "family_id_var": "ER33601",
+      "sequence_var": "ER33602",
+      "relationship_var": "ER33603",
+      "age_var": "ER33604"
+    },
+    {
+      "survey_year": 2003,
+      "family_id_var": "ER33701",
+      "sequence_var": "ER33702",
+      "relationship_var": "ER33703",
+      "age_var": "ER33704"
+    },
+    {
+      "survey_year": 2015,
+      "family_id_var": "ER34301",
+      "sequence_var": "ER34302",
+      "relationship_var": "ER34303",
+      "age_var": "ER34305"
+    },
+    {
+      "survey_year": 2017,
+      "family_id_var": "ER34501",
+      "sequence_var": "ER34502",
+      "relationship_var": "ER34503",
+      "age_var": "ER34504"
+    },
+    {
+      "survey_year": 2019,
+      "family_id_var": "ER34701",
+      "sequence_var": "ER34702",
+      "relationship_var": "ER34703",
+      "age_var": "ER34704"
+    }
+  ],
+  "family": [
+    {
+      "survey_year": 1999,
+      "id_var": "ER13002",
+      "income_var": "ER16462",
+      "release_var": "ER13001"
+    },
+    {
+      "survey_year": 2001,
+      "id_var": "ER17002",
+      "income_var": "ER20456",
+      "release_var": "ER17001"
+    },
+    {
+      "survey_year": 2003,
+      "id_var": "ER21002",
+      "income_var": "ER24099",
+      "release_var": "ER21001"
+    },
+    {
+      "survey_year": 2015,
+      "id_var": "ER60002",
+      "income_var": "ER65349",
+      "release_var": "ER60001"
+    },
+    {
+      "survey_year": 2017,
+      "id_var": "ER66002",
+      "income_var": "ER71426",
+      "release_var": "ER66001"
+    },
+    {
+      "survey_year": 2019,
+      "id_var": "ER72002",
+      "income_var": "ER77448",
+      "release_var": "ER72001"
+    }
+  ]
+}

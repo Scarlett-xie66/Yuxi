@@ -1,0 +1,13 @@
+{
+  "python_executed": 5,
+  "sql_executed": 9,
+  "source_extraction": "compiled; original ZIP optional",
+  "status": "passed",
+  "matched_rows": 187,
+  "matched_columns": 21,
+  "eight_slopes_match": true,
+  "dispersion_matches": true,
+  "main_bootstrap_matches": true,
+  "percentage_conversion_matches": true,
+  "paired_dispersion_count": 129
+}

@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "executed_at_utc": "2026-10-24T04:47:25.999279+00:00",
+  "entry_point": "index.qmd executable Python cell",
+  "qmd_unchanged_during_render": true,
+  "result_csvs": [
+    "age_checks.csv",
+    "dispersion_summary.csv",
+    "factorial_ige.csv",
+    "father_child_links.csv",
+    "father_link_audit.csv",
+    "income_interpretation.csv",
+    "income_quality.csv",
+    "income_variability.csv",
+    "matched_income.csv",
+    "matched_preview.csv",
+    "paired_contrasts.csv",
+    "person_income.csv",
+    "person_volatility.csv",
+    "pilot_ige.csv",
+    "roster_join_audit.csv",
+    "sample_income_ranges.csv",
+    "selection_counts.csv"
+  ],
+  "figures": [
+    "figure1_ige_windows.png",
+    "figure2_averaging_decomposition.png",
+    "figure3_income_dispersion.png"
+  ]
+}

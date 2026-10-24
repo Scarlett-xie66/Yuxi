@@ -1,0 +1,5 @@
+Result,Value,Calculation
+Early-career median income fluctuation,0.307,Median across the same 187 children
+Midlife median income fluctuation,0.147,Median across the same 187 children
+Reduction in the median,52.1%,100 × (1 − midlife median / early median)
+Children with smaller midlife fluctuations,69.0%,100 × 129 / 187

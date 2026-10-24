@@ -1,0 +1,83 @@
+#| label: rebuild-analysis-and-render-article
+#| echo: false
+#| output: asis
+#| warning: false
+#| error: false
+
+from pathlib import Path
+import hashlib, json, os, subprocess, sys
+from datetime import datetime, timezone
+
+# Optional explicit location when a notebook kernel starts outside the website.
+POST_DIR = None  # e.g. Path(r"D:/your-website/blog/posts/post6")
+starts = [Path.cwd(), *Path.cwd().parents]
+for name in ["QUARTO_PROJECT_DIR", "QUARTO_DOCUMENT_PATH", "BLOG6_POST_DIR"]:
+    value = os.environ.get(name)
+    if value:
+        hint = Path(value.strip('"')).expanduser()
+        starts.insert(0, hint.parent if hint.suffix in (".qmd", ".ipynb", ".quarto_ipynb") else hint)
+if POST_DIR is not None:
+    starts.insert(0, Path(POST_DIR).expanduser())
+candidates = []
+for start in starts:
+    for candidate in (start, start / "blog/posts/post6", start / "posts/post6", start / "post6"):
+        if candidate not in candidates:
+            candidates.append(candidate)
+# Identify the folder independently of whether particular code files are missing.
+post_root = next((p.resolve() for p in candidates
+                  if (p / "index.qmd").is_file() and (p / "code").is_dir()), None)
+if post_root is None:
+    checked = "\n".join(str(p) for p in candidates[:12])
+    raise FileNotFoundError(
+        f"Cannot locate the post6 folder. Python cwd: {Path.cwd()}\n"
+        f"QUARTO_PROJECT_DIR: {os.environ.get('QUARTO_PROJECT_DIR', '(not set)')}\n"
+        "Render from post6 with: quarto render index.qmd --to html --execute-dir .\n"
+        "Or set POST_DIR in this cell to the absolute post6 path.\nChecked:\n" + checked
+    )
+required = ["code/run_all.py", "code/_article_body.md", "code/build_article.py",
+            "sql/01_prepare.sql", "sql/02_match.sql"]
+missing = [name for name in required if not (post_root / name).is_file()]
+wrong_version = []
+for name,marker in [("code/run_all.py", "--from-quarto"), ("code/build_article.py", "--body-only")]:
+    if (post_root / name).is_file() and marker not in (post_root / name).read_text(encoding="utf-8"):
+        wrong_version.append(name)
+(post_root / "result").mkdir(parents=True, exist_ok=True)
+startup = {"python_cwd": str(Path.cwd()), "post_root": str(post_root),
+           "missing_files": missing, "older_code_files": wrong_version,
+           "legacy_template_present": (post_root / "code/article_body.md").is_file()}
+(post_root / "result/startup_diagnostic.json").write_text(
+    json.dumps(startup, indent=2) + "\n", encoding="utf-8")
+if missing or wrong_version:
+    raise FileNotFoundError(
+        f"Found post6: {post_root}\n"
+        f"Missing required files: {', '.join(missing) or '(none)'}\n"
+        f"Older incompatible scripts: {', '.join(wrong_version) or '(none)'}\n"
+        "This executable QMD needs the matching code and sql files, not just folders. "
+        "Replace the whole post6 folder with the current project package. "
+        "See result/startup_diagnostic.json for the checks."
+    )
+
+qmd_path = post_root / "index.qmd"
+before_hash = hashlib.sha256(qmd_path.read_bytes()).hexdigest()
+(post_root / "result").mkdir(parents=True, exist_ok=True)
+child_env = dict(os.environ, PYTHONUTF8="1", PYTHONIOENCODING="utf-8")
+completed = subprocess.run(
+    [sys.executable, str(post_root / "code/run_all.py"), "--from-quarto"],
+    cwd=post_root, env=child_env, capture_output=True, text=True,
+    encoding="utf-8", errors="replace",
+)
+log = completed.stdout + "\n" + completed.stderr
+(post_root / "result/rebuild_log.txt").write_text(log, encoding="utf-8")
+if completed.returncode:
+    raise RuntimeError("Analysis failed; see result/rebuild_log.txt.\n" + log[-8000:])
+if before_hash != hashlib.sha256(qmd_path.read_bytes()).hexdigest():
+    raise RuntimeError("The analysis must not overwrite index.qmd during rendering.")
+article = (post_root / "result/_article_rendered.md").read_text(encoding="utf-8")
+receipt = {
+    "status": "passed", "executed_at_utc": datetime.now(timezone.utc).isoformat(),
+    "entry_point": "index.qmd executable Python cell", "qmd_unchanged_during_render": True,
+    "result_csvs": sorted(p.name for p in (post_root / "result").glob("*.csv")),
+    "figures": sorted(p.name for p in (post_root / "result/figures").glob("*.png")),
+}
+(post_root / "result/render_execution.json").write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
+print(article)

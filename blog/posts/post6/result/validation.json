@@ -1,0 +1,69 @@
+{
+  "status": "passed",
+  "provenance": "Only the seven official PSID ZIPs uploaded by the user; no third-party records or CPI",
+  "source_individual_rows": 85536,
+  "source_family_rows": 50449,
+  "cohort_children": 4925,
+  "eligible_links": 1490,
+  "matched_children": 187,
+  "distinct_fathers": 163,
+  "daughters": 109,
+  "sons": 78,
+  "complete_sample_topcoded_records": 0,
+  "minimum_common_sample_income": 2000.0,
+  "sample_records_one_dollar": 0,
+  "age_records_checked": 1611,
+  "age_discrepancies_outside_0_1": 0,
+  "age_discrepancies_abs_gt_2": 0,
+  "birthyear_fields_conflict_all_people": 3574,
+  "all_raw_person_year_keys_unique": true,
+  "independent_pandas_sample_and_six_income_measures_match_sql": true,
+  "balanced_3_observations_each_window": true,
+  "bootstrap_draws": 1000,
+  "paired_midlife_minus_young_single_ci": [
+    -0.16136398473190058,
+    0.22280760937011806
+  ],
+  "paired_midlife_minus_young_multi_ci": [
+    -0.007905061954346052,
+    0.3826438542827568
+  ],
+  "pilot_estimates": [
+    {
+      "specification": "Early career, single year",
+      "beta": 0.28456746597295995,
+      "ci_low": 0.11273894148683525,
+      "ci_high": 0.4792414267232593,
+      "children": 187,
+      "fathers": 163,
+      "associated_pct_for_10pct_higher_father_income": 2.7493330478139955
+    },
+    {
+      "specification": "Early career, 3-observation mean logs",
+      "beta": 0.301716661342168,
+      "ci_low": 0.15641803525619336,
+      "ci_high": 0.46122539186984285,
+      "children": 187,
+      "fathers": 163,
+      "associated_pct_for_10pct_higher_father_income": 2.9174134282320185
+    },
+    {
+      "specification": "Midlife, single year",
+      "beta": 0.31055110564851124,
+      "ci_low": 0.143459748745777,
+      "ci_high": 0.5193926413771454,
+      "children": 187,
+      "fathers": 163,
+      "associated_pct_for_10pct_higher_father_income": 3.004107667958733
+    },
+    {
+      "specification": "Midlife, 3-observation mean logs",
+      "beta": 0.4889354007474449,
+      "ci_low": 0.28797749273578754,
+      "ci_high": 0.7164124393204185,
+      "children": 187,
+      "fathers": 163,
+      "associated_pct_for_10pct_higher_father_income": 4.770338992386192
+    }
+  ]
+}

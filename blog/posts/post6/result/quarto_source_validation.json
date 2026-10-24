@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "normal_render_targets": [
+    "index.qmd"
+  ],
+  "executable_qmd": true,
+  "cache": false,
+  "freeze": false,
+  "external_header_dependency": false,
+  "fenced_divs": false,
+  "pandoc_parser": "not available",
+  "native_quarto": "not available; not executed"
+}

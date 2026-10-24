@@ -34,5 +34,11 @@
   },
   "blog/posts/post6/index.qmd": {
     "index.html": "dbdc54a7"
+  },
+  "blog/posts/post6/code/article_body.md": {
+    "article_body.html": "cc63b54c"
+  },
+  "docs/blog/posts/post6/code/article_body.md": {
+    "article_body.html": "d15716ef"
   }
 }

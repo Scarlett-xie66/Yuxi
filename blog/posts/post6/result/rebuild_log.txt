@@ -1,0 +1,176 @@
+
+Running 02_sql_audit.py
+selection_counts
+                                                step  children
+                          1. Children born 1972–1976      4925
+                   2. Documented father record found      1878
+          3. Father age 45–60 in 2000; age gap 15–55      1490
+          4. Father has all 3 positive early incomes       530
+      5. Also child has all 3 positive early incomes       265
+    6. Also child has all 3 positive midlife incomes       187
+7. Distinct father/child family units in early waves       187
+income_quality
+ survey_year  families  source_release  minimum  maximum  negative  zero  one_dollar  positive_valid  topcoded  unexpected_codes
+        1999      6997               9   -73500  1991000         6    39           1            6952         0                 0
+        2001      7406               7   -59948  2112300        19    25           0            7362         0                 0
+        2003      7822               9  -971399  3660650         7    36           0            7779         0                 0
+        2015      9048               2   -22000  5250100         1   127           1            8920         0                 0
+        2017      9607               3   -84022  2229087         6   112           0            9489         0                 0
+        2019      9569               1  -267900  2125100         3   146           0            9420         0                 0
+roster_join_audit
+ survey_year  responding_people  unmatched_family_ids  reference_spouse_partner
+        1999              19554                     0                     10949
+        2001              20423                     0                     11612
+        2003              21171                     0                     12120
+        2015              23094                     0                     13561
+        2017              24998                     0                     14571
+        2019              24699                     0                     14416
+father_link_audit
+                           status  children
+   Missing/invalid father pointer      3047
+             Eligible father link      1490
+Father outside proposed age range       304
+        Father birth year missing        84
+Final sample: (187, 163, 109, 0)
+
+Running 03_validate_estimate.py
+                        specification     beta   ci_low  ci_high
+            Early career, single year 0.284567 0.112739 0.479241
+Early career, 3-observation mean logs 0.301717 0.156418 0.461225
+                 Midlife, single year 0.310551 0.143460 0.519393
+     Midlife, 3-observation mean logs 0.488935 0.287977 0.716412
+{
+  "status": "passed",
+  "provenance": "Only the seven official PSID ZIPs uploaded by the user; no third-party records or CPI",
+  "source_individual_rows": 85536,
+  "source_family_rows": 50449,
+  "cohort_children": 4925,
+  "eligible_links": 1490,
+  "matched_children": 187,
+  "distinct_fathers": 163,
+  "daughters": 109,
+  "sons": 78,
+  "complete_sample_topcoded_records": 0,
+  "minimum_common_sample_income": 2000.0,
+  "sample_records_one_dollar": 0,
+  "age_records_checked": 1611,
+  "age_discrepancies_outside_0_1": 0,
+  "age_discrepancies_abs_gt_2": 0,
+  "birthyear_fields_conflict_all_people": 3574,
+  "all_raw_person_year_keys_unique": true,
+  "independent_pandas_sample_and_six_income_measures_match_sql": true,
+  "balanced_3_observations_each_window": true,
+  "bootstrap_draws": 1000,
+  "paired_midlife_minus_young_single_ci": [
+    -0.16136398473190058,
+    0.22280760937011806
+  ],
+  "paired_midlife_minus_young_multi_ci": [
+    -0.007905061954346052,
+    0.3826438542827568
+  ],
+  "pilot_estimates": [
+    {
+      "specification": "Early career, single year",
+      "beta": 0.28456746597295995,
+      "ci_low": 0.11273894148683525,
+      "ci_high": 0.4792414267232593,
+      "children": 187,
+      "fathers": 163,
+      "associated_pct_for_10pct_higher_father_income": 2.7493330478139955
+    },
+    {
+      "specification": "Early career, 3-observation mean logs",
+      "beta": 0.301716661342168,
+      "ci_low": 0.15641803525619336,
+      "ci_high": 0.46122539186984285,
+      "children": 187,
+      "fathers": 163,
+      "associated_pct_for_10pct_higher_father_income": 2.9174134282320185
+    },
+    {
+      "specification": "Midlife, single year",
+      "beta": 0.31055110564851124,
+      "ci_low": 0.143459748745777,
+      "ci_high": 0.5193926413771454,
+      "children": 187,
+      "fathers": 163,
+      "associated_pct_for_10pct_higher_father_income": 3.004107667958733
+    },
+    {
+      "specification": "Midlife, 3-observation mean logs",
+      "beta": 0.4889354007474449,
+      "ci_low": 0.28797749273578754,
+      "ci_high": 0.7164124393204185,
+      "children": 187,
+      "fathers": 163,
+      "associated_pct_for_10pct_higher_father_income": 4.770338992386192
+    }
+  ]
+}
+
+Running 05_further_analysis.py
+  stage father_measure child_measure     beta   ci_low  ci_high  n_children  n_fathers  leave_one_father_min  leave_one_father_max
+  young         single        single 0.284567 0.112739 0.479241         187        163              0.240349              0.327582
+  young         single         multi 0.194039 0.050682 0.345440         187        163              0.170722              0.227245
+  young          multi        single 0.406862 0.219004 0.619015         187        163              0.358986              0.438571
+  young          multi         multi 0.301717 0.156418 0.461225         187        163              0.269926              0.323280
+midlife         single        single 0.310551 0.143460 0.519393         187        163              0.277879              0.345774
+midlife         single         multi 0.314679 0.144582 0.521468         187        163              0.291909              0.358413
+midlife          multi        single 0.508331 0.290891 0.759393         187        163              0.459468              0.549844
+midlife          multi         multi 0.488935 0.287977 0.716412         187        163              0.456461              0.524784
+                                comparison  difference    ci_low   ci_high
+  Midlife minus early; single-year incomes    0.025984 -0.161364  0.222808
+Midlife minus early; both incomes averaged    0.187219 -0.007905  0.382644
+  Early: average father only; child single    0.122294  0.030431  0.229909
+  Early: average child only; father single   -0.090529 -0.185367 -0.003035
+        Early: average both versus neither    0.017149 -0.113785  0.138159
+Midlife: average father only; child single    0.197780  0.065220  0.347736
+Midlife: average child only; father single    0.004128 -0.056763  0.060944
+      Midlife: average both versus neither    0.178384  0.042242  0.327159
+{
+  "children": 187,
+  "fraction_with_lower_midlife_dispersion": 0.6898395721925134,
+  "median_early": 0.3073162800985931,
+  "median_midlife": 0.14719187898469013,
+  "median_fathers": 0.188354374040585,
+  "proportional_median_drop": 0.5210410625253303
+}
+
+Running 06_make_figures.py
+Saved three 300-dpi figures.
+
+Running build_article.py
+Generated article outputs without changing index.qmd.
+
+Running check_article.py
+{
+  "python_executed": 5,
+  "sql_executed": 9,
+  "source_extraction": "compiled; original ZIP optional",
+  "status": "passed",
+  "matched_rows": 187,
+  "matched_columns": 21,
+  "eight_slopes_match": true,
+  "dispersion_matches": true,
+  "main_bootstrap_matches": true,
+  "percentage_conversion_matches": true,
+  "paired_dispersion_count": 129
+}
+
+Running check_quarto_source.py
+{
+  "status": "passed",
+  "normal_render_targets": [
+    "index.qmd"
+  ],
+  "executable_qmd": true,
+  "cache": false,
+  "freeze": false,
+  "external_header_dependency": false,
+  "fenced_divs": false,
+  "pandoc_parser": "not available",
+  "native_quarto": "not available; not executed"
+}
+Rebuild and tutorial checks passed. Run python code/render_preview.py for HTML.
+

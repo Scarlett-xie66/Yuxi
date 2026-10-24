@@ -1,0 +1,5 @@
+status,children
+Missing/invalid father pointer,3047
+Eligible father link,1490
+Father outside proposed age range,304
+Father birth year missing,84
