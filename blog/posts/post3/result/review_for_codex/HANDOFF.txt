@@ -1,3 +1,3 @@
-Editorial status: USER RUN COMPLETED; prose still requires result review.
+Editorial status: MICRODATA RUN COMPLETED; review prose against results.
 Send this folder (or its zip) for final analysis, interpretation and recommendations.
 Do not add raw CPS records, API keys or .Renviron.

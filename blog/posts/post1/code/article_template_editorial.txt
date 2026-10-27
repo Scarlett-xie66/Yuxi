@@ -1,0 +1,129 @@
+::: {.blog5-report}
+
+Each of 150 iris flowers has two petal measurements: length and width. PCA can replace that pair with **one score retaining {{SHARE}}% of their total variance**. This sounds like getting something for nothing. What does that percentage measure, how is it calculated, and what disappears when two numbers become one?
+
+<mark class="research-question"><strong>For these flowers, how does PCA turn petal length and width into one score—and how do eigenvectors and eigenvalues produce the {{SHARE}}% figure?</strong></mark>
+
+The example reveals the purpose of **dimensionality reduction**: describing observations with fewer coordinates. Here, eigenvectors determine how to combine the measurements; eigenvalues tell us how much variation the combination preserves. Understanding the percentage requires both.
+
+## Two measurements share a pattern
+
+Figure 1 shows why compression is plausible: flowers with longer petals generally also have wider ones. Much of their variation follows one sloping direction. A score measuring position along that direction could summarize both measurements without reproducing every individual difference.
+
+PCA, or **principal component analysis**, finds that direction systematically. It first subtracts each variable's mean, then builds a **covariance matrix** describing each variable's variance and how the two move together. Variance measures squared spread around a mean; covariance captures their joint movement.<sup><a href="#note-1">1</a></sup>
+
+<!-- figure-start -->
+<figure class="report-figure" aria-labelledby="figure-1-title">
+<figcaption id="figure-1-title"><span class="figure-number">Figure 1.</span> A shared pattern makes two measurements compressible</figcaption>
+<p class="figure-deck">Petal length and width for 150 flowers, in centimeters. One score locates a reconstruction along the fitted line.</p>
+<img class="report-chart" src="result/figures/figure2_projection.png" style="display:block;width:100%;max-width:100%;height:auto;" alt="Petal length and width rise together; the first principal component follows the long axis of the flower measurements.">
+<div class="figure-legend"><span class="legend-blue">Observed flowers</span><span class="legend-green">PC1 line and reconstructed points</span><span class="legend-orange">Reconstruction errors</span></div>
+<p class="figure-source">Source: iris data distributed with scikit-learn; author's calculations.<sup><a href="#note-1">1</a></sup></p>
+<details><summary>Chart notes</summary><p>Both axes use equal scales. The black cross marks the mean. Hollow circles reconstruct selected flowers by perpendicular projection; red segments show the discarded displacement. All 150 observations determine the fitted line; selected errors are drawn for readability. Variables are centered without standardizing; species labels are excluded.</p></details>
+</figure>
+<!-- figure-end -->
+
+## Eigenvectors choose how to combine the measurements
+
+A matrix usually turns an arrow as well as changing its length. An **eigenvector** is an exception: the matrix scales it along its original line. The **eigenvalue** is that scaling factor:
+
+$$S\mathbf v=\lambda\mathbf v,\qquad \mathbf v\ne\mathbf 0.$$
+
+Here, $S$ is the flowers' covariance matrix. Its leading unit-length eigenvector is approximately ({{W1}}, {{W2}}). Why choose it? For unit directions, projected variance is a weighted average of covariance eigenvalues. It is largest along the eigenvector with the largest eigenvalue.<sup><a href="#note-2">2</a></sup>
+
+Those two weights produce a flower's first principal component score:
+
+$$t={{W1}}(L-{{M1}})+{{W2}}(W-{{M2}}).$$
+
+Here, $L$ and $W$ are petal length and width; {{M1}} and {{M2}} are their sample means. The eigenvector supplies weights shared by every flower. The score is the individual flower's coordinate along that direction.
+
+For example, a flower measuring {{EXAMPLE_L}} cm by {{EXAMPLE_W}} cm receives a score of about {{EXAMPLE_SCORE}}. Its negative sign places it below the sample mean along the combined petal-size direction; it does not imply a negative physical length. One coordinate now summarizes its position relative to the others.
+
+<!-- figure-start -->
+<figure class="report-figure" aria-labelledby="figure-2-title">
+<figcaption id="figure-2-title"><span class="figure-number">Figure 2.</span> The same covariance matrix reveals preserved and dominant directions</figcaption>
+<p class="figure-deck">A: the matrix scales its eigenvectors without turning them. B: repeated multiplication makes the larger-eigenvalue component dominate.</p>
+<img class="report-chart" src="result/figures/figure1_geometry.png" style="display:block;width:100%;max-width:100%;height:auto;" alt="The covariance matrix preserves both eigenvector lines, while repeated multiplication of a constructed direction approaches the leading eigenvector line.">
+<div class="figure-legend"><span class="legend-green">Leading eigenvector</span><span class="legend-orange">Second eigenvector</span><span class="legend-blue">Other / iterated direction</span></div>
+<p class="figure-source">Source: the same iris covariance matrix; author's illustration.</p>
+<details><summary>Chart notes</summary><p>Panel A shows unit input arrows dashed and their matrix products solid. The second output is small because its eigenvalue is {{E2}}. Panel B begins at v1 + 10v2, repeatedly applies S and normalizes each displayed arrow. The arrows are mathematical directions, not flower measurements evolving through time. After k multiplications, the component ratio is 10(λ2/λ1)<sup>k</sup>. See note 3.</p></details>
+</figure>
+<!-- figure-end -->
+
+Repeated multiplication offers a related intuition. Applying this same matrix repeatedly magnifies its leading component relative to the other, drawing most starting directions toward the leading eigenvector line (Figure 2).<sup><a href="#note-3">3</a></sup> This illustrates unequal scaling; PCA's justification remains maximum projected variance. It does not repeatedly transform the observed flowers.
+
+## Eigenvalues explain the {{SHARE}}%
+
+The first and second eigenvalues are approximately **{{E1}} and {{E2}} cm²**. These are the variances of scores along the two perpendicular principal directions. Their sum equals total variance in the original length and width measurements.
+
+An eigenvalue describes scaling for a general matrix. Its interpretation as variance here comes specifically from using a covariance matrix and unit-length eigenvectors. Without the unit-length convention, multiplying the score weights would change its variance arbitrarily.
+
+Keeping the first score therefore retains:
+
+$$\frac{\lambda_1}{\lambda_1+\lambda_2}\times100
+\approx\frac{{{E1}}}{{{E1}}+{{E2}}}\times100
+\approx {{SHARE}}\%.$$
+
+This is where the headline number comes from: **eigenvectors define the new coordinates; eigenvalues allocate variance between them**. Rotating into both coordinates preserves the observations exactly. Dropping the second score reduces two dimensions to one and discards {{LOSS}}% of total variance.
+
+<!-- figure-start -->
+<figure class="report-figure" aria-labelledby="figure-3-title">
+<figcaption id="figure-3-title"><span class="figure-number">Figure 3.</span> Eigenvalues quantify the gain—and reconstruction shows the cost</figcaption>
+<p class="figure-deck">The first component carries {{SHARE}}% of variance. Reconstructed flowers still differ from their observed measurements.</p>
+<img class="report-chart" src="result/figures/figure3_tradeoff.png" style="display:block;width:100%;max-width:100%;height:auto;" alt="The first eigenvalue is 3.661 square centimeters and the second is 0.036; reconstruction distances vary across flowers.">
+<div class="figure-legend"><span class="legend-green">Retained component</span><span class="legend-orange">Discarded component / RMS marker</span><span class="legend-blue">Flower counts</span></div>
+<p class="figure-source">Source: the same iris observations; author's calculations.</p>
+<details><summary>Chart notes</summary><p>Panel A uses full-precision eigenvalues to calculate variance shares; displayed values are rounded. Panel B measures Euclidean distance between each observed pair and its reconstruction on the first-component line. The dashed marker is root mean squared distance per flower, not mean distance or error per measurement. The covariance denominator is n−1.</p></details>
+</figure>
+<!-- figure-end -->
+
+## What the smaller representation buys
+
+The benefit is a compact summary of shared variation. With many correlated variables, a few scores can simplify visualization and reduce the inputs passed to another analysis. Here, a combined score retains more variance than keeping length alone and reconstructing width at its mean ({{LENGTHSHARE}}%).
+
+The two-variable example makes the geometry visible. The same method can reduce many dimensions, where selecting a few principal components can make a complex dataset easier to inspect.
+
+The price is lost detail. A reconstruction uses the score, shared direction and means to recover an approximate pair of measurements. The root mean squared distance from the observed pairs is **{{RMS}} cm per flower**; the largest distance is {{MAX}} cm.
+
+Preserving {{SHARE}}% of variance does not mean preserving {{SHARE}}% of classification accuracy. A small discarded difference might still identify a species. Measurement scale also affects the chosen direction.<sup><a href="#note-4">4</a></sup>
+
+## Takeaway
+
+How can two measurements become one useful summary? For these 150 flowers, PCA combines petal length and width along a covariance eigenvector, producing one score per flower. Dividing its eigenvalue by the sum of both eigenvalues shows that **{{SHARE}}% of total variance is retained**. The root mean squared reconstruction distance is {{RMS}} cm. This illustrates how fewer coordinates can capture shared variation, while losing some individual detail. **Eigenvectors determine the combination; eigenvalues quantify what survives.** Whether discarded differences matter for prediction must be tested on unseen observations.
+
+## Notes and sources {#footnotes}
+
+<ol class="source-notes">
+<li id="note-1"><strong>About the data.</strong> The example uses petal measurements, in centimeters, for 150 flowers from <a href="https://scikit-learn.org/stable/datasets/toy_dataset.html#iris-plants-dataset">scikit-learn's iris dataset</a>. All flowers are included. Species labels are not used to calculate the scores.</li>
+<li id="note-2"><strong>How the percentage is calculated.</strong> The eigenvalues are the variances of the two principal component scores. Their sum equals the original measurements' total variance. Calculations use full precision; figures display rounded values. For more on the method, see <a href="https://stat.cmu.edu/~cshalizi/dm/19/lectures/05/lecture-05.html">this explanation of PCA from Carnegie Mellon University</a>.</li>
+<li id="note-3"><strong>Reading the arrows.</strong> Figure 2 uses the flowers' covariance matrix with an illustrative starting arrow. Repeated multiplication approaches the leading direction here because its eigenvalue is larger and the starting arrow contains that component. The flowers themselves are not changing over time.</li>
+<li id="note-4"><strong>What the result covers.</strong> Measurements are centered but kept in centimeters, rather than rescaled to equal variance. Rescaling can change the answer; see the <a href="https://scikit-learn.org/stable/modules/decomposition.html#pca">PCA guide</a>. Reconstruction errors describe these same flowers, not performance on new data. The common means and weights must also be kept alongside the scores.</li>
+</ol>
+
+## Reproducibility
+
+The analysis code, frozen data and generated results accompany the project:
+
+```text
+index.qmd
+index.html
+README.md
+code/
+  run_analysis.R                 # R-to-Python entry and environment check
+  check_environment.py           # dependency diagnostics
+  build.py                       # analysis, validation and figures
+  article_template_editorial.txt   # article with generated values
+data/
+  iris.csv                       # original observations
+  provenance.json                # data source and analysis scope
+result/
+  figures/                       # three 300-dpi PNGs and SVG copies
+  pca_components.csv             # directions and eigenvalues
+  reconstruction.csv             # scores, reconstructions and errors
+  direction_search.csv           # variance across projection angles
+  validation.json                # numerical checks and source hash
+```
+
+Render `index.qmd` from RStudio to run the full analysis and rebuild the article. All result files are generated automatically; no scripts need to be run separately. You can also run `python code/build.py` to rebuild the numerical results and figures. The manual eigendecomposition is checked against standard PCA; full two-component rotation and the identity between discarded variance and reconstruction loss are also verified. Replication details and dependencies are in `README.md`.
+
+:::

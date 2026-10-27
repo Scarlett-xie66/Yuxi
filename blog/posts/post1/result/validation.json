@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "observations": 150,
+  "data_sha256": "32041679ae8a4827b7f43d867bf3733966116f77d65e88d28209416995888f0e",
+  "eigen_equation": true,
+  "orthonormal_directions": true,
+  "sklearn_pca_agrees": true,
+  "full_rotation_is_lossless": true,
+  "reconstruction_loss_equals_discarded_variance": true,
+  "angle_search_agrees": true,
+  "retained_variance_percent": 99.02506624845559,
+  "rms_reconstruction_distance_cm": 0.18922410946370236,
+  "maximum_reconstruction_distance_cm": 0.5864290897466137,
+  "geometry_uses_same_covariance": true,
+  "eigenvalue_sum_equals_original_variance": true,
+  "score_variances_equal_eigenvalues": true,
+  "numpy_version": "1.26.4"
+}

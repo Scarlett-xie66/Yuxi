@@ -1,0 +1,64 @@
+---
+title: "When Economies Shrink, Whose Employment Rate Falls More?"
+subtitle: "A matched comparison across 85 countries and territories, 2001–2024"
+author: "Scarlett Xie"
+date: "2026-10-26"
+categories: [Plotly, Python, Employment, Economic Contractions]
+description: "Men's employment rates fell further on average in contraction years. A matched comparison tests whether the pattern survives country and year adjustments."
+image: result/figures/thumbnail.png
+engine: knitr
+format:
+  html:
+    toc: false
+    embed-resources: true
+    fig-dpi: 300
+execute:
+  echo: false
+  warning: false
+  message: false
+resources:
+  - README.md
+  - requirements.txt
+  - code/*.py
+  - code/*.js
+  - code/*.css
+  - code/vendor/*
+  - data/raw/*.json
+  - result/*.csv
+  - result/summary.json
+  - result/figures/*
+---
+
+```{r}
+#| label: rebuild-blog7
+#| results: asis
+# The RStudio entry point uses base R to launch Python; no Jupyter session is needed.
+starts <- unique(c(getwd(), Sys.getenv("QUARTO_PROJECT_DIR")))
+starts <- starts[nzchar(starts)]
+doc <- Sys.getenv("QUARTO_DOCUMENT_PATH")
+if (nzchar(doc)) starts <- c(dirname(doc), starts)
+candidates <- unique(unlist(lapply(starts, function(p) {
+  c(p, file.path(p, "blog/posts/post7"), file.path(p, "posts/post7"), file.path(p, "post7"))
+})))
+valid <- vapply(candidates, function(p) file.exists(file.path(p, "code/run_all.py")), logical(1))
+if (!any(valid)) stop("Cannot locate post7. Keep index.qmd with code/ and data/.")
+post <- normalizePath(candidates[which(valid)[1]], winslash = "/", mustWork = TRUE)
+python <- Sys.getenv("BLOG7_PYTHON")
+if (!nzchar(python)) python <- Sys.getenv("QUARTO_PYTHON")
+if (!nzchar(python)) {
+  available <- Sys.which(c("python", "python3"))
+  available <- available[nzchar(available)]
+  if (!length(available)) stop("Python was not found. Set BLOG7_PYTHON to its executable; see README.md.")
+  python <- unname(available[1])
+}
+dir.create(file.path(post, "result"), recursive = TRUE, showWarnings = FALSE)
+log <- file.path(post, "result/rebuild_log.txt")
+Sys.setenv(PYTHONUTF8 = "1", PYTHONIOENCODING = "utf-8")
+status <- system2(python, args = c(shQuote(file.path(post, "code/run_all.py")), "--from-quarto"),
+                  stdout = log, stderr = log)
+if (status != 0) stop(paste(c("Blog7 analysis failed. See result/rebuild_log.txt.",
+                             tail(readLines(log, warn = FALSE, encoding = "UTF-8"), 35)), collapse = "\n"))
+article <- readLines(file.path(post, "result/_article_fragment.html"), warn = FALSE, encoding = "UTF-8")
+# A raw HTML block prevents Markdown from parsing Plotly JavaScript or inventing Divs.
+cat("\n````{=html}\n", paste(article, collapse = "\n"), "\n````\n", sep = "")
+```

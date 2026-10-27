@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "matched_changes_independently_rebuilt": 1731,
+  "countries": 85,
+  "contractions": 251,
+  "source_scope_and_break_flags_checked": true,
+  "independent_fixed_effect_slope_and_cluster_interval_match": true,
+  "direct_gender_contrast_identity": true,
+  "payload_matches_csv": true,
+  "html_balanced": true,
+  "word_count": {
+    "main_text_words": 691,
+    "counting_rule": "Whitespace-separated words in main article paragraphs, including standfirst, opening question and Takeaway. Excludes title, byline, section headings, figures, captions, chart controls, source notes, footnotes, note markers and Reproducibility.",
+    "main_text_paragraphs": 13
+  },
+  "native_r_quarto": "not available; not executed",
+  "browser_rendering": "not verified; interaction logic checked separately"
+}

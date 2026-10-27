@@ -1,0 +1,18 @@
+{
+  "countries": 85,
+  "observations": 1731,
+  "contraction_observations": 251,
+  "contraction_countries": 79,
+  "female_mean": -0.5163784860557767,
+  "male_mean": -1.2355697211155376,
+  "female_better": 187,
+  "both_fell": 151,
+  "women_fell": 166,
+  "pre2020_contractions": 158,
+  "source_manifest_sha256": "4d699aa7aaae5b64f1d711d9f60ce652ec0bf53ff41e0b63f1e9597158a4b71a",
+  "paired_changes_before_flags": 2061,
+  "explicit_break_changes_removed": 97,
+  "minimum_matched_changes": 10,
+  "first_change_year": 2001,
+  "last_change_year": 2024
+}

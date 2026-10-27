@@ -1,0 +1,1 @@
+Earlier supplied weighted aggregate rates and adjusted contrasts. Used only when BLOG3_ANALYSIS_MODE=reference. They permit redraws, not a fresh microdata model fit. Confidence intervals reflect the supplied results, not new estimation in this delivery.

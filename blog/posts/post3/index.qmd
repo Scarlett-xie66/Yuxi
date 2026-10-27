@@ -1,11 +1,11 @@
 ---
-title: "When Young Children Are at Home, Who Is at Work?"
-subtitle: "Employment looks different for women and men living with young children. Age and education tell only part of the story."
+title: "The Employment Gap That Unemployment Misses"
+subtitle: "Women living with young children are less often employed, yet a smaller share are unemployed. The larger difference is among adults outside the labor force."
 author: "Scarlett Xie"
 date: 2026-09-28
-date-modified: 2026-10-06
+date-modified: 2026-10-26
 image: "result/figures/figure1_employment.png"
-description: "How employment differs for women and men living with young children, and what participation, age and education reveal about the gap."
+description: "Women living with young children have a 9.9-point employment shortfall, alongside a slightly smaller unemployed share. Comparing all three labor-market states reveals what unemployment alone leaves out."
 resources:
   - "result/figures/*.png"
 params:
@@ -15,7 +15,7 @@ format:
   html:
     toc: false
     embed-resources: true
-    fig-dpi: 220
+    fig-dpi: 300
 execute:
   echo: false
   warning: false
@@ -49,7 +49,7 @@ execute:
 .newspaper-report pre {box-sizing:border-box;max-width:100%;overflow-x:auto;font-size:.76rem;line-height:1.5;}
 @media(max-width:600px){.newspaper-report{font-size:1rem;}.newspaper-report h2{font-size:1.3rem;}.newspaper-report .report-figure{margin:1.3rem 0 1.6rem;}.newspaper-report .report-figure figcaption{font-size:.95rem;}.newspaper-report .figure-legend{font-size:.73rem;}}
 
-body {max-width:900px;} main.content {max-width:900px;margin:auto;} header#title-block-header {max-width:780px;margin:0 auto 2rem;} .newspaper-report .model-spec,.newspaper-report .model-table {max-width:660px;margin:1.2rem auto;overflow-x:auto;} .newspaper-report table {font: .8rem/1.5 Arial,sans-serif;width:100%;border-collapse:collapse;} .newspaper-report th,.newspaper-report td {padding:.6em;border-bottom:1px solid #ddd;} .newspaper-report th {text-align:left;} .newspaper-report details.reproduction {font-size:.9rem;} .newspaper-report .source-notes {max-width:660px;margin:0 auto;}
+body {max-width:900px;} main.content {max-width:900px;margin:auto;} header#title-block-header {max-width:780px;margin:0 auto 2rem;} .newspaper-report .model-spec,.newspaper-report .model-table {max-width:660px;margin:1.2rem auto;overflow-x:auto;} .newspaper-report table {font: .8rem/1.5 Arial,sans-serif;width:100%;border-collapse:collapse;} .newspaper-report th,.newspaper-report td {padding:.6em;border-bottom:1px solid #ddd;} .newspaper-report th {text-align:left;} .newspaper-report details.reproduction {font-size:.9rem;}
 
 .newspaper-report .legend-gold {border-left:10px solid #d4a25f;padding-left:.35rem;} .newspaper-report .legend-lightblue {border-left:10px solid #a6b9c1;padding-left:.35rem;}
 </style>
@@ -208,7 +208,8 @@ cps <- cps_raw |>
                 status %in% c(1, 2, 3), !is.na(EDUC), EDUC != 999,
                 !is.na(ASECWT), ASECWT > 0)
 if (!nrow(cps)) stop("No eligible records: inspect IPUMS variable codes.")
-if(any(!is.finite(as.matrix(cps[,rep_names]))) || any(as.matrix(cps[,rep_names])<0)) stop("Invalid replicate weights")
+# Valid CPS replicate weights can be negative; do not reject them by sign.
+if(any(!is.finite(as.matrix(cps[,rep_names])))) stop("Non-finite replicate weights")
 utils::write.csv(as.data.frame(table(sex=cps$sex,child_group=cps$child_group)),
  file.path(result_dir,"unweighted_group_counts.csv"),row.names=FALSE)
 utils::write.csv(data.frame(variable=names(cps),
@@ -237,19 +238,6 @@ rates <- design |>
   ) |>
   as.data.frame()
 readr::write_csv(rates, file.path(derived_dir, "weighted_rates.csv"))
-pick_rate <- function(s, g, col = "employment") {
-  row <- rates[rates$sex == s & rates$child_group == g, , drop = FALSE]
-  if (nrow(row) != 1L) stop("An expected group is missing: ", s, ", ", g)
-  as.numeric(row[[col]])
-}
-e_w_young <- pick_rate("Women", "age0_5")
-e_m_young <- pick_rate("Men", "age0_5")
-e_w_none <- pick_rate("Women", "no_minor")
-e_m_none <- pick_rate("Men", "no_minor")
-women_gap <- 100 * (e_w_young - e_w_none)
-men_gap <- 100 * (e_m_young - e_m_none)
-fmt_pct <- function(x) sprintf("%.1f%%", 100 * x)
-fmt_pp <- function(x) sprintf("%+.1f percentage points", x)
 # Consistency check: employment = participation * (1 - unemployment).
 stopifnot(max(abs(rates$employment - rates$participation *
                     (1 - rates$unemployment))) < 1e-8)
@@ -339,14 +327,22 @@ contrast_interval <- function(s) {
  if(z$lower_pp>0) "above zero" else if(z$upper_pp<0) "below zero" else "crosses zero"
 }
 same_direction <- sign(women_gap)==sign(men_gap)
-lf_component <- 100*(lf_w_young-lf_w_none)*(1-u_w_none)
-u_component <- -100*lf_w_young*(u_w_young-u_w_none)
-stopifnot(abs(lf_component+u_component-women_gap)<1e-8)
-participation_note <- if(abs(lf_component)>abs(u_component)) {
- "The participation component is larger in absolute size than the unemployment component."
-} else { "The unemployment component is at least as large in absolute size as the participation component." }
-utils::write.csv(data.frame(component=c("Participation","Unemployment"),
- difference_pp=c(lf_component,u_component)),file.path(result_dir,"employment_decomposition.csv"),row.names=FALSE)
+# Exact status accounting: every share uses all adults as its denominator.
+# E + unemployed share + outside-labor-force share = 1.
+status_decomposition <- do.call(rbind,lapply(c("Women","Men"),function(sx) {
+ en <- 100*pick_rate(sx,"no_minor");ey <- 100*pick_rate(sx,"age0_5")
+ ln <- 100*pick_rate(sx,"no_minor","participation")
+ ly <- 100*pick_rate(sx,"age0_5","participation")
+ outside_contribution <- ly-ln
+ unemployed_contribution <- -((ly-ey)-(ln-en))
+ stopifnot(abs(outside_contribution+unemployed_contribution-(ey-en))<1e-8)
+ data.frame(sex=sx,reference_employment=en,young_employment=ey,
+ outside_contribution_pp=outside_contribution,
+ unemployed_contribution_pp=unemployed_contribution,employment_gap_pp=ey-en)
+}))
+status_w <- status_decomposition[status_decomposition$sex=="Women",]
+status_m <- status_decomposition[status_decomposition$sex=="Men",]
+utils::write.csv(status_decomposition,file.path(result_dir,"employment_decomposition.csv"),row.names=FALSE)
 fmt_pct <- function(x) sprintf("%.1f%%",100*x)
 fmt_pp <- function(x) sprintf("%+.1f percentage points",x)
 chart_colors <- c(Men="#2f6276",Women="#b65b3c")
@@ -354,6 +350,11 @@ child_labels <- c(no_minor="No minor child at home",age0_5="Youngest: 0–5",
  age6_12="Youngest: 6–12",age13_17="Youngest: 13–17")
 utils::write.csv(rates,file.path(result_dir,"weighted_rates.csv"),row.names=FALSE)
 utils::write.csv(adjusted,file.path(result_dir,"adjusted_gaps.csv"),row.names=FALSE)
+# This edition's prose describes the supplied pattern; re-estimation must support it.
+if(!(women_gap<0 && men_gap>0 && status_w$outside_contribution_pp<0 && status_w$unemployed_contribution_pp>0 &&
+ status_m$outside_contribution_pp>0 && status_m$unemployed_contribution_pp>0 &&
+ adj_w<0 && adj_m>0 && abs(adj_w-women_gap)<2 && abs(adj_m-men_gap)<2))
+ stop("The new estimates do not support this edition's written findings. Review and revise the prose before publication.")
 ```
 
 ```{r}
@@ -361,7 +362,7 @@ utils::write.csv(adjusted,file.path(result_dir,"adjusted_gaps.csv"),row.names=FA
 #| include: false
 model_comparison <- data.frame(
  Comparison=c("Men: young child vs no minor child", "Women: young child vs no minor child",
-              "Women minus men: difference between associations"),
+              "Difference between within-sex gaps (women minus men)"),
  raw_pp=c(men_gap,women_gap,women_gap-men_gap),
  adjusted_pp=adjusted$estimate_pp,
  adjusted_lower_pp=adjusted$lower_pp,adjusted_upper_pp=adjusted$upper_pp)
@@ -377,15 +378,17 @@ utils::write.csv(model_comparison,file.path(result_dir,"model_comparison.csv"),r
 #| label: save-analysis
 #| include: false
 # Aggregate analysis objects only; no private credentials or person records.
-object_names <- c("rates","adjusted","model_comparison","model_table","run_id","analysis_mode","e_w_young","e_w_none","e_m_young","e_m_none","women_gap","men_gap","lf_w_young","lf_w_none","u_w_young","u_w_none","adj_w","adj_m","interaction","lf_component","u_component","participation_note","describe_gap","contrast_interval","fmt_pct","fmt_pp","chart_colors","child_labels","chart_theme")
-object_names <- object_names[vapply(object_names,function(x) exists(x,envir=.GlobalEnv,inherits=FALSE),logical(1))]
-saveRDS(mget(object_names,envir=.GlobalEnv,inherits=FALSE),file.path(result_dir,"analysis_objects.rds"))
+object_names <- c("rates","adjusted","model_comparison","model_table","run_id","analysis_mode","e_w_young","e_w_none","e_m_young","e_m_none","women_gap","men_gap","lf_w_young","lf_w_none","u_w_young","u_w_none","adj_w","adj_m","interaction","status_decomposition","status_w","status_m","describe_gap","contrast_interval","fmt_pct","fmt_pp","chart_colors","child_labels","chart_theme")
+analysis_env <- environment()
+object_names <- object_names[vapply(object_names,function(x) exists(x,envir=analysis_env,inherits=FALSE),logical(1))]
+saveRDS(mget(object_names,envir=analysis_env,inherits=FALSE),file.path(result_dir,"analysis_objects.rds"))
 ```
 
 ```{r}
 #| label: fig-employment
 #| include: false
 fig1_data <- rates
+fig1_data$sex <- factor(as.character(fig1_data$sex),levels=c("Women","Men"))
 fig1_data$family <- factor(child_labels[as.character(rates$child_group)],levels=rev(unname(child_labels)))
 fig1_data$value <- 100*rates$employment
 p1 <- ggplot2::ggplot(fig1_data,ggplot2::aes(family,value,fill=sex))+
@@ -395,7 +398,7 @@ p1 <- ggplot2::ggplot(fig1_data,ggplot2::aes(family,value,fill=sex))+
  ggplot2::scale_fill_manual(values=chart_colors)+
  ggplot2::scale_y_continuous(limits=c(0,100),breaks=c(0,25,50,75,100),labels=function(x)paste0(x,"%"),expand=c(0,0))+
  ggplot2::labs(y="Employed, share of all adults",x=NULL)+chart_theme()
-ggplot2::ggsave(file.path(figure_dir,"figure1_employment.png"),p1,width=8.5,height=5.6,dpi=220,bg="white")
+ggplot2::ggsave(file.path(figure_dir,"figure1_employment.png"),p1,width=8.5,height=5.6,dpi=300,bg="white")
 p1
 ```
 
@@ -405,39 +408,46 @@ p1
 states <- rbind(data.frame(rates[,c("sex","child_group")],state="Employed",share=rates$employment),
  data.frame(rates[,c("sex","child_group")],state="Unemployed",share=rates$participation-rates$employment),
  data.frame(rates[,c("sex","child_group")],state="Outside labor force",share=1-rates$participation))
+states <- states[as.character(states$child_group) %in% c("no_minor","age0_5"),]
+states$sex <- factor(as.character(states$sex),levels=c("Women","Men"))
 states$state <- factor(states$state,levels=c("Employed","Unemployed","Outside labor force"))
 states$family <- factor(child_labels[as.character(states$child_group)],levels=rev(unname(child_labels)))
 stopifnot(all(states$share>=-1e-8))
 p2 <- ggplot2::ggplot(states,ggplot2::aes(family,100*share,fill=state))+
- ggplot2::geom_col(width=.66,position=ggplot2::position_stack(reverse=TRUE))+ggplot2::facet_wrap(~sex,ncol=2)+ggplot2::coord_flip()+
+ ggplot2::geom_col(width=.66,position=ggplot2::position_stack(reverse=TRUE))+
+ ggplot2::geom_text(data=subset(states,state=="Outside labor force"),
+ ggplot2::aes(y=ifelse(share<.16,103,100-50*share),label=sprintf("%.1f%%",100*share),hjust=ifelse(share<.16,0,.5)),color="#39434b",size=3.8)+
+ ggplot2::facet_wrap(~sex,ncol=2)+ggplot2::coord_flip()+
  ggplot2::scale_fill_manual(values=c(Employed="#2f6276",Unemployed="#d4a25f",`Outside labor force`="#d8dee1"),name=NULL)+
- ggplot2::scale_y_continuous(limits=c(0,100),breaks=c(0,25,50,75,100),labels=function(x)paste0(x,"%"),expand=c(0,0))+
+ ggplot2::scale_y_continuous(limits=c(0,117),breaks=c(0,25,50,75,100),labels=function(x)paste0(x,"%"),expand=c(0,0))+
  ggplot2::labs(y="Share of all adults",x=NULL)+chart_theme()+
  ggplot2::theme(legend.position="none")
-ggplot2::ggsave(file.path(figure_dir,"figure2_labor_force.png"),p2,width=8.5,height=5.7,dpi=220,bg="white")
+ggplot2::ggsave(file.path(figure_dir,"figure2_labor_force.png"),p2,width=8.5,height=4.1,dpi=300,bg="white")
 p2
 ```
 
 ```{r}
-#| label: fig-adjusted
+#| label: fig-status-differences
 #| include: false
-fig3_data <- data.frame(
- sex=factor(rep(c("Men","Women"),each=2),levels=c("Men","Women")),
- comparison=factor(rep(c("Observed","Adjusted"),2),levels=c("Adjusted","Observed")),
- gap_pp=c(men_gap,adj_m,women_gap,adj_w))
-axis_max <- max(5,ceiling(max(abs(fig3_data$gap_pp))/5)*5+3)
-fig3_data$label_x <- fig3_data$gap_pp+ifelse(fig3_data$gap_pp>=0,.5,-.5)
-fig3_data$label_hjust <- ifelse(fig3_data$gap_pp>=0,0,1)
-p3 <- ggplot2::ggplot(fig3_data,ggplot2::aes(x=gap_pp,y=comparison,fill=comparison))+
- ggplot2::geom_vline(xintercept=0,color="#788991",linewidth=.65)+
- ggplot2::geom_col(width=.5,orientation="y")+
- ggplot2::geom_text(ggplot2::aes(x=label_x,label=sprintf("%+.1f",gap_pp),hjust=label_hjust),size=4,color="#223843")+
+fig3_data <- do.call(rbind,lapply(seq_len(nrow(status_decomposition)),function(i) {
+ z <- status_decomposition[i,]
+ data.frame(sex=z$sex,state=c("Outside the labor force","Unemployed","Employed"),
+ difference=c(-z$outside_contribution_pp,-z$unemployed_contribution_pp,z$employment_gap_pp))
+}))
+utils::write.csv(fig3_data,file.path(result_dir,"state_share_differences.csv"),row.names=FALSE)
+fig3_data$sex <- factor(fig3_data$sex,levels=c("Women","Men"))
+fig3_data$state <- factor(fig3_data$state,levels=c("Employed","Unemployed","Outside the labor force"))
+p3 <- ggplot2::ggplot(fig3_data,ggplot2::aes(x=difference,y=state,fill=state))+
+ ggplot2::geom_vline(xintercept=0,color="#7a898f",linewidth=.6)+
+ ggplot2::geom_col(width=.52,show.legend=FALSE)+
+ ggplot2::geom_text(ggplot2::aes(x=difference+ifelse(difference>=0,.65,-.65),
+ label=sprintf("%+.1f",difference),hjust=ifelse(difference>=0,0,1)),size=3.8,fontface="bold")+
  ggplot2::facet_wrap(~sex,ncol=2)+
- ggplot2::scale_fill_manual(values=c(Observed="#a6b9c1",Adjusted="#2f6276"),guide="none")+
- ggplot2::scale_x_continuous(limits=c(-axis_max,axis_max),breaks=scales::breaks_width(5),labels=function(x)ifelse(x==0,"0",sprintf("%+g",x)))+
- ggplot2::labs(x="Employment difference (percentage points)",y=NULL)+chart_theme()+
+ ggplot2::scale_fill_manual(values=c("Employed"="#2f6276","Outside the labor force"="#b65b3c","Unemployed"="#d4a25f"))+
+ ggplot2::scale_x_continuous(limits=c(-16,18),breaks=c(-10,-5,0,5,10,15),labels=function(x)ifelse(x==0,"0",sprintf("%+g",x)))+
+ ggplot2::labs(x="Difference in people per 100 adults",y=NULL)+chart_theme()+
  ggplot2::theme(panel.grid.major.y=ggplot2::element_blank(),strip.text=ggplot2::element_text(face="bold"))
-ggplot2::ggsave(file.path(figure_dir,"figure3_adjusted_gaps.png"),p3,width=8.5,height=4.1,dpi=220,bg="white")
+ggplot2::ggsave(file.path(figure_dir,"figure3_status_differences.png"),p3,width=8.5,height=4.1,dpi=300,bg="white")
 p3
 ```
 
@@ -468,7 +478,7 @@ for(d in c(result_dir,figure_dir)) {
  if(length(files)) file.copy(files,review_dir,overwrite=TRUE)
 }
 file.copy(file.path(project_dir,"EDITORIAL_WINDOW.md"),review_dir,overwrite=TRUE)
-writeLines(c("Editorial status: USER RUN COMPLETED; prose still requires result review.",
+writeLines(c(if(analysis_mode=="microdata") "Editorial status: MICRODATA RUN COMPLETED; review prose against results." else "Editorial status: REFERENCE PREVIEW; original microdata model not refitted.",
  "Send this folder (or its zip) for final analysis, interpretation and recommendations.",
  "Do not add raw CPS records, API keys or .Renviron."),file.path(review_dir,"HANDOFF.txt"))
 if(requireNamespace("zip",quietly=TRUE)) {
@@ -478,30 +488,43 @@ if(requireNamespace("zip",quietly=TRUE)) {
 } else message("Send the result/review_for_codex folder; zip it in Windows Explorer if needed.")
 ```
 
-::::::::: newspaper-report
+<style>
+.newspaper-report .method-note{max-width:660px;margin:1.4rem auto;padding:1rem 1.2rem;border:1px solid #dce1e5;background:#f8fafb;font:.86rem/1.6 Arial,sans-serif;}
+.newspaper-report .method-note>summary{cursor:pointer;font-weight:700;}
+.newspaper-report .method-note p{margin:1rem 0;}
+.newspaper-report .legend-observed{border-left:10px solid #899aa3;padding-left:.35rem;}
+</style>
+
+::::::: newspaper-report
+A nursery pickup can clash with the end of a shift, making the fit between family life and paid work an everyday concern. Employment figures capture a striking contrast. Among women living with a child under six, employment is roughly ten percentage points lower than among women with no minor child at home—yet the share unemployed is slightly smaller. The larger difference is among adults outside the labor force.
+
+<mark class="research-question"><strong>How does employment differ for women and men living with young children, and how much of that difference appears outside the labor force?</strong></mark>
+
+The comparison covers adults aged 25–54, separating those whose youngest own child at home is aged 0–5 from those with no own child under 18 at home.<sup><a href="#note-1">1</a>, <a href="#note-2">2</a></sup> Women and men show opposite employment patterns. Looking at employed, unemployed and nonparticipating adults together makes those patterns easier to interpret than an employment rate alone.
+
 <figure class="report-figure" aria-labelledby="figure-1-title">
 
 <figcaption id="figure-1-title">
 
-[Figure 1.]{.figure-number} Young children, different employment patterns
+[Figure 1.]{.figure-number} Women’s employment is lowest where children are youngest
 
 </figcaption>
 
 <p class="figure-deck">
 
-Employed adults per 100 adults, by recorded sex and youngest own child at home; ages 25–54, 2025.
+Employed per 100 adults, ages 25–54, 2025 survey reference week.
 
 </p>
 
-<img src="result/figures/figure1_employment.png" alt="Young children, different employment patterns" class="report-chart" style="display:block;width:100%;max-width:100%;height:auto;"/>
+<img src="result/figures/figure1_employment.png" alt="Employment by sex and youngest own child’s age, with women’s lowest rate in the young-child group" class="report-chart"/>
 
 ::: figure-legend
-[Men]{.legend-blue}[Women]{.legend-orange}
+[Women]{.legend-orange}[Men]{.legend-blue}
 :::
 
 <p class="figure-source">
 
-Source: <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a>; author’s weighted estimates. <a href="#note-1">Population and coverage notes</a>.
+Source: <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC; author’s weighted estimates</a>. <a href="#note-1">Population and timing</a>.
 
 </p>
 
@@ -509,47 +532,39 @@ Source: <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a>; author’s weig
 
 <summary>Chart notes</summary>
 
-<p>Labels show weighted employment rates. The denominator is all adults in each group. “No minor child” includes adults whose own children are absent or aged 18 or older; it does not mean never a parent. Older-child groups are different households, not the young-child group followed over time.</p>
+<p>Child age means the youngest own child living at home. The reference group may include parents of adult or nonresident children. These are different groups of people, not families followed as children grow older.</p>
 
 </details>
 
 </figure>
 
-A workday does not always end when a child needs collecting. Someone has to leave, arrange help or pay for care that covers the gap. For a family with a young child, fitting those hours together can matter as much as finding a vacancy.
+## Lower employment for women, higher employment for men
 
-The employment comparison differs by sex. Women living with a young child have **`r describe_gap(women_gap)`** than women with no own minor child at home, a gap of **`r fmt_pp(women_gap)`**. For men, the corresponding gap is **`r fmt_pp(men_gap)`**. One overall figure for parents would obscure that comparison.
+Among women living with a young child, **`r fmt_pct(e_w_young)`** are employed, compared with **`r fmt_pct(e_w_none)`** among women with no minor child at home. The difference is **`r sprintf("%.1f",abs(women_gap))` percentage points**: about ten fewer employed women per 100. For men, the comparison runs the other way. Employment is **`r fmt_pct(e_m_young)`** in the young-child group and **`r fmt_pct(e_m_none)`** in the reference group, a **`r sprintf("%.1f",men_gap)`-point advantage**.
 
-<mark class="research-question">How does employment differ for women and men living with young children? And does the difference reflect participation in the labor force, with the same pattern remaining after age and education adjustment?</mark> The comparison concerns Americans aged 25–54 in 2025, with a young child defined as the youngest own child at home aged 0–5.<sup><a href="#note-1">1</a>, <a href="#note-2">2</a>, <a href="#note-8">8</a></sup>
+The older-child groups sharpen this contrast. Women’s employment rates are much closer to the reference when the youngest child is six or older; men’s rates remain above their reference across all three child groups. The female shortfall is therefore particularly pronounced where children are youngest, rather than appearing equally across all child ages.
 
-## One average hides two working lives
+A single employment average for women and men would conceal this split in paid work. Even separate employment rates leave an important distinction unresolved: whether adults without jobs are classified as unemployed or are outside the labor force.
 
-Among women in the young-child group, **`r fmt_pct(e_w_young)`** are employed, against **`r fmt_pct(e_w_none)`** among women with no own minor child at home. The equivalent figures for men are **`r fmt_pct(e_m_young)`** and **`r fmt_pct(e_m_none)`**. These percentages count adults with a job out of all adults in each group.<sup><a href="#note-3">3</a></sup>
+## Three in ten women with young children are outside the labor force
 
-Figure 1 sets that comparison beside households with older children. A rate of 80% means about 80 adults in work per 100 in the group. A gap of ten percentage points means a difference of ten employed adults per 100, rather than a ten per cent relative change.<sup><a href="#note-4">4</a></sup>
-
-For households, access to paid work can affect the ability to earn or withstand a lost wage. But the chart does not measure pay, hours or financial hardship. It also cannot show how a particular family's employment changed after a birth: each bar describes different people at one point in time.
-
-## Beyond finding a job
-
-Having no job is not always counted as unemployment. The labor force includes adults who are employed and those who are unemployed; people neither working nor meeting the unemployment definition are outside it. This distinction separates participation in paid work from success in finding it.<sup><a href="#note-3">3</a></sup>
-
-Women living with a young child have a participation rate of **`r fmt_pct(lf_w_young)`**, compared with **`r fmt_pct(lf_w_none)`** in the reference group. Among participants, unemployment is **`r fmt_pct(u_w_young)`** and **`r fmt_pct(u_w_none)`**, respectively.
+The clearest contrast in Figure 2 is outside the labor force: **`r fmt_pct(1-lf_w_young)`** of women in the young-child group, against **`r fmt_pct(1-lf_w_none)`** in the reference group. These adults are neither employed nor classified as unemployed.<sup><a href="#note-3">3</a></sup>
 
 <figure class="report-figure" aria-labelledby="figure-2-title">
 
 <figcaption id="figure-2-title">
 
-[Figure 2.]{.figure-number} Having no job is not always unemployment
+[Figure 2.]{.figure-number} Three in ten women with young children are outside the labor force
 
 </figcaption>
 
 <p class="figure-deck">
 
-Each bar divides all adults in its group between work, job search and nonparticipation.
+Each bar divides 100 adults into employed, unemployed and outside the labor force.
 
 </p>
 
-<img src="result/figures/figure2_labor_force.png" alt="Having no job is not always unemployment" class="report-chart" style="display:block;width:100%;max-width:100%;height:auto;"/>
+<img src="result/figures/figure2_labor_force.png" alt="Labor-market status by child group and sex; the largest differences are in the share outside the labor force" class="report-chart"/>
 
 ::: figure-legend
 [Employed]{.legend-blue}[Unemployed]{.legend-gold}[Outside the labor force]{.legend-gray}
@@ -557,7 +572,7 @@ Each bar divides all adults in its group between work, job search and nonpartici
 
 <p class="figure-source">
 
-Source: <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a>; author’s weighted estimates. <a href="#note-1">Population and coverage notes</a>.
+Source: <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC; author’s weighted estimates</a>.
 
 </p>
 
@@ -565,68 +580,71 @@ Source: <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a>; author’s weig
 
 <summary>Chart notes</summary>
 
-<p>The segments sum to 100% of all adults. The unemployed segment is not the unemployment rate, whose denominator is labor-force participants. Outside the labor force does not identify childcare as the reason for nonparticipation. Men and women use the same scale.</p>
+<p>Labels identify adults outside the labor force per 100 adults. The unemployed segment also uses all adults as its denominator; it is not the conventional unemployment rate, which uses only labor-force participants. Temporary layoffs are included under the applicable definition.</p>
 
 </details>
 
 </figure>
 
-An accounting breakdown assigns **`r fmt_pp(lf_component)`** of the women's employment gap to participation differences and **`r fmt_pp(u_component)`** to unemployment differences. `r participation_note` The two components add to the observed employment gap; they do not identify what caused it.<sup><a href="#note-5">5</a></sup>
+For men, the pattern again reverses. Just **`r fmt_pct(1-pick_rate("Men","age0_5","participation"))`** of the young-child group are outside the labor force, compared with **`r fmt_pct(1-pick_rate("Men","no_minor","participation"))`** in the reference group. High male employment sits alongside a much smaller nonparticipating share, while lower female employment sits alongside a larger one.
 
-For employers and policymakers, that distinction changes the question. A participation gap prompts examination of whether paid work can fit household circumstances. An unemployment gap concerns job finding among those already in the labor force. The bars cannot distinguish care responsibilities from health, preferences or other reasons for not participating.
+The outside-labor-force contrasts are clear, but the narrow unemployed segments are harder to compare by eye. Putting both on the same scale—differences per 100 adults—shows how much each category differs between the child groups.
 
-## What age and education can explain
+## Ten more outside the labor force
 
-Adults living with young children may differ in age and qualifications from the reference group. A weighted linear probability model compares their employment while allowing for three age bands and whether they hold a bachelor's degree. It also allows the child-group association to differ for women and men.<sup><a href="#note-6">6</a></sup>
-
-For women, adjustment changes the gap from **`r fmt_pp(women_gap)`** to **`r fmt_pp(adj_w)`**. For men, it changes from **`r fmt_pp(men_gap)`** to **`r fmt_pp(adj_m)`**. `r if (women_gap*adj_w>0 && men_gap*adj_m>0) "Both associations retain their direction: broad age and education differences do not explain away the pattern." else "At least one association changes direction or reaches zero, making age and education important to interpreting the observed pattern."`
+For every 100 women, the young-child group has **`r sprintf("%.1f",abs(status_w$outside_contribution_pp))` more outside the labor force** but **`r sprintf("%.1f",status_w$unemployed_contribution_pp)` fewer unemployed** than the reference group. Those two differences correspond to **`r sprintf("%.1f",abs(women_gap))` fewer employed women**. Lower employment here accompanies a slightly smaller unemployed share, rather than a larger one.
 
 <figure class="report-figure" aria-labelledby="figure-3-title">
 
 <figcaption id="figure-3-title">
 
-[Figure 3.]{.figure-number} Does adjustment change the employment divide?
+[Figure 3.]{.figure-number} The larger contrast is outside the labor force, for women and men alike
 
 </figcaption>
 
 <p class="figure-deck">
 
-Young-child employment minus employment with no minor child, in percentage points.
+Young-child group minus the same-sex group with no minor child at home. Differences in people per 100 adults; positive means more, negative means fewer.
 
 </p>
 
-<img src="result/figures/figure3_adjusted_gaps.png" alt="Does adjustment change the employment divide?" class="report-chart" style="display:block;width:100%;max-width:100%;height:auto;"/>
+<img src="result/figures/figure3_status_differences.png" alt="Women: 10.6 more outside the labor force, 0.7 fewer unemployed and 9.9 fewer employed per 100. Men: 11.0 fewer outside the labor force, 1.7 fewer unemployed and 12.7 more employed per 100." class="report-chart"/>
 
 ::: figure-legend
-[Observed weighted gap]{.legend-lightblue}[Adjusted for age and degree status]{.legend-blue}
+[Outside the labor force]{.legend-orange}[Unemployed]{.legend-gold}[Employed: corresponding difference]{.legend-blue}
 :::
 
 <p class="figure-source">
 
-Source: Author’s weighted linear probability model; <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a>.
+Source: author’s calculations from the same <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a> weighted group rates.
 
 </p>
 
 <details>
 
-<summary>Chart notes</summary>
+<summary>Reading the chart</summary>
 
-<p>Positive bars indicate higher employment in the young-child group, negative bars lower employment. Both panels use the same signed scale and zero line. Adjusted 95% confidence intervals appear in the table below. Adjustment is a conditional association, not the effect of having a child.</p>
+<p>The first two rows compare the non-employed categories. The third shows the corresponding employment difference: the three signed differences sum to zero before rounding. The chart compares different groups of adults; it does not show people leaving work or estimate the effects of childcare.</p>
 
 </details>
 
 </figure>
 
-The model's outcome is one when an adult is employed and zero otherwise. Its coefficients therefore describe differences in the probability of employment; multiplying a contrast by 100 expresses it in percentage points. The specification is:
+The men’s comparison reinforces the distinction. Per 100 adults, the young-child group has **`r sprintf("%.1f",status_m$outside_contribution_pp)` fewer outside the labor force** and **`r sprintf("%.1f",status_m$unemployed_contribution_pp)` fewer unemployed**, alongside **`r sprintf("%.1f",men_gap)` more employed**. Despite the opposite employment patterns, the same finding holds for each sex: the outside-labor-force difference is larger than the unemployment difference.<sup><a href="#note-4">4</a></sup>
 
-::: model-spec
-$$
-E_i=\alpha+\beta F_i+\sum_g\gamma_g C_{ig}
-+\sum_g\delta_g(F_i C_{ig})+\boldsymbol{\theta}'A_i+\lambda B_i+u_i.
-$$
-:::
+This comparison identifies the composition of the employment gap. It does not establish why participation differs. Childcare, working conditions and household circumstances may matter, but their separate roles are not measured here. Allowing for broad age and education differences changes the employment gaps only slightly; the supporting estimates are available below.<sup><a href="#note-5">5</a></sup>
 
-Here $F_i$ identifies women, $C_{ig}$ child-age groups, $A_i$ age bands and $B_i$ degree status. The no-minor-child group is the reference. The young-child contrast is $\gamma_{\text{young}}$ for men and $\gamma_{\text{young}}+\delta_{\text{young}}$ for women. The table reports those contrasts and the difference between them.<sup><a href="#note-6">6</a>, <a href="#note-7">7</a></sup>
+## Takeaway
+
+Women living with young children have employment **`r sprintf("%.1f",abs(women_gap))` percentage points lower** than their same-sex reference group; men have employment **`r sprintf("%.1f",men_gap)` points higher**. In both comparisons, differences outside the labor force are larger than differences in unemployment. For women, a smaller unemployed share even offsets a little of the employment shortfall.
+
+These findings support reading employment and unemployment alongside nonparticipation when assessing work and family life. They do not identify which circumstances keep people outside the labor market or which policy would change that. **Read the employment gap alongside nonparticipation, not unemployment alone.**<sup><a href="#note-6">6</a></sup>
+
+<details class="method-note">
+
+<summary>A supporting check: does adjusting for age and education change the comparison?</summary>
+
+The regression compares the child groups after allowing for broad age bands and bachelor’s-degree status. Women’s employment gap changes from **`r sprintf("%.1f",abs(women_gap))`** to **`r sprintf("%.1f",abs(adj_w))` points lower**; men’s from **`r sprintf("%.1f",men_gap)`** to **`r sprintf("%.1f",adj_m)` points higher**. Adjustment changes neither direction and little of the size, so it adds a modest check rather than a new explanation.
 
 ::: model-table
 ```{r}
@@ -636,83 +654,78 @@ knitr::kable(model_table,align=c("l","r","r","r"))
 ```
 :::
 
-The adjusted women's interval is **`r contrast_interval("Women")`** and the men's is **`r contrast_interval("Men")`**. The difference between the adjusted associations is **`r fmt_pp(interaction$estimate_pp)`**; its interval **`r if(contrast_interval("Women minus men")=="crosses zero") "crosses zero" else paste("is",contrast_interval("Women minus men"))`**. An interval crossing zero leaves the direction of that particular association uncertain.
+The women’s adjusted contrast means about **`r sprintf("%.1f",abs(adj_w))` fewer employed women per 100** within the model’s age and education categories. The men’s contrast has the corresponding interpretation. The last row compares those two gaps; it is not the direct employment difference between women and men. These are adjusted associations, not effects of having children.
 
-Adjustment makes the comparison more specific, but it leaves partner earnings, care availability and selection into parenthood unaccounted for. The model describes an employment association among broadly comparable adults. It does not estimate what having a child would do to an individual's job prospects.
+</details>
 
-## Work and care need to fit together
+## Footnotes {#footnotes}
 
-The participation breakdown and adjusted comparison locate the employment difference more precisely than a single parenthood average. They do not establish which constraint caused it or how much a particular policy would change it.
+<ol class="source-notes">
 
-Employers examining retention can assess whether schedules, leave and return-to-work arrangements fit the needs of staff with care responsibilities. Policymakers evaluating childcare provision should examine participation alongside unemployment and test whether support reaches adults who want paid work. These are priorities for assessment, rather than remedies whose effects this model has measured.
+<li id="note-1">
 
-If more reliable care and workable schedules enable additional adults to participate, employment could rise without a large fall in unemployment. Testing that possibility requires evidence over time and a credible evaluation. This cross-section cannot forecast employment or household income.
+Figures are based on the 2025 <a href="https://cps.ipums.org/cps/">IPUMS CPS</a> survey, weighted to represent adults aged 25–54. Employment refers to the survey reference week.
 
-## Takeaway
+</li>
 
-Young children at home are associated with different employment patterns for women and men. Their observed gaps relative to adults with no own minor child are **`r fmt_pp(women_gap)`** and **`r fmt_pp(men_gap)`**, respectively. Participation helps describe the women's comparison; age and education adjustment changes the gaps to **`r fmt_pp(adj_w)`** and **`r fmt_pp(adj_m)`**.
+<li id="note-2">
 
-The practical implication is to examine access to paid work as well as job finding. Work and care arrangements deserve closer scrutiny, while uncertainty and unmeasured household circumstances limit conclusions about causes and remedies.
+“Young child” means an own child aged 0–5 living at home. The comparison group has no own child under 18 at home; it includes some parents of older or nonresident children. Women and men are compared separately.
 
-## Footnotes
+</li>
 
-::: source-notes
-1.  **Population, sources and coverage.** Author’s analysis of the 2025 <a href="https://cps.ipums.org/cps/">IPUMS CPS ASEC</a>, sample cps2025_03s, ages 25–54 with valid analysis variables and positive ASECWT. This is a single cross-section, not a truncated 2024–2026 series. Downloaded person records include ages and cases outside the analytic sample; sample_audit.csv documents selection. CPS is a household survey; ASEC is its annual social and economic supplement.
+<li id="note-3">
 
-2.  **Children and recorded sex.** <a href="https://cps.ipums.org/cps-action/variables/YNGCH">YNGCH</a> describes the youngest own biological, adopted or stepchild at home. “No minor child” includes no own child present or a youngest own child aged 18 or older. It does not identify adults who have never been parents. Recorded sex is not a measure of gender identity.
+All chart shares count people per 100 adults in the group. People outside the labor force are neither employed nor classified as unemployed. The usual unemployment rate instead counts unemployed people per 100 labor-force participants.
 
-3.  **Employment, participation and unemployment.** Employment divides employed adults by all adults in the group. Participation divides employed plus unemployed adults by all adults. Unemployment divides unemployed adults by labor-force participants; the classification includes people on temporary layoff under the applicable definition. Figure 2 instead divides every status by all adults.
+</li>
 
-4.  **Percentage points and household implications.** 80% minus 70% is ten percentage points, not a ten per cent relative increase. A group employment-rate difference is not a count of individuals who left work after childbirth. Household-income, hours and care mechanisms discussed in the article are interpretations to investigate, not additional estimates from these figures.
+<li id="note-4">
 
-5.  **Participation breakdown.** Employment equals participation multiplied by one minus unemployment. With $L$ for participation, $U$ for unemployment, $y$ for young-child households and $n$ for the reference, the employment gap is $100(L_y-L_n)(1-U_n)-100L_y(U_y-U_n)$. The two components use the reference unemployment rate and the young-child participation rate. This accounting identity is not a causal decomposition.
+Everyone falls into one of the three states, so more people in one must be balanced by fewer elsewhere. Small discrepancies in the displayed totals reflect rounding.
 
-6.  **Model and comparisons.** The specification is employed \~ sex \* child_group + age_band + college. References are men, no minor child, ages 25–34 and below bachelor’s degree. Age bands are 25–34, 35–44 and 45–54. The linear model can produce fitted probabilities outside zero and one; model diagnostics record that limitation. Adjusted bars are coefficient contrasts at common controls, not observed employment rates.
+</li>
 
-7.  **Weights and uncertainty.** ASECWT supplies person weights. Uncertainty uses all 160 REPWTP person replicate weights, successive-difference replication and mse=TRUE. Contrasts use t(159) intervals and account for covariance between main and interaction terms. See <a href="https://cps.ipums.org/cps/repwt.shtml">IPUMS replicate-weight guidance</a>. Observed gaps have no intervals in this table; the displayed intervals refer to adjusted contrasts. Full parameters and diagnostics are exported on a microdata run.
+<li id="note-5">
 
-8.  **Execution and publication status.** Execution mode: **`r if(analysis_mode=="microdata") "original microdata re-estimated in this run" else "REFERENCE PREVIEW: earlier aggregates; model not re-estimated"`**. A reference preview permits inspection of the draft. A new raw-data run and editorial review are required before final publication.
-:::
+The supporting comparison allows for broad age groups and bachelor’s-degree status. Details and uncertainty estimates accompany the code.
+
+</li>
+
+<li id="note-6">
+
+The survey compares different people at one point in time. It does not follow families through childbirth or establish why their employment differs. Charts show estimates; confidence intervals are supplied with the results.
+
+</li>
+
+</ol>
 
 ## Reproducibility
 
-`r if (exists("params") && nzchar(params[["repository-url"]])) paste0("The analysis code is available in the [GitHub repository](",params[["repository-url"]],").") else "The analysis code is included in the accompanying project."` The standalone repository uses the following structure. Generated data and result files appear after a successful run:
+**Edition status.** `r if(analysis_mode=="microdata") "The original microdata model was re-estimated in this execution." else "This review uses earlier aggregate estimates in data/reference_only; the original CPS microdata model was not re-estimated for this preview."`
+
+`r if (exists("params") && nzchar(params[["repository-url"]])) paste0("The analysis code is available in the [GitHub repository](",params[["repository-url"]],").") else "The analysis code is included in the accompanying project."`
 
 ``` text
 index.qmd
 README.md
 Blog3.Rproj
 code/
-├── 01_clean_analyze.R           # acquire/read CPS and estimate models
-├── 02_make_figures.R            # generate figures and execution audit
-├── blog3_analysis.R             # complete extraction of QMD R chunks
-└── install_packages.R
+  01_clean_analyze.R
+  02_make_figures.R
+  blog3_analysis.R
+  install_packages.R
 data/
-├── raw/
-│   └── README.md                # private extract placement instructions
-└── processed/
-    ├── weighted_rates.csv  # estimates produced in microdata mode
-    └── adjusted_gaps.csv
+  raw/              # placement instructions; licensed extracts remain private
+  processed/        # weighted group rates and adjusted contrasts
 result/
-├── figures/
-│   ├── figure1_employment.png
-│   ├── figure2_labor_force.png
-│   └── figure3_adjusted_gaps.png
-└── tables/
-    ├── weighted_rates.csv
-    ├── model_comparison.csv
-    ├── adjusted_gaps.csv
-    ├── employment_decomposition.csv
-    ├── analysis_objects.rds     # aggregate-only objects for plot scripts
-    ├── data_coverage.csv
-    └── execution_audit.csv
+  figures/          # three figures generated from estimates
+  tables/           # estimates, model diagnostics and execution audit
 ```
 
-To reproduce the figures, open the website's RStudio project and place this post under `blog/posts/post3/`, retaining the folder structure. Keep the corresponding IPUMS CPS extract and its XML dictionary together in a private folder. Set `BLOG3_DDI_PATH` to the dictionary path if using an existing extract; otherwise the first run requests the extract through the API. Input placement and key setup are documented in `README.md`.
+To reproduce the figures, open the website’s RStudio project and keep the post under `blog/posts/post3/`, retaining the folder structure. Keep the IPUMS CPS extract and its XML dictionary together in a private folder. Set `BLOG3_DDI_PATH` to the dictionary path for an existing extract; otherwise configure the private `IPUMS_API_KEY` and CPS registration as described in `README.md`.
 
-Run `blog/posts/post3/code/01_clean_analyze.R`, followed by `blog/posts/post3/code/02_make_figures.R`. Render `blog/posts/post3/index.qmd` to rebuild the article and apply its figure styling.
+Render `blog/posts/post3/index.qmd` to run the complete analysis and rebuild the article, including all three figures and the supporting model table. For standalone use, open `Blog3.Rproj` and render `index.qmd`. Running the scripts separately is optional: use `code/01_clean_analyze.R` followed by `code/02_make_figures.R`, or the combined `code/blog3_analysis.R`.
 
-Alternatively, open the standalone `Blog3.Rproj`, run the same scripts from `code/`, and render `index.qmd`. The complete extracted script, `code/blog3_analysis.R`, is an alternative to those two steps.
-
-The scripts generate processed estimates, model tables and figures using project-relative output paths. The default input mode re-estimates the model from the 2025 ASEC extract using person and replicate weights. Licensed person records and API credentials remain outside the published project. Earlier aggregate files in `data/reference_only/` are used only when reference mode is explicitly selected; they cannot reproduce a fresh model fit.
-:::::::::
+The scripts generate processed estimates, figures and model tables using project-relative output paths. The default mode refits from the 2025 ASEC microdata. Explicit reference mode uses earlier aggregate files in `data/reference_only/` for review; it does not reproduce a new microdata fit.
+:::::::

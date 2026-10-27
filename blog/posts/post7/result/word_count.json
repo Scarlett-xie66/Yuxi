@@ -1,0 +1,5 @@
+{
+  "main_text_words": 691,
+  "counting_rule": "Whitespace-separated words in main article paragraphs, including standfirst, opening question and Takeaway. Excludes title, byline, section headings, figures, captions, chart controls, source notes, footnotes, note markers and Reproducibility.",
+  "main_text_paragraphs": 13
+}

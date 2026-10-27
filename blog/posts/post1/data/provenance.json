@@ -1,0 +1,11 @@
+{
+  "source": "scikit-learn bundled iris dataset, sklearn.datasets.load_iris",
+  "source_documentation": "https://scikit-learn.org/stable/datasets/toy_dataset.html#iris-plants-dataset",
+  "observations": 150,
+  "measurement_units": "centimeters",
+  "archived_features": ["sepal length", "sepal width", "petal length", "petal width"],
+  "analysis_features": ["petal length", "petal width"],
+  "species_used_in_fit": false,
+  "preprocessing": "column means subtracted; no standardization",
+  "figures": "Flower projection, covariance eigenvectors and variance decomposition all use the same observed petal data. Vectors used to illustrate repeated multiplication are constructed from the fitted covariance eigenvectors."
+}

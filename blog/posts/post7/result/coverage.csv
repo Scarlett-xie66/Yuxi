@@ -1,0 +1,218 @@
+iso3,country,region,paired_changes_before_break_filter,changes_after_break_filter,included
+ABW,Aruba,Latin America & Caribbean,0.0,0.0,False
+AFG,Afghanistan,"Middle East, North Africa, Afghanistan & Pakistan",1.0,1.0,False
+AGO,Angola,Sub-Saharan Africa,7.0,7.0,False
+ALB,Albania,Europe & Central Asia,18.0,18.0,True
+AND,Andorra,Europe & Central Asia,0.0,0.0,False
+ARE,United Arab Emirates,"Middle East, North Africa, Afghanistan & Pakistan",8.0,8.0,False
+ARG,Argentina,Latin America & Caribbean,0.0,0.0,False
+ARM,Armenia,Europe & Central Asia,0.0,0.0,False
+ASM,American Samoa,East Asia & Pacific,0.0,0.0,False
+ATG,Antigua and Barbuda,Latin America & Caribbean,0.0,0.0,False
+AUS,Australia,East Asia & Pacific,24.0,23.0,True
+AUT,Austria,Europe & Central Asia,24.0,23.0,True
+AZE,Azerbaijan,Europe & Central Asia,22.0,22.0,True
+BDI,Burundi,Sub-Saharan Africa,0.0,0.0,False
+BEL,Belgium,Europe & Central Asia,24.0,24.0,True
+BEN,Benin,Sub-Saharan Africa,1.0,1.0,False
+BFA,Burkina Faso,Sub-Saharan Africa,3.0,3.0,False
+BGD,Bangladesh,South Asia,3.0,3.0,False
+BGR,Bulgaria,Europe & Central Asia,24.0,24.0,True
+BHR,Bahrain,"Middle East, North Africa, Afghanistan & Pakistan",7.0,7.0,False
+BHS,"Bahamas, The",Latin America & Caribbean,4.0,4.0,False
+BIH,Bosnia and Herzegovina,Europe & Central Asia,18.0,14.0,True
+BLR,Belarus,Europe & Central Asia,0.0,0.0,False
+BLZ,Belize,Latin America & Caribbean,6.0,6.0,False
+BMU,Bermuda,North America,0.0,0.0,False
+BOL,Bolivia,Latin America & Caribbean,19.0,16.0,True
+BRA,Brazil,Latin America & Caribbean,21.0,20.0,True
+BRB,Barbados,Latin America & Caribbean,11.0,10.0,True
+BRN,Brunei Darussalam,East Asia & Pacific,7.0,7.0,False
+BTN,Bhutan,South Asia,13.0,13.0,True
+BWA,Botswana,Sub-Saharan Africa,7.0,7.0,False
+CAF,Central African Republic,Sub-Saharan Africa,0.0,0.0,False
+CAN,Canada,North America,24.0,24.0,True
+CHE,Switzerland,Europe & Central Asia,24.0,24.0,True
+CHI,Channel Islands,Europe & Central Asia,0.0,0.0,False
+CHL,Chile,Latin America & Caribbean,24.0,21.0,True
+CHN,China,East Asia & Pacific,0.0,0.0,False
+CIV,Cote d'Ivoire,Sub-Saharan Africa,2.0,2.0,False
+CMR,Cameroon,Sub-Saharan Africa,0.0,0.0,False
+COD,"Congo, Dem. Rep.",Sub-Saharan Africa,0.0,0.0,False
+COG,"Congo, Rep.",Sub-Saharan Africa,0.0,0.0,False
+COL,Colombia,Latin America & Caribbean,21.0,19.0,True
+COM,Comoros,Sub-Saharan Africa,0.0,0.0,False
+CPV,Cabo Verde,Sub-Saharan Africa,2.0,2.0,False
+CRI,Costa Rica,Latin America & Caribbean,24.0,23.0,True
+CUB,Cuba,Latin America & Caribbean,2.0,2.0,False
+CUW,Curacao,Latin America & Caribbean,2.0,2.0,False
+CYM,Cayman Islands,Latin America & Caribbean,7.0,7.0,False
+CYP,Cyprus,Europe & Central Asia,24.0,24.0,True
+CZE,Czechia,Europe & Central Asia,24.0,24.0,True
+DEU,Germany,Europe & Central Asia,24.0,24.0,True
+DJI,Djibouti,"Middle East, North Africa, Afghanistan & Pakistan",0.0,0.0,False
+DMA,Dominica,Latin America & Caribbean,0.0,0.0,False
+DNK,Denmark,Europe & Central Asia,24.0,24.0,True
+DOM,Dominican Republic,Latin America & Caribbean,24.0,22.0,True
+DZA,Algeria,"Middle East, North Africa, Afghanistan & Pakistan",5.0,5.0,False
+ECU,Ecuador,Latin America & Caribbean,22.0,18.0,True
+EGY,"Egypt, Arab Rep.","Middle East, North Africa, Afghanistan & Pakistan",16.0,14.0,True
+ERI,Eritrea,Sub-Saharan Africa,0.0,0.0,False
+ESP,Spain,Europe & Central Asia,24.0,24.0,True
+EST,Estonia,Europe & Central Asia,24.0,24.0,True
+ETH,Ethiopia,Sub-Saharan Africa,0.0,0.0,False
+FIN,Finland,Europe & Central Asia,24.0,24.0,True
+FJI,Fiji,East Asia & Pacific,0.0,0.0,False
+FRA,France,Europe & Central Asia,24.0,23.0,True
+FRO,Faroe Islands,Europe & Central Asia,0.0,0.0,False
+FSM,"Micronesia, Fed. Sts.",East Asia & Pacific,0.0,0.0,False
+GAB,Gabon,Sub-Saharan Africa,0.0,0.0,False
+GBR,United Kingdom,Europe & Central Asia,24.0,23.0,True
+GEO,Georgia,Europe & Central Asia,24.0,22.0,True
+GHA,Ghana,Sub-Saharan Africa,3.0,3.0,False
+GIB,Gibraltar,Europe & Central Asia,0.0,0.0,False
+GIN,Guinea,Sub-Saharan Africa,0.0,0.0,False
+GMB,"Gambia, The",Sub-Saharan Africa,0.0,0.0,False
+GNB,Guinea-Bissau,Sub-Saharan Africa,1.0,1.0,False
+GNQ,Equatorial Guinea,Sub-Saharan Africa,0.0,0.0,False
+GRC,Greece,Europe & Central Asia,24.0,24.0,True
+GRD,Grenada,Latin America & Caribbean,3.0,3.0,False
+GRL,Greenland,Europe & Central Asia,7.0,7.0,False
+GTM,Guatemala,Latin America & Caribbean,14.0,8.0,False
+GUM,Guam,East Asia & Pacific,5.0,5.0,False
+GUY,Guyana,Latin America & Caribbean,3.0,3.0,False
+HKG,"Hong Kong SAR, China",East Asia & Pacific,24.0,23.0,True
+HND,Honduras,Latin America & Caribbean,19.0,16.0,True
+HRV,Croatia,Europe & Central Asia,22.0,22.0,True
+HTI,Haiti,Latin America & Caribbean,0.0,0.0,False
+HUN,Hungary,Europe & Central Asia,24.0,24.0,True
+IDN,Indonesia,East Asia & Pacific,23.0,20.0,True
+IMN,Isle of Man,Europe & Central Asia,0.0,0.0,False
+IND,India,South Asia,6.0,6.0,False
+IRL,Ireland,Europe & Central Asia,24.0,24.0,True
+IRN,"Iran, Islamic Rep.","Middle East, North Africa, Afghanistan & Pakistan",19.0,17.0,True
+IRQ,Iraq,"Middle East, North Africa, Afghanistan & Pakistan",1.0,1.0,False
+ISL,Iceland,Europe & Central Asia,24.0,24.0,True
+ISR,Israel,"Middle East, North Africa, Afghanistan & Pakistan",24.0,23.0,True
+ITA,Italy,Europe & Central Asia,24.0,24.0,True
+JAM,Jamaica,Latin America & Caribbean,14.0,14.0,True
+JOR,Jordan,"Middle East, North Africa, Afghanistan & Pakistan",21.0,21.0,True
+JPN,Japan,East Asia & Pacific,24.0,23.0,True
+KAZ,Kazakhstan,Europe & Central Asia,2.0,2.0,False
+KEN,Kenya,Sub-Saharan Africa,0.0,0.0,False
+KGZ,Kyrgyz Republic,Europe & Central Asia,14.0,13.0,True
+KHM,Cambodia,East Asia & Pacific,13.0,12.0,True
+KIR,Kiribati,East Asia & Pacific,1.0,1.0,False
+KNA,St. Kitts and Nevis,Latin America & Caribbean,0.0,0.0,False
+KOR,"Korea, Rep.",East Asia & Pacific,24.0,23.0,True
+KWT,Kuwait,"Middle East, North Africa, Afghanistan & Pakistan",5.0,5.0,False
+LAO,Lao PDR,East Asia & Pacific,0.0,0.0,False
+LBN,Lebanon,"Middle East, North Africa, Afghanistan & Pakistan",0.0,0.0,False
+LBR,Liberia,Sub-Saharan Africa,1.0,0.0,False
+LBY,Libya,"Middle East, North Africa, Afghanistan & Pakistan",0.0,0.0,False
+LCA,St. Lucia,Latin America & Caribbean,16.0,15.0,True
+LIE,Liechtenstein,Europe & Central Asia,9.0,9.0,False
+LKA,Sri Lanka,South Asia,15.0,14.0,True
+LSO,Lesotho,Sub-Saharan Africa,0.0,0.0,False
+LTU,Lithuania,Europe & Central Asia,24.0,24.0,True
+LUX,Luxembourg,Europe & Central Asia,24.0,24.0,True
+LVA,Latvia,Europe & Central Asia,24.0,24.0,True
+MAC,"Macao SAR, China",East Asia & Pacific,1.0,1.0,False
+MAF,St. Martin (French part),Latin America & Caribbean,0.0,0.0,False
+MAR,Morocco,"Middle East, North Africa, Afghanistan & Pakistan",12.0,12.0,True
+MCO,Monaco,Europe & Central Asia,0.0,0.0,False
+MDA,Moldova,Europe & Central Asia,24.0,24.0,True
+MDG,Madagascar,Sub-Saharan Africa,0.0,0.0,False
+MDV,Maldives,South Asia,1.0,1.0,False
+MEX,Mexico,Latin America & Caribbean,22.0,19.0,True
+MHL,Marshall Islands,East Asia & Pacific,0.0,0.0,False
+MKD,North Macedonia,Europe & Central Asia,21.0,20.0,True
+MLI,Mali,Sub-Saharan Africa,10.0,9.0,False
+MLT,Malta,"Middle East, North Africa, Afghanistan & Pakistan",24.0,23.0,True
+MMR,Myanmar,East Asia & Pacific,4.0,3.0,False
+MNE,Montenegro,Europe & Central Asia,17.0,17.0,True
+MNG,Mongolia,East Asia & Pacific,18.0,16.0,True
+MNP,Northern Mariana Islands,East Asia & Pacific,0.0,0.0,False
+MOZ,Mozambique,Sub-Saharan Africa,0.0,0.0,False
+MRT,Mauritania,Sub-Saharan Africa,0.0,0.0,False
+MUS,Mauritius,Sub-Saharan Africa,0.0,0.0,False
+MWI,Malawi,Sub-Saharan Africa,1.0,0.0,False
+MYS,Malaysia,East Asia & Pacific,0.0,0.0,False
+NAM,Namibia,Sub-Saharan Africa,3.0,3.0,False
+NCL,New Caledonia,East Asia & Pacific,4.0,4.0,False
+NER,Niger,Sub-Saharan Africa,1.0,0.0,False
+NGA,Nigeria,Sub-Saharan Africa,2.0,1.0,False
+NIC,Nicaragua,Latin America & Caribbean,0.0,0.0,False
+NLD,Netherlands,Europe & Central Asia,24.0,24.0,True
+NOR,Norway,Europe & Central Asia,24.0,24.0,True
+NPL,Nepal,South Asia,1.0,1.0,False
+NRU,Naoero,East Asia & Pacific,0.0,0.0,False
+NZL,New Zealand,East Asia & Pacific,24.0,24.0,True
+OMN,Oman,"Middle East, North Africa, Afghanistan & Pakistan",0.0,0.0,False
+PAK,Pakistan,"Middle East, North Africa, Afghanistan & Pakistan",14.0,11.0,True
+PAN,Panama,Latin America & Caribbean,24.0,21.0,True
+PER,Peru,Latin America & Caribbean,24.0,21.0,True
+PHL,Philippines,East Asia & Pacific,23.0,21.0,True
+PLW,Palau,East Asia & Pacific,0.0,0.0,False
+PNG,Papua New Guinea,East Asia & Pacific,0.0,0.0,False
+POL,Poland,Europe & Central Asia,24.0,23.0,True
+PRI,Puerto Rico (US),Latin America & Caribbean,2.0,2.0,False
+PRK,"Korea, Dem. People's Rep.",East Asia & Pacific,0.0,0.0,False
+PRT,Portugal,Europe & Central Asia,24.0,24.0,True
+PRY,Paraguay,Latin America & Caribbean,23.0,22.0,True
+PSE,West Bank and Gaza,"Middle East, North Africa, Afghanistan & Pakistan",22.0,22.0,True
+PYF,French Polynesia,East Asia & Pacific,0.0,0.0,False
+QAT,Qatar,"Middle East, North Africa, Afghanistan & Pakistan",7.0,7.0,False
+ROU,Romania,Europe & Central Asia,24.0,24.0,True
+RUS,Russian Federation,Europe & Central Asia,14.0,14.0,True
+RWA,Rwanda,Sub-Saharan Africa,7.0,7.0,False
+SAU,Saudi Arabia,"Middle East, North Africa, Afghanistan & Pakistan",15.0,15.0,True
+SDN,Sudan,Sub-Saharan Africa,0.0,0.0,False
+SEN,Senegal,Sub-Saharan Africa,4.0,4.0,False
+SGP,Singapore,East Asia & Pacific,22.0,22.0,True
+SLB,Solomon Islands,East Asia & Pacific,0.0,0.0,False
+SLE,Sierra Leone,Sub-Saharan Africa,0.0,0.0,False
+SLV,El Salvador,Latin America & Caribbean,5.0,5.0,False
+SMR,San Marino,Europe & Central Asia,0.0,0.0,False
+SOM,"Somalia, Fed. Rep.",Sub-Saharan Africa,0.0,0.0,False
+SRB,Serbia,Europe & Central Asia,19.0,15.0,True
+SSD,South Sudan,Sub-Saharan Africa,0.0,0.0,False
+STP,Sao Tome and Principe,Sub-Saharan Africa,0.0,0.0,False
+SUR,Suriname,Latin America & Caribbean,0.0,0.0,False
+SVK,Slovak Republic,Europe & Central Asia,24.0,23.0,True
+SVN,Slovenia,Europe & Central Asia,24.0,24.0,True
+SWE,Sweden,Europe & Central Asia,24.0,24.0,True
+SWZ,Eswatini,Sub-Saharan Africa,0.0,0.0,False
+SXM,Sint Maarten (Dutch part),Latin America & Caribbean,0.0,0.0,False
+SYC,Seychelles,Sub-Saharan Africa,7.0,7.0,False
+SYR,Syrian Arab Republic,"Middle East, North Africa, Afghanistan & Pakistan",7.0,7.0,False
+TCA,Turks and Caicos Islands,Latin America & Caribbean,0.0,0.0,False
+TCD,Chad,Sub-Saharan Africa,0.0,0.0,False
+TGO,Togo,Sub-Saharan Africa,1.0,0.0,False
+THA,Thailand,East Asia & Pacific,22.0,20.0,True
+TJK,Tajikistan,Europe & Central Asia,1.0,1.0,False
+TKM,Turkmenistan,Europe & Central Asia,0.0,0.0,False
+TLS,Timor-Leste,East Asia & Pacific,2.0,2.0,False
+TON,Tonga,East Asia & Pacific,0.0,0.0,False
+TTO,Trinidad and Tobago,Latin America & Caribbean,16.0,15.0,True
+TUN,Tunisia,"Middle East, North Africa, Afghanistan & Pakistan",14.0,12.0,True
+TUR,Turkiye,Europe & Central Asia,24.0,24.0,True
+TUV,Tuvalu,East Asia & Pacific,1.0,1.0,False
+TZA,Tanzania,Sub-Saharan Africa,4.0,3.0,False
+UGA,Uganda,Sub-Saharan Africa,2.0,1.0,False
+UKR,Ukraine,Europe & Central Asia,3.0,3.0,False
+URY,Uruguay,Latin America & Caribbean,24.0,20.0,True
+USA,United States,North America,0.0,0.0,False
+UZB,Uzbekistan,Europe & Central Asia,5.0,5.0,False
+VCT,St. Vincent and the Grenadines,Latin America & Caribbean,0.0,0.0,False
+VEN,"Venezuela, RB",Latin America & Caribbean,8.0,8.0,False
+VGB,British Virgin Islands,Latin America & Caribbean,0.0,0.0,False
+VIR,Virgin Islands (U.S.),Latin America & Caribbean,0.0,0.0,False
+VNM,Viet Nam,East Asia & Pacific,19.0,19.0,True
+VUT,Vanuatu,East Asia & Pacific,2.0,2.0,False
+WSM,Samoa,East Asia & Pacific,2.0,1.0,False
+XKX,Kosovo,Europe & Central Asia,13.0,13.0,True
+YEM,"Yemen, Rep.","Middle East, North Africa, Afghanistan & Pakistan",6.0,6.0,False
+ZAF,South Africa,Sub-Saharan Africa,24.0,23.0,True
+ZMB,Zambia,Sub-Saharan Africa,7.0,6.0,False
+ZWE,Zimbabwe,Sub-Saharan Africa,4.0,4.0,False

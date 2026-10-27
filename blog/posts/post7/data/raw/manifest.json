@@ -1,0 +1,47 @@
+{
+  "retrieved_at_utc": "2026-10-26T20:46:40.172079+00:00",
+  "sources": [
+    {
+      "file": "countries.json",
+      "url": "https://api.worldbank.org/v2/country?format=json&per_page=400",
+      "records": 296,
+      "last_updated": null,
+      "sha256": "c9acf3932785191a649cbc04c3056af4cf64a236e5c3b49d49be25ddb0440bce"
+    },
+    {
+      "file": "gdp.json",
+      "url": "https://api.worldbank.org/v2/country/all/indicator/NY.GDP.MKTP.KD.ZG?format=json&date=2000:2024&per_page=20000&footnote=y",
+      "records": 6650,
+      "last_updated": "2026-10-08",
+      "sha256": "3950b134cbd5dff0c616f9a66df86fde5cb7aedaff5968ed463e881585891350"
+    },
+    {
+      "file": "female_national.json",
+      "url": "https://api.worldbank.org/v2/country/all/indicator/SL.EMP.TOTL.SP.FE.NE.ZS?format=json&date=2000:2024&per_page=20000&footnote=y",
+      "records": 6650,
+      "last_updated": "2026-10-08",
+      "sha256": "40debb13098de55d49f005137528ffa257c4dd8ca3a52d70bab12d791460f993"
+    },
+    {
+      "file": "male_national.json",
+      "url": "https://api.worldbank.org/v2/country/all/indicator/SL.EMP.TOTL.SP.MA.NE.ZS?format=json&date=2000:2024&per_page=20000&footnote=y",
+      "records": 6650,
+      "last_updated": "2026-10-08",
+      "sha256": "d6ebaa38d2fa8df58e43f99b2eeeef7bd016c5bf00e54654156f868dd6d0cf3e"
+    },
+    {
+      "file": "female_modeled.json",
+      "url": "https://api.worldbank.org/v2/country/all/indicator/SL.EMP.TOTL.SP.FE.ZS?format=json&date=2000:2024&per_page=20000&footnote=y",
+      "records": 6650,
+      "last_updated": "2026-10-08",
+      "sha256": "7a5364ea3dbb5126e25757f185c065b44668470f48b3076eec710893e37ffdc7"
+    },
+    {
+      "file": "male_modeled.json",
+      "url": "https://api.worldbank.org/v2/country/all/indicator/SL.EMP.TOTL.SP.MA.ZS?format=json&date=2000:2024&per_page=20000&footnote=y",
+      "records": 6650,
+      "last_updated": "2026-10-08",
+      "sha256": "7b917015cb8d8dcdb27902e8e2cc2b8172ce9a15082129bc98f6d4045e7e5e51"
+    }
+  ]
+}

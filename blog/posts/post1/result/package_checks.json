@@ -1,0 +1,15 @@
+{
+  "python_3_10_syntax": true,
+  "template_css_unchanged": true,
+  "qmd_calls_analysis_before_reading_generated_article": true,
+  "clean_rebuild_with_no_result_directory": true,
+  "runs_from_an_unrelated_working_directory": true,
+  "unicode_and_space_paths": true,
+  "all_sources_and_existing_data_unchanged": true,
+  "three_300dpi_png_figures": true,
+  "repeat_run_does_not_rewrite_unchanged_results": true,
+  "missing_csv_recovery_from_bundled_data": true,
+  "approved_article_body_figures_notes_and_takeaway_preserved": true,
+  "self_contained_html_and_english_only": true,
+  "native_R_Quarto_render": "not tested: R and Quarto unavailable"
+}

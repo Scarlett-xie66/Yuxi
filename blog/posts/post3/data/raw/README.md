@@ -1,0 +1,1 @@
+Licensed CPS person records are not distributed. Keep your XML dictionary and matching compressed data file together in a private folder and set BLOG3_DDI_PATH, or configure IPUMS_API_KEY as described in the root README.

@@ -1,0 +1,43 @@
+{
+  "countries": 85,
+  "observations": 1731,
+  "contraction_observations": 251,
+  "contraction_countries": 79,
+  "female_mean": -0.5163784860557767,
+  "male_mean": -1.2355697211155376,
+  "female_better": 187,
+  "both_fell": 151,
+  "women_fell": 166,
+  "pre2020_contractions": 158,
+  "source_manifest_sha256": "4d699aa7aaae5b64f1d711d9f60ce652ec0bf53ff41e0b63f1e9597158a4b71a",
+  "paired_changes_before_flags": 2061,
+  "explicit_break_changes_removed": 97,
+  "minimum_matched_changes": 10,
+  "first_change_year": 2001,
+  "last_change_year": 2024
+}
+                 specification         outcome  term  estimate       se   ci_low  ci_high  p_value    n  countries  contraction_observations                                            formula
+           National: all years Women minus men depth  0.173831 0.058877 0.056749 0.290914 0.004086 1731         85                       251 difference ~ depth + expansion + C(iso3) + C(year)
+         National: before 2020 Women minus men depth  0.293898 0.059480 0.175616 0.412180 0.000004 1352         85                       158 difference ~ depth + expansion + C(iso3) + C(year)
+National: common source sample Women minus men depth  0.175649 0.058938 0.058423 0.292875 0.003778 1718         84                       250 difference ~ depth + expansion + C(iso3) + C(year)
+ Modeled: common source sample Women minus men depth  0.183081 0.054433 0.074816 0.291346 0.001167 1718         84                       250 difference ~ depth + expansion + C(iso3) + C(year)
+Built the English contraction article and offline interactive HTML.
+{
+  "status": "passed",
+  "matched_changes_independently_rebuilt": 1731,
+  "countries": 85,
+  "contractions": 251,
+  "source_scope_and_break_flags_checked": true,
+  "independent_fixed_effect_slope_and_cluster_interval_match": true,
+  "direct_gender_contrast_identity": true,
+  "payload_matches_csv": true,
+  "html_balanced": true,
+  "word_count": {
+    "main_text_words": 691,
+    "counting_rule": "Whitespace-separated words in main article paragraphs, including standfirst, opening question and Takeaway. Excludes title, byline, section headings, figures, captions, chart controls, source notes, footnotes, note markers and Reproducibility.",
+    "main_text_paragraphs": 13
+  },
+  "native_r_quarto": "not available; not executed",
+  "browser_rendering": "not verified; interaction logic checked separately"
+}
+Rebuild passed. Results and figures saved under result/.
