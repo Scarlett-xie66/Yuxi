@@ -1,0 +1,19 @@
+{
+  "seed": 4082026,
+  "n_high": 287,
+  "n_low": 325,
+  "open_high": 258,
+  "open_low": 274,
+  "share_high": 0.8989547038327527,
+  "share_low": 0.8430769230769231,
+  "gap_pp": 5.5877780755829605,
+  "ci_low_pp": 0.3570088448137332,
+  "ci_high_pp": 10.796033235057623,
+  "coverage_trials": 2000,
+  "covered": 1898,
+  "coverage_pct": 94.89999999999999,
+  "exact_conditional_p": 0.0419132591954431,
+  "null_simulation_p": 0.04609769511524424,
+  "null_rejection_probability": 0.0419132591954431,
+  "null_absolute_cutoff_pp": 5.5877780755829605
+}

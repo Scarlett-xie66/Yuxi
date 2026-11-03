@@ -1,0 +1,39 @@
+---
+title: "How Certain Is the Evidence? A Bootstrap Analysis of Cash Transfers and Women-Owned Businesses in Kenya"
+format:
+  html:
+    toc: false
+    page-layout: custom
+    embed-resources: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: rebuild-blog8
+#| results: asis
+#| echo: false
+# Every render regenerates data, tables, figures and the article from source.
+(function() {
+input <- knitr::current_input(dir = TRUE)
+post_dir <- if (length(input) && nzchar(input)) dirname(normalizePath(input, winslash = "/")) else getwd()
+if (!file.exists(file.path(post_dir, "code", "analysis.py"))) {
+  stop("Cannot find code/analysis.py. Keep the complete Blog8 project beside index.qmd.")
+}
+python <- Sys.getenv("BLOG8_PYTHON", unset = "")
+if (!nzchar(python)) python <- Sys.getenv("RETICULATE_PYTHON", unset = "")
+if (!nzchar(python)) python <- Sys.which("python")
+if (!nzchar(python)) python <- Sys.which("python3")
+if (!nzchar(python)) stop("Python not found. Install Python and dependencies listed in README.md, or set BLOG8_PYTHON.")
+old_dir <- setwd(post_dir)
+on.exit(setwd(old_dir), add = TRUE)
+log <- tempfile(fileext = ".txt")
+status <- system2(python, args = shQuote(file.path("code", "analysis.py")), stdout = log, stderr = log)
+if (!identical(status, 0L)) {
+  stop(paste0("Blog8 analysis failed. Check Python dependencies and data.\n", paste(readLines(log, warn = FALSE, encoding = "UTF-8"), collapse = "\n")))
+}
+cat(readLines(file.path("result", "article_body.html"), warn = FALSE, encoding = "UTF-8"), sep = "\n")
+})()
+```
