@@ -1,0 +1,2 @@
+seed,n_high,n_low,open_high,open_low,share_high,share_low,gap_pp,ci_low_pp,ci_high_pp,coverage_trials,covered,coverage_pct,exact_conditional_p,null_simulation_p,null_rejection_probability,null_absolute_cutoff_pp,coverage_missed,shown_missed,bootstrap_draws,inner_draws,p_per_thousand
+4082026,287,325,258,274,0.8989547038327527,0.8430769230769231,5.5877780755829605,0.3570088448137332,10.796033235057623,2000,1898,94.89999999999999,0.0419132591954431,0.04609769511524424,0.0419132591954431,5.5877780755829605,102,3,20000,1000,42
