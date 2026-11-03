@@ -13,7 +13,7 @@ website:
         text: bio
       - href: resume.qmd
         text: resume
-      - href: blog/index.qmd
+      - href: blog/index.html
         text: blog
 
   page-footer:
