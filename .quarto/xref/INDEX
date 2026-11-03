@@ -49,5 +49,14 @@
   },
   "blog/posts/post1/result/article.md": {
     "article.html": "d5d50e69"
+  },
+  "Blog/posts/post8/index.qmd": {
+    "index.html": "ddc61043"
+  },
+  "blog/posts/post8/index.qmd": {
+    "index.html": "8f05d37b"
+  },
+  "docs/blog/index.qmd": {
+    "index.html": "5f9e9c9f"
   }
 }

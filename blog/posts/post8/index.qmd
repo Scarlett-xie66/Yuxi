@@ -1,10 +1,20 @@
 ---
 title: "How Certain Is the Evidence? A Bootstrap Analysis of Cash Transfers and Women-Owned Businesses in Kenya"
+subtitle: "Using a 2020 Kenyan experiment to understand confidence intervals and hypothesis tests"
+author: "Scarlett Xie"
+date: "2026-11-02"
+categories: [Simulation, Bootstrap, Development Economics]
+description: "A bootstrap analysis of the difference in business-open shares between women receiving larger and smaller cash transfers in Kenya."
+image: result/figures/figure2_bootstrap.png
+engine: knitr
+resources:
+  - result/figures/figure2_bootstrap.png
 format:
   html:
     toc: false
     page-layout: custom
     embed-resources: true
+    fig-dpi: 300
 execute:
   echo: false
   warning: false
@@ -33,10 +43,38 @@ fmt <- function(x) sprintf("%.1f", x)
 ```
 
 <style>
-*{box-sizing:border-box}html{background:white;color:#222}body{margin:0}main{max-width:828px;margin:0 auto;padding:44px 24px 64px}header{max-width:660px;margin:0 auto 40px;font-family:Arial,sans-serif}h1{font:600 36px/1.17 Arial,sans-serif;letter-spacing:-.6px;margin:0 0 13px}.subtitle{font:21px/1.45 Arial,sans-serif;color:#595959;margin:0 0 15px}.tags{font:11px Arial;color:#626970;letter-spacing:.3px;margin:0 0 25px}.tags span{display:inline-block;border:1px solid #a9afb4;border-radius:3px;padding:4px 7px;margin:0 5px 6px 0}.meta{display:flex;gap:100px;font:14px Arial}.meta small{display:block;color:#777;font-size:11px;margin-bottom:6px}article{font:17px/1.67 Georgia,serif;max-width:780px;margin:auto}article>p,article>h2,article>aside,article>section{max-width:660px;margin-left:auto;margin-right:auto}article>p{margin-bottom:1.1em}h2{font:700 24px/1.3 Georgia,serif;margin-top:2em}mark{background:#fff0b3;padding:2px}figure{margin:32px 0}figcaption{font:700 16px/1.4 Arial,sans-serif}figure img{display:block;width:100%;height:auto}.note{font:12px/1.5 Arial;color:#666}a{color:#246e77}.interactive{font:14px/1.5 Arial;background:#f6f8f7;border-top:2px solid #23737a;padding:16px;margin:16px 0}input{width:min(300px,100%);accent-color:#23737a}.footnotes{border-top:1px solid #ccc;font:13px/1.6 Arial;color:#555;margin-top:36px;padding-top:10px}.repro{border-top:1px solid #ccc;font:13px/1.6 Arial;color:#555;margin-top:30px;padding-top:12px}sup{font-size:.7em}@media(max-width:600px){main{padding:28px 18px}h1{font-size:30px}.meta{gap:45px}article{font-size:16px}}
-#title-block-header{display:none}</style>
+/* Scope article styling to Blog 8 so the site's navigation keeps its own layout. */
+#quarto-content { display: block !important; }
+#quarto-document-content { display: block !important; width: 100% !important; max-width: none !important; margin: 0 !important; }
+.blog8-page, .blog8-page * { box-sizing: border-box; }
+.blog8-page { width: 100%; max-width: 828px; margin: 0 auto; padding: 44px 24px 64px; color: #222; }
+.blog8-page header { max-width: 660px; margin: 0 auto 40px; font-family: Arial, sans-serif; }
+.blog8-page h1 { font: 600 36px/1.17 Arial, sans-serif; letter-spacing: -.6px; margin: 0 0 13px; }
+.blog8-page .subtitle { font: 21px/1.45 Arial, sans-serif; color: #595959; margin: 0 0 15px; }
+.blog8-page .tags { font: 11px Arial; color: #626970; letter-spacing: .3px; margin: 0 0 25px; }
+.blog8-page .tags span { display: inline-block; border: 1px solid #a9afb4; border-radius: 3px; padding: 4px 7px; margin: 0 5px 6px 0; }
+.blog8-page .meta { display: flex; gap: 100px; font: 14px Arial; }
+.blog8-page .meta small { display: block; color: #777; font-size: 11px; margin-bottom: 6px; }
+.blog8-page article { font: 17px/1.67 Georgia, serif; max-width: 780px; margin: auto; }
+.blog8-page article > p, .blog8-page article > h2, .blog8-page article > aside, .blog8-page article > section { max-width: 660px; margin-left: auto; margin-right: auto; }
+.blog8-page article > p { margin-bottom: 1.1em; }
+.blog8-page h2 { font: 700 24px/1.3 Georgia, serif; margin-top: 2em; }
+.blog8-page mark { background: #fff0b3; padding: 2px; }
+.blog8-page figure { margin: 32px 0; }
+.blog8-page figcaption { font: 700 16px/1.4 Arial, sans-serif; }
+.blog8-page figure img { display: block; width: 100%; height: auto; }
+.blog8-page .note { font: 12px/1.5 Arial; color: #666; }
+.blog8-page a { color: #246e77; }
+.blog8-page .interactive { font: 14px/1.5 Arial; background: #f6f8f7; border-top: 2px solid #23737a; padding: 16px; margin: 16px 0; }
+.blog8-page input { width: min(300px, 100%); accent-color: #23737a; }
+.blog8-page .footnotes { border-top: 1px solid #ccc; font: 13px/1.6 Arial; color: #555; margin-top: 36px; padding-top: 10px; }
+.blog8-page .repro { border-top: 1px solid #ccc; font: 13px/1.6 Arial; color: #555; margin-top: 30px; padding-top: 12px; }
+.blog8-page sup { font-size: .7em; }
+#title-block-header { display: none; }
+@media(max-width:600px) { .blog8-page { padding: 28px 18px; } .blog8-page h1 { font-size: 30px; } .blog8-page .meta { gap: 45px; } .blog8-page article { font-size: 16px; } }
+</style>
 
-<main><header><h1>How Certain Is the Evidence? A Bootstrap Analysis of Cash Transfers and Women-Owned Businesses in Kenya</h1><p class="subtitle">Using a 2020 Kenyan experiment to understand confidence intervals and hypothesis tests</p><div class="tags"><span>SIMULATION</span><span>BOOTSTRAP</span><span>DEVELOPMENT ECONOMICS</span></div><div class="meta"><div><small>AUTHOR</small>Scarlett Xie</div><div><small>DATA</small>Kenya, 2020</div></div></header><article>
+<div class="blog8-page"><header><h1>How Certain Is the Evidence? A Bootstrap Analysis of Cash Transfers and Women-Owned Businesses in Kenya</h1><p class="subtitle">Using a 2020 Kenyan experiment to understand confidence intervals and hypothesis tests</p><div class="tags"><span>SIMULATION</span><span>BOOTSTRAP</span><span>DEVELOPMENT ECONOMICS</span></div><div class="meta"><div><small>AUTHOR</small>Scarlett Xie</div><div><small>DATA</small>Kenya, 2020</div></div></header><article>
 <p>During the first wave of COVID-19, customers disappeared from markets in Dandora, a neighborhood in Nairobi, Kenya. For women running small businesses, a sudden loss of sales threatened both daily income and the money needed to restock. Researchers tested whether a one-time cash transfer could help. Among those interviewed, <strong>`r fmt(100*result$share_high)`% of the 5,000-shilling group were open, compared with `r fmt(100*result$share_low)`% of the 500-shilling group</strong>—a difference of `r fmt(result$gap_pp)` percentage points.</p>
 <p><mark><strong>How certain is the observed difference in business-open shares between women who received larger and smaller cash transfers?</strong></mark></p>
 <p>A single comparison cannot show how precisely that gap is measured. Resampling provides an interval for the difference, and a simulated no-effect benchmark shows how unusual a gap this large would be under a specified model.<sup><a href="#fn1">1</a></sup></p>
@@ -62,8 +100,7 @@ fmt <- function(x) sprintf("%.1f", x)
 <h2>Takeaway</h2>
 <p>In June 2020, <strong>`r fmt(100*result$share_high)`%</strong> of responding businesses in the higher-transfer group were open, versus <strong>`r fmt(100*result$share_low)`%</strong> in the comparison group. The observed gap was <strong>`r fmt(result$gap_pp)` percentage points</strong>; its bootstrap interval was <strong>`r fmt(result$ci_low_pp)` to `r fmt(result$ci_high_pp)` points</strong>. Under the simplified no-effect model, the exact probability of a gap at least as extreme was <strong>`r fmt(100*result$exact_conditional_p)`%</strong>. Among June respondents, the larger-payment group had a higher open-business share. The interval allows a small difference as well as a larger one; the no-effect model provides a benchmark for how unusual the observed gap would be. Survey response prevents this comparison from identifying an effect for all original participants.</p>
 <section class="footnotes"><h2>Footnotes</h2><ol><li id="fn1">Brooks, Donovan, Johnson and Oluoch-Aridi, <a href="https://doi.org/10.1016/j.jdeveco.2022.102929">Journal of Development Economics (2022)</a>; <a href="https://data.mendeley.com/datasets/zs5p47vx8k/1">replication data</a>, CC BY 4.0.</li><li id="fn2">The June comparison uses each respondent’s first valid June interview; it does not measure continuous operation. Survey response could differ between groups. The original article reports 753 enrolled participants; its later replication file and published results table include a different number of identifiers. This analysis reports its own June sample, rather than treating those totals as interchangeable.</li><li id="fn3">The percentile interval uses the 2.5th and 97.5th percentiles of the bootstrap differences.</li><li id="fn4">The coverage simulation assumes independent Bernoulli observations, fixed probabilities and the same group sizes. Its result is specific to this model.</li><li id="fn5">This is a sharp no-effect assumption for the June respondents. Because inclusion is based on post-treatment survey response and the original assignment mechanism has not been fully reconstructed, the simulation is an illustrative conditional permutation test, not an exact test of the original experiment.</li></ol></section>
-<section class="repro"><h2>Reproducibility</h2><p>The accompanying project includes the article, study data, analysis code and generated results. Render <code>index.qmd</code> to rebuild the calculations, figures and article. The project uses the following structure:</p><pre>index.qmd                         # article, layout and render entry point
-index.html                        # standalone preview
+<section class="repro"><h2>Reproducibility</h2><p>The accompanying project includes the article, study data, analysis code and generated results. Place this folder at <code>blog/posts/post8/</code> in the website project, then render <code>index.qmd</code> within that project to rebuild the calculations, figures and article. The project uses the following structure:</p><pre>index.qmd                         # article, layout and render entry point
 README.md                         # dependencies and replication steps
 code/
 └── analysis.py                   # sample, simulations and figures
@@ -73,5 +110,6 @@ data/
 result/
 ├── figures/                      # four 300-dpi PNG figures
 └── tables/                       # counts, simulations and interactive data</pre><p>Keep the folders together and render <code>index.qmd</code>. R, knitr and Python with pandas, NumPy, SciPy and Matplotlib are required. The code uses a fixed random seed and local data; it saves outputs before the article reads them. Source: <a href="https://data.mendeley.com/datasets/zs5p47vx8k/1">Donovan (2022), Mendeley Data, version 1</a>, CC BY 4.0.</p></section>
-</article></main>
+</article></div>
 <script>const q=`r q_json`;const slider=document.getElementById('level');const histogram=`r histogram_json`;function draw(){let n=slider.value;document.getElementById('lv').textContent=n;document.getElementById('out').textContent=n+'% bootstrap interval: '+q[n][0].toFixed(1)+' to '+q[n][1].toFixed(1)+' percentage points.';const left=55,right=740,base=220,top=25,min=-10,max=22,X=v=>left+(v-min)/(max-min)*(right-left),peak=Math.max(...histogram.hist);let svg='<svg viewBox="0 0 780 275" width="100%" role="img" aria-label="Bootstrap distribution. Interval from '+q[n][0].toFixed(1)+' to '+q[n][1].toFixed(1)+' percentage points.">';histogram.hist.forEach((v,i)=>{let a=X(histogram.edges[i]),b=X(histogram.edges[i+1]),h=(base-top)*v/peak;svg+='<rect x="'+a+'" y="'+(base-h)+'" width="'+Math.max(0,b-a-1)+'" height="'+h+'" fill="#8ab4b2"/>'});[q[n][0],q[n][1]].forEach(v=>svg+='<line x1="'+X(v)+'" x2="'+X(v)+'" y1="'+top+'" y2="'+base+'" stroke="#ae633e" stroke-width="2" stroke-dasharray="5 4"/>');svg+='<line x1="'+X(`r result$gap_pp`)+'" x2="'+X(`r result$gap_pp`)+'" y1="'+top+'" y2="'+base+'" stroke="#145b62" stroke-width="2"/><line x1="'+left+'" x2="'+right+'" y1="'+base+'" y2="'+base+'" stroke="#555"/>';[-10,-5,0,5,10,15,20].forEach(v=>svg+='<text x="'+X(v)+'" y="240" text-anchor="middle" fill="#555" font-size="12">'+v+'</text>');svg+='<text x="390" y="265" text-anchor="middle" fill="#555" font-size="13">Difference in open proportions (percentage points)</text><text x="60" y="15" fill="#145b62" font-size="12">Solid: observed gap (`r fmt(result$gap_pp)` points) · Dashed: interval</text></svg>';document.getElementById('bootstrap-chart').innerHTML=svg}slider.addEventListener('input',draw);draw();</script>
+
