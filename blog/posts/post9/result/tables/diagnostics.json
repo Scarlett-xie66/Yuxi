@@ -1,0 +1,15 @@
+{
+  "drawdown_gap_before_selloff_pp": -1.4360741345279204,
+  "drawdown_gap_at_end_pp": 0.0,
+  "cash_sessions_april_2025": 7,
+  "trough_date": "2025-04-04",
+  "trough_in_cash": true,
+  "cash_sessions": 23,
+  "test_sessions": 502,
+  "mean_return_cash_days_pp": -0.04799974330715009,
+  "mean_return_invested_days_pp": 0.08760051645152207,
+  "max_drawdown_window": [
+    "2025-02-14",
+    "2025-04-04"
+  ]
+}

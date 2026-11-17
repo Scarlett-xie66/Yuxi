@@ -58,5 +58,8 @@
   },
   "docs/blog/index.qmd": {
     "index.html": "5f9e9c9f"
+  },
+  "blog/posts/post9/index.qmd": {
+    "index.html": "d2255a4e"
   }
 }

@@ -1,0 +1,71 @@
+{
+  "start": "2017-01-01",
+  "end": "2025-12-31",
+  "train_obs": 1239,
+  "validation_obs": 501,
+  "test_obs": 502,
+  "train_end": "2021-12-31",
+  "validation": [
+    "2022-01-01",
+    "2023-12-31"
+  ],
+  "test_start": "2024-01-01",
+  "features": [
+    "lag1",
+    "lag2",
+    "lag3",
+    "lag4",
+    "lag5",
+    "cum5",
+    "cum20",
+    "vol5",
+    "vol20"
+  ],
+  "target": "close(t+1) -> close(t+2) return, percentage points",
+  "basic_config": {
+    "learning_rate": 0.1,
+    "max_depth": 3,
+    "min_samples_leaf": 1
+  },
+  "candidate_configs": [
+    {
+      "learning_rate": 0.03,
+      "max_depth": 1,
+      "min_samples_leaf": 50
+    },
+    {
+      "learning_rate": 0.05,
+      "max_depth": 2,
+      "min_samples_leaf": 30
+    },
+    {
+      "learning_rate": 0.01,
+      "max_depth": 2,
+      "min_samples_leaf": 20
+    },
+    {
+      "learning_rate": 0.1,
+      "max_depth": 3,
+      "min_samples_leaf": 10
+    }
+  ],
+  "selected_candidate": 1,
+  "selected_config": {
+    "learning_rate": 0.03,
+    "max_depth": 1,
+    "min_samples_leaf": 50
+  },
+  "benchmark_constant_pp": 0.04912481098794135,
+  "basic_validation_mse": 1.6587883981053568,
+  "in_sample_rmse_pp": {
+    "basic": 0.83050364900482,
+    "regularized": 1.198795672789255,
+    "target_sd": 1.2223127002682919
+  },
+  "seed": 20261116,
+  "sklearn": "1.5.1",
+  "numpy": "1.26.4",
+  "pandas": "2.2.3",
+  "python": "3.10.14",
+  "source_sha256": "6e092f266c10be5d347599680067e3563d7d9545dc4ed2815a45fea8d8acf272"
+}
